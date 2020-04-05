@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test
 class CanaryTest {
   @Test
   fun `test environment is setup`() {
-    assertThat(false)
-      .isTrue()
+    assertThat(true)
+        .isTrue()
   }
 }
