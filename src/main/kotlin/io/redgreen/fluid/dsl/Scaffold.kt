@@ -3,6 +3,7 @@ package io.redgreen.fluid.dsl
 import io.redgreen.fluid.commands.Command
 import io.redgreen.fluid.commands.DirectoryCommand
 import io.redgreen.fluid.commands.FileCopyCommand
+import io.redgreen.fluid.commands.TemplateCommand
 
 class Scaffold(
   private val block: Scaffold.() -> Unit
@@ -23,6 +24,10 @@ class Scaffold(
 
   fun fileCopy(fileName: String) {
     commands.add(FileCopyCommand(fileName))
+  }
+
+  fun <T> template(fileName: String, params: T) {
+    commands.add(TemplateCommand(fileName, params))
   }
 
   internal fun prepare(): List<Command> {

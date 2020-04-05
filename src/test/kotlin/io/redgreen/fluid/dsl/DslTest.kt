@@ -3,6 +3,7 @@ package io.redgreen.fluid.dsl
 import com.google.common.truth.Truth.assertThat
 import io.redgreen.fluid.commands.DirectoryCommand
 import io.redgreen.fluid.commands.FileCopyCommand
+import io.redgreen.fluid.commands.TemplateCommand
 import org.junit.jupiter.api.Test
 
 class DslTest {
@@ -94,5 +95,49 @@ class DslTest {
         DirectoryCommand("src/test"),
         FileCopyCommand("src/test/CanaryTest.kt")
       ).inOrder()
+  }
+
+  @Test
+  fun `it should create a template command`() {
+    // given
+    val params = MultiModuleProject("bamboo-tools", "fluid")
+    val scaffold = scaffold {
+      template("settings.gradle", params)
+    }
+
+    // when
+    val commands = scaffold.prepare()
+
+    // then
+    assertThat(commands)
+      .containsExactly(
+        TemplateCommand("settings.gradle", params)
+      )
+  }
+
+  data class MultiModuleProject(
+    val projectName: String,
+    val moduleName: String
+  )
+
+  @Test
+  fun `it should create template commands inside nested directories`() {
+    // given
+    val params = MultiModuleProject("bamboo-tools", "fluid")
+    val scaffold = scaffold {
+      directory("fluid") {
+        template("fluid.iml", params)
+      }
+    }
+
+    // when
+    val commands = scaffold.prepare()
+
+    // then
+    assertThat(commands)
+      .containsExactly(
+        DirectoryCommand("fluid"),
+        TemplateCommand("fluid/fluid.iml", params)
+      )
   }
 }
