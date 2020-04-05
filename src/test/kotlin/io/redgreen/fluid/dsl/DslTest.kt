@@ -94,7 +94,8 @@ class DslTest {
       .containsExactly(
         DirectoryCommand("src/test"),
         FileCopyCommand("src/test/CanaryTest.kt")
-      ).inOrder()
+      )
+      .inOrder()
   }
 
   @Test
@@ -138,6 +139,38 @@ class DslTest {
       .containsExactly(
         DirectoryCommand("fluid"),
         TemplateCommand("fluid/fluid.iml", params)
+      ).inOrder()
+  }
+
+  @Test
+  fun `it should work with all kinds of elements`() {
+    // given
+    val scaffold = scaffold {
+      directory("one-directory")
+
+      directory("directory") {
+        directory("directory")
+        fileCopy("file")
+
+        directory("templates") {
+          template("rocker.html", "Fluid")
+        }
+      }
+    }
+
+    // when
+    val commands = scaffold.prepare()
+
+    // then
+    assertThat(commands)
+      .containsExactly(
+        DirectoryCommand("one-directory"),
+        DirectoryCommand("directory"),
+        DirectoryCommand("directory/directory"),
+        FileCopyCommand("directory/file"),
+        DirectoryCommand("directory/templates"),
+        TemplateCommand("directory/templates/rocker.html", "Fluid")
       )
+      .inOrder()
   }
 }
