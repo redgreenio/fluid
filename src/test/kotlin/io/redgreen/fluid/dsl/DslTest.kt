@@ -1,6 +1,8 @@
-package io.redgreen.fluid
+package io.redgreen.fluid.dsl
 
 import com.google.common.truth.Truth.assertThat
+import io.redgreen.fluid.commands.DirectoryCommand
+import io.redgreen.fluid.commands.FileCopyCommand
 import org.junit.jupiter.api.Test
 
 class DslTest {

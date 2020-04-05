@@ -1,4 +1,8 @@
-package io.redgreen.fluid
+package io.redgreen.fluid.dsl
+
+import io.redgreen.fluid.commands.Command
+import io.redgreen.fluid.commands.DirectoryCommand
+import io.redgreen.fluid.commands.FileCopyCommand
 
 class Scaffold(
   private val block: Scaffold.() -> Unit

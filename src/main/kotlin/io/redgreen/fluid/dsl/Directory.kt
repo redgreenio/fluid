@@ -1,4 +1,7 @@
-package io.redgreen.fluid
+package io.redgreen.fluid.dsl
+
+import io.redgreen.fluid.commands.Command
+import io.redgreen.fluid.commands.FileCopyCommand
 
 class Directory(
   private val currentPath: String,

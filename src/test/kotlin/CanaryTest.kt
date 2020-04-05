@@ -5,6 +5,6 @@ class CanaryTest {
   @Test
   fun `test environment is setup`() {
     assertThat(true)
-        .isTrue()
+      .isTrue()
   }
 }
