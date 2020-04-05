@@ -73,4 +73,24 @@ class DslTest {
         FileCopyCommand(".gitignore")
       )
   }
+
+  @Test
+  fun `it should return a file copy command for files nested inside directories`() {
+    // given
+    val scaffold = scaffold {
+      directory("src/test") {
+        fileCopy("CanaryTest.kt")
+      }
+    }
+
+    // when
+    val commands = scaffold.prepare()
+
+    // then
+    assertThat(commands)
+      .containsExactly(
+        DirectoryCommand("src/test"),
+        FileCopyCommand("src/test/CanaryTest.kt")
+      ).inOrder()
+  }
 }

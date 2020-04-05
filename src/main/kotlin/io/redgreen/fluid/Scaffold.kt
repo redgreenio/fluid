@@ -8,12 +8,12 @@ class Scaffold(
 
   fun directory(
     path: String,
-    block: Scaffold.() -> Unit = { /* empty */ }
+    block: Directory.() -> Unit = { /* empty */ }
   ) {
     val previousPath = currentPath
     currentPath += if (currentPath.isEmpty()) path else "/$path"
     commands.add(DirectoryCommand(currentPath))
-    block()
+    block(Directory(currentPath, commands))
     currentPath = previousPath
   }
 
