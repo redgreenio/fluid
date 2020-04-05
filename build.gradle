@@ -1,0 +1,31 @@
+plugins {
+  id 'java-library'
+  id 'org.jetbrains.kotlin.jvm'
+  id 'com.github.ben-manes.versions'
+}
+
+version '1.0-SNAPSHOT'
+
+dependencies {
+  implementation artefacts.kotlin.jdkStdlib
+  implementation artefacts.slf4j
+  implementation artefacts.logback
+
+  testImplementation artefacts.junit.api
+  testRuntimeOnly artefacts.junit.runtime
+  testImplementation artefacts.junit.params
+  testImplementation artefacts.truth
+  testImplementation artefacts.mockitoKotlin
+}
+
+compileKotlin {
+  kotlinOptions.jvmTarget = versions.jvm
+}
+
+compileTestKotlin {
+  kotlinOptions.jvmTarget = versions.jvm
+}
+
+test {
+  useJUnitPlatform()
+}
