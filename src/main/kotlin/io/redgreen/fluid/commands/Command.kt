@@ -16,5 +16,6 @@ data class FileCopyCommand(
 
 data class TemplateCommand<T>(
   val fileName: String,
-  val model: T
+  val model: T,
+  val resource: Resource = SAME_AS_DESTINATION
 ) : Command()

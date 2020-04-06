@@ -207,4 +207,43 @@ class DslTest {
       )
       .inOrder()
   }
+
+  @Test
+  fun `it should create template commands (root) with resource`() {
+    // given
+    val model = MultiModuleProject("bamboo-tools", "fluid")
+    val scaffold = scaffold {
+      template("build.gradle", model, Resource("templates/build.gradle"))
+    }
+
+    // when
+    val commands = scaffold.prepare()
+
+    // then
+    assertThat(commands)
+      .containsExactly(
+        TemplateCommand("build.gradle", model, Resource("templates/build.gradle"))
+      )
+  }
+
+  @Test
+  fun `it should create template commands (nested directory) with resource`() {
+    // given
+    val model = MultiModuleProject("bamboo-tools", "fluid")
+    val scaffold = scaffold {
+      directory("fluid") {
+        template("build.gradle", model, Resource("templates/build.gradle"))
+      }
+    }
+
+    // when
+    val commands = scaffold.prepare()
+
+    // then
+    assertThat(commands)
+      .containsExactly(
+        DirectoryCommand("fluid"),
+        TemplateCommand("fluid/build.gradle", model, Resource("templates/build.gradle"))
+      )
+  }
 }

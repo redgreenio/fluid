@@ -47,7 +47,7 @@ sealed class Snapshot {
       when(command) {
         is DirectoryCommand -> createDirectory(command.path)
         is FileCopyCommand -> copyFile(command.destinationPath, command.resource)
-        is TemplateCommand<*> -> copyTemplate(command.fileName, command.model)
+        is TemplateCommand<*> -> copyTemplate(command.fileName, command.model, command.resource)
       }
     }
 
@@ -64,8 +64,8 @@ sealed class Snapshot {
       } ?: throw IllegalStateException("Unable to find source: '$source'")
     }
 
-    private fun <T> copyTemplate(destination: String, model: T) {
-      val source = destination
+    private fun <T> copyTemplate(destination: String, model: T, resource: Resource) {
+      val source = if (resource.isSameAsDestination()) destination else resource.filePath
 
       // TODO Cache these, they are expensive to create
       val configuration = FreemarkerConfiguration(VERSION_2_3_30).apply {

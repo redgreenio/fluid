@@ -27,8 +27,8 @@ class Scaffold(
     commands.add(FileCopyCommand(fileName, resource))
   }
 
-  fun <T> template(fileName: String, model: T) {
-    commands.add(TemplateCommand(fileName, model))
+  fun <T> template(fileName: String, model: T, resource: Resource = SAME_AS_DESTINATION) {
+    commands.add(TemplateCommand(fileName, model, resource))
   }
 
   internal fun prepare(): List<Command> {
