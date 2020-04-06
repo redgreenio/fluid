@@ -1,0 +1,33 @@
+plugins {
+  id 'java-library'
+  id 'org.jetbrains.kotlin.jvm'
+}
+
+group 'io.redgreen'
+version '1.0-SNAPSHOT'
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  implementation project(':fluid:core')
+  implementation project(':fluid:engine')
+  implementation artefacts.kotlin.jdkStdlib
+
+  testImplementation artefacts.junit.api
+  testRuntimeOnly artefacts.junit.runtime
+  testImplementation artefacts.truth
+}
+
+compileKotlin {
+  kotlinOptions.jvmTarget = versions.jvm
+}
+
+compileTestKotlin {
+  kotlinOptions.jvmTarget = versions.jvm
+}
+
+test {
+  useJUnitPlatform()
+}
