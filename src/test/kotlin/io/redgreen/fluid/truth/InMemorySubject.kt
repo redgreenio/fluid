@@ -30,4 +30,8 @@ class InMemorySubject(
       )
     }
   }
+
+  fun hasDirectories(vararg paths: String) {
+    paths.toList().onEach(this@InMemorySubject::hasDirectory)
+  }
 }

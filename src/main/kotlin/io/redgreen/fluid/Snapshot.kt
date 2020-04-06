@@ -34,7 +34,7 @@ sealed class Snapshot {
 
     // TODO(rj) 6-Apr-20 Return a result sealed class with success and failure
     private fun createDirectory(path: String) {
-      Files.createDirectory(root.resolve(path))
+      Files.createDirectories(root.resolve(path))
     }
   }
 }

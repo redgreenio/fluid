@@ -23,7 +23,7 @@ class FluidTest {
   }
 
   @Test
-  fun `it should create a root directory on an in-memory snapshot`() {
+  fun `it should create a root directory in the in-memory snapshot`() {
     // given
     val commands = listOf(DirectoryCommand("root"))
 
@@ -33,5 +33,64 @@ class FluidTest {
     // then
     assertThat(snapshot)
       .hasDirectory("root")
+  }
+
+  @Test
+  fun `it should create a all directories in the snapshot`() {
+    // given
+    val commands = listOf(DirectoryCommand("root/dir-level-1"))
+
+    // when
+    val snapshot = Fluid.createSnapshot(commands) as InMemory
+
+    // then
+    assertThat(snapshot)
+      .hasDirectory("root/dir-level-1")
+  }
+
+  @Test
+  fun `it should created nested directories in the snapshot`() {
+    // given
+    val commands = listOf(
+      DirectoryCommand("root"),
+      DirectoryCommand("root/dir-level-1"),
+      DirectoryCommand("root/dir-level-1/dir-level-2")
+    )
+
+    // when
+    val snapshot = Fluid.createSnapshot(commands) as InMemory
+
+    // then
+    assertThat(snapshot)
+      .hasDirectory("root/dir-level-1/dir-level-2")
+  }
+
+  @Test
+  fun `it should ignore multiple slashes and dots in the directory path`() {
+    // given
+    val commands = listOf(DirectoryCommand("root/./././/hello-world"))
+
+    // when
+    val snapshot = Fluid.createSnapshot(commands) as InMemory
+
+    // then
+    assertThat(snapshot)
+      .hasDirectory("root/hello-world")
+  }
+
+  @Test
+  fun `it should understand relative paths in the directory path`() {
+    // given
+    val commands = listOf(
+      DirectoryCommand("root/child"),
+      DirectoryCommand("root/../sibling")
+    )
+
+    // when
+    val snapshot = Fluid.createSnapshot(commands) as InMemory
+
+    // then
+    assertThat(snapshot)
+      .hasDirectories("root/child", "sibling")
   }
 }
