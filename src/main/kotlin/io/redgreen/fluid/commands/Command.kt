@@ -7,7 +7,7 @@ data class DirectoryCommand(
 ) : Command()
 
 data class FileCopyCommand(
-  val fileName: String
+  val filePath: String
 ) : Command()
 
 data class TemplateCommand<T>(

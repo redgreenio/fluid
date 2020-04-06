@@ -24,10 +24,15 @@ sealed class Snapshot {
       return Files.exists(resolvedPath) && Files.isDirectory(resolvedPath)
     }
 
+    fun fileExists(path: String): Boolean {
+      val resolvedPath = root.resolve(path)
+      return Files.exists(resolvedPath) && !Files.isDirectory(resolvedPath)
+    }
+
     internal fun execute(command: Command) {
       when(command) {
         is DirectoryCommand -> createDirectory(command.path)
-        is FileCopyCommand -> TODO()
+        is FileCopyCommand -> copyFile(command.filePath)
         is TemplateCommand<*> -> TODO()
       }
     }
@@ -35,6 +40,20 @@ sealed class Snapshot {
     // TODO(rj) 6-Apr-20 Return a result sealed class with success and failure
     private fun createDirectory(path: String) {
       Files.createDirectories(root.resolve(path))
+    }
+
+    private fun copyFile(filePath: String) {
+      this::class.java.classLoader.getResourceAsStream(filePath)?.use { inputStream ->
+        Files.copy(inputStream, root.resolve(filePath))
+      } ?: throw IllegalStateException("Unable to find source: '$filePath'")
+    }
+
+    fun readText(path: String): String {
+      return root
+        .resolve(path)
+        .toUri()
+        .toURL()
+        .readText()
     }
   }
 }

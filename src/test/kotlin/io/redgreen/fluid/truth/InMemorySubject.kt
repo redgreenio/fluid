@@ -5,6 +5,7 @@ import com.google.common.truth.FailureMetadata
 import com.google.common.truth.Subject
 import com.google.common.truth.Subject.Factory
 import com.google.common.truth.Truth.assertAbout
+import com.google.common.truth.Truth.assertThat
 import io.redgreen.fluid.Snapshot.InMemory
 
 class InMemorySubject(
@@ -33,5 +34,24 @@ class InMemorySubject(
 
   fun hasDirectories(vararg paths: String) {
     paths.toList().onEach(this@InMemorySubject::hasDirectory)
+  }
+
+  fun hasFile(path: String) {
+    if (!actual.fileExists(path)) {
+      failWithoutActual(
+        simpleFact("expected: a file '$path'"),
+        simpleFact("but was : not found")
+      )
+    }
+  }
+
+  fun hasFileWithContents(
+    path: String,
+    contents: String
+  ) {
+    hasFile(path)
+    val actualContents = actual.readText(path)
+    assertThat(actualContents)
+      .isEqualTo(contents)
   }
 }
