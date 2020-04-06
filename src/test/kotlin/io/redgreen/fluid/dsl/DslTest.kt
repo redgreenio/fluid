@@ -173,4 +173,42 @@ class DslTest {
       )
       .inOrder()
   }
+
+  @Test
+  fun `it should allow specifying resource path while copying files`() {
+    // given
+    val scaffold = scaffold {
+      fileCopy(".gitignore", Resource("gitignore"))
+    }
+
+    // when
+    val commands = scaffold.prepare()
+
+    // then
+    assertThat(commands)
+      .containsExactly(
+        FileCopyCommand(".gitignore", Resource("gitignore"))
+      )
+  }
+
+  @Test
+  fun `it should allow specifying resource path while copying files into directories`() {
+    // given
+    val scaffold = scaffold {
+      directory("core") {
+        fileCopy(".gitignore", Resource("gitignore"))
+      }
+    }
+
+    // when
+    val commands = scaffold.prepare()
+
+    // then
+    assertThat(commands)
+      .containsExactly(
+        DirectoryCommand("core"),
+        FileCopyCommand("core/.gitignore", Resource("gitignore"))
+      )
+      .inOrder()
+  }
 }
