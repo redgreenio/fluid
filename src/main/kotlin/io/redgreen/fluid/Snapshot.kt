@@ -6,6 +6,7 @@ import io.redgreen.fluid.commands.Command
 import io.redgreen.fluid.commands.DirectoryCommand
 import io.redgreen.fluid.commands.FileCopyCommand
 import io.redgreen.fluid.commands.TemplateCommand
+import io.redgreen.fluid.dsl.Resource
 import java.nio.file.FileSystem
 import java.nio.file.Files
 
@@ -32,7 +33,7 @@ sealed class Snapshot {
     internal fun execute(command: Command) {
       when(command) {
         is DirectoryCommand -> createDirectory(command.path)
-        is FileCopyCommand -> copyFile(command.filePath)
+        is FileCopyCommand -> copyFile(command.destinationPath, command.resource)
         is TemplateCommand<*> -> TODO()
       }
     }
@@ -42,10 +43,12 @@ sealed class Snapshot {
       Files.createDirectories(root.resolve(path))
     }
 
-    private fun copyFile(filePath: String) {
-      this::class.java.classLoader.getResourceAsStream(filePath)?.use { inputStream ->
-        Files.copy(inputStream, root.resolve(filePath))
-      } ?: throw IllegalStateException("Unable to find source: '$filePath'")
+    private fun copyFile(destination: String, resource: Resource) {
+      val source = if (resource.isSameAsDestination()) destination else resource.filePath
+
+      this::class.java.classLoader.getResourceAsStream(source)?.use { inputStream ->
+        Files.copy(inputStream, root.resolve(destination))
+      } ?: throw IllegalStateException("Unable to find source: '$source'")
     }
 
     fun readText(path: String): String {

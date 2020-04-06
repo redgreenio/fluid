@@ -1,5 +1,8 @@
 package io.redgreen.fluid.commands
 
+import io.redgreen.fluid.dsl.Resource
+import io.redgreen.fluid.dsl.Resource.Companion.SAME_AS_DESTINATION
+
 sealed class Command
 
 data class DirectoryCommand(
@@ -7,7 +10,8 @@ data class DirectoryCommand(
 ) : Command()
 
 data class FileCopyCommand(
-  val filePath: String
+  val destinationPath: String,
+  val resource: Resource = SAME_AS_DESTINATION
 ) : Command()
 
 data class TemplateCommand<T>(
