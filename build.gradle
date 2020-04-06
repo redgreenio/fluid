@@ -11,6 +11,7 @@ dependencies {
   implementation artefacts.slf4j
   implementation artefacts.logback
   implementation artefacts.jimfs
+  implementation artefacts.freemarker
 
   testImplementation artefacts.junit.api
   testRuntimeOnly artefacts.junit.runtime

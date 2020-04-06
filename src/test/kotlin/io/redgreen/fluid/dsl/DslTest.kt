@@ -4,6 +4,7 @@ import com.google.common.truth.Truth.assertThat
 import io.redgreen.fluid.commands.DirectoryCommand
 import io.redgreen.fluid.commands.FileCopyCommand
 import io.redgreen.fluid.commands.TemplateCommand
+import io.redgreen.fluid.model.MultiModuleProject
 import org.junit.jupiter.api.Test
 
 class DslTest {
@@ -101,9 +102,9 @@ class DslTest {
   @Test
   fun `it should create a template command`() {
     // given
-    val params = MultiModuleProject("bamboo-tools", "fluid")
+    val model = MultiModuleProject("bamboo-tools", "fluid")
     val scaffold = scaffold {
-      template("settings.gradle", params)
+      template("settings.gradle", model)
     }
 
     // when
@@ -112,22 +113,17 @@ class DslTest {
     // then
     assertThat(commands)
       .containsExactly(
-        TemplateCommand("settings.gradle", params)
+        TemplateCommand("settings.gradle", model)
       )
   }
-
-  data class MultiModuleProject(
-    val projectName: String,
-    val moduleName: String
-  )
 
   @Test
   fun `it should create template commands inside nested directories`() {
     // given
-    val params = MultiModuleProject("bamboo-tools", "fluid")
+    val model = MultiModuleProject("bamboo-tools", "fluid")
     val scaffold = scaffold {
       directory("fluid") {
-        template("fluid.iml", params)
+        template("fluid.iml", model)
       }
     }
 
@@ -138,7 +134,7 @@ class DslTest {
     assertThat(commands)
       .containsExactly(
         DirectoryCommand("fluid"),
-        TemplateCommand("fluid/fluid.iml", params)
+        TemplateCommand("fluid/fluid.iml", model)
       ).inOrder()
   }
 

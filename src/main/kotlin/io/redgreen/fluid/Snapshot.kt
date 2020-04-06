@@ -2,13 +2,18 @@ package io.redgreen.fluid
 
 import com.google.common.jimfs.Configuration
 import com.google.common.jimfs.Jimfs
+import freemarker.cache.ClassTemplateLoader
+import freemarker.template.Configuration.VERSION_2_3_30
 import io.redgreen.fluid.commands.Command
 import io.redgreen.fluid.commands.DirectoryCommand
 import io.redgreen.fluid.commands.FileCopyCommand
 import io.redgreen.fluid.commands.TemplateCommand
 import io.redgreen.fluid.dsl.Resource
+import java.io.ByteArrayInputStream
+import java.io.StringWriter
 import java.nio.file.FileSystem
 import java.nio.file.Files
+import freemarker.template.Configuration as FreemarkerConfiguration
 
 sealed class Snapshot {
   object Empty : Snapshot()
@@ -30,11 +35,19 @@ sealed class Snapshot {
       return Files.exists(resolvedPath) && !Files.isDirectory(resolvedPath)
     }
 
+    fun readText(path: String): String {
+      return root
+        .resolve(path)
+        .toUri()
+        .toURL()
+        .readText()
+    }
+
     internal fun execute(command: Command) {
       when(command) {
         is DirectoryCommand -> createDirectory(command.path)
         is FileCopyCommand -> copyFile(command.destinationPath, command.resource)
-        is TemplateCommand<*> -> TODO()
+        is TemplateCommand<*> -> copyTemplate(command.fileName, command.model)
       }
     }
 
@@ -51,12 +64,28 @@ sealed class Snapshot {
       } ?: throw IllegalStateException("Unable to find source: '$source'")
     }
 
-    fun readText(path: String): String {
-      return root
-        .resolve(path)
-        .toUri()
-        .toURL()
-        .readText()
+    private fun <T> copyTemplate(destination: String, model: T) {
+      val source = destination
+
+      // TODO Cache these, they are expensive to create
+      val configuration = FreemarkerConfiguration(VERSION_2_3_30).apply {
+        defaultEncoding = "UTF-8"
+        templateLoader = ClassTemplateLoader(Fluid::class.java.classLoader, "")
+      }
+
+      val root = mapOf(
+        "model" to model
+      )
+
+      val template = configuration.getTemplate(source)
+      val writer = StringWriter()
+      template.process(root, writer)
+
+      val processedTemplate = writer.toString()
+
+      ByteArrayInputStream(processedTemplate.toByteArray()).use { inputStream ->
+        Files.copy(inputStream, this.root.resolve(destination))
+      }
     }
   }
 }
