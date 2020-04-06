@@ -1,10 +1,12 @@
 package io.redgreen.fluid.dsl
 
 import com.google.common.truth.Truth.assertThat
-import io.redgreen.fluid.commands.DirectoryCommand
-import io.redgreen.fluid.commands.FileCopyCommand
-import io.redgreen.fluid.commands.TemplateCommand
+import io.redgreen.fluid.DirectoryCommand
+import io.redgreen.fluid.FileCopyCommand
+import io.redgreen.fluid.Resource
+import io.redgreen.fluid.TemplateCommand
 import io.redgreen.fluid.model.MultiModuleProject
+import io.redgreen.fluid.scaffold
 import org.junit.jupiter.api.Test
 
 class DslTest {

@@ -1,8 +1,6 @@
 package io.redgreen.fluid
 
 import io.redgreen.fluid.Snapshot.InMemory
-import io.redgreen.fluid.commands.FileCopyCommand
-import io.redgreen.fluid.dsl.Resource
 import io.redgreen.fluid.truth.InMemorySubject.Companion.assertThat
 import org.junit.jupiter.api.Test
 

@@ -4,11 +4,6 @@ import com.google.common.jimfs.Configuration
 import com.google.common.jimfs.Jimfs
 import freemarker.cache.ClassTemplateLoader
 import freemarker.template.Configuration.VERSION_2_3_30
-import io.redgreen.fluid.commands.Command
-import io.redgreen.fluid.commands.DirectoryCommand
-import io.redgreen.fluid.commands.FileCopyCommand
-import io.redgreen.fluid.commands.TemplateCommand
-import io.redgreen.fluid.dsl.Resource
 import java.io.ByteArrayInputStream
 import java.io.StringWriter
 import java.nio.file.FileSystem

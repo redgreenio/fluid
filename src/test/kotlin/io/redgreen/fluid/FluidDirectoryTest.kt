@@ -3,8 +3,6 @@ package io.redgreen.fluid
 import com.google.common.truth.Truth.assertThat
 import io.redgreen.fluid.Snapshot.Empty
 import io.redgreen.fluid.Snapshot.InMemory
-import io.redgreen.fluid.commands.Command
-import io.redgreen.fluid.commands.DirectoryCommand
 import io.redgreen.fluid.truth.InMemorySubject.Companion.assertThat
 import org.junit.jupiter.api.Test
 
