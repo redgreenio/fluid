@@ -8,7 +8,7 @@ import io.redgreen.fluid.commands.DirectoryCommand
 import io.redgreen.fluid.truth.InMemorySubject.Companion.assertThat
 import org.junit.jupiter.api.Test
 
-class FluidTest {
+class FluidDirectoryTest {
   @Test
   fun `it should create an empty snapshot from an empty list of commands`() {
     // given
@@ -92,5 +92,18 @@ class FluidTest {
     // then
     assertThat(snapshot)
       .hasDirectories("root/child", "sibling")
+  }
+
+  @Test
+  fun `it should create directories with spaces`() {
+    // given
+    val commands = listOf(DirectoryCommand("hello world"))
+
+    // when
+    val snapshot = Fluid.createSnapshot(commands) as InMemory
+
+    // then
+    assertThat(snapshot)
+      .hasDirectory("hello world")
   }
 }
