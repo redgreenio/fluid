@@ -8,7 +8,7 @@ data class DirectoryCommand(
   val path: String
 ) : Command()
 
-data class FileCopyCommand(
+data class FileCommand(
   val destinationPath: String,
   val resource: Resource = SAME_AS_DESTINATION
 ) : Command()

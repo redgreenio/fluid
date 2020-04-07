@@ -7,7 +7,7 @@ class Directory(
   private val commands: MutableList<Command>
 ) {
   fun fileCopy(fileName: String, resource: Resource = SAME_AS_DESTINATION) {
-    commands.add(FileCopyCommand("$currentPath/$fileName", resource))
+    commands.add(FileCommand("$currentPath/$fileName", resource))
   }
 
   fun <T> template(fileName: String, model: T, resource: Resource = SAME_AS_DESTINATION) {

@@ -5,7 +5,7 @@ import com.google.common.jimfs.Jimfs
 import freemarker.cache.ClassTemplateLoader
 import freemarker.template.Configuration.VERSION_2_3_30
 import io.redgreen.fluid.DirectoryCommand
-import io.redgreen.fluid.FileCopyCommand
+import io.redgreen.fluid.FileCommand
 import io.redgreen.fluid.Fluid
 import io.redgreen.fluid.Resource
 import io.redgreen.fluid.TemplateCommand
@@ -27,7 +27,7 @@ class InMemorySnapshot private constructor(
     createDirectory(command.path)
   }
 
-  override fun execute(command: FileCopyCommand) {
+  override fun execute(command: FileCommand) {
     copyFile(command.destinationPath, command.resource)
   }
 

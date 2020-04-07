@@ -11,7 +11,7 @@ object Fluid {
       commands.onEach { command ->
         when (command) {
           is DirectoryCommand -> snapshot.execute(command)
-          is FileCopyCommand -> snapshot.execute(command)
+          is FileCommand -> snapshot.execute(command)
           is TemplateCommand<*> -> snapshot.execute(command)
         }
       }

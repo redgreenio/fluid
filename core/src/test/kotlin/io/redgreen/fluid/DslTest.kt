@@ -75,7 +75,7 @@ class DslTest {
     // then
     assertThat(commands)
       .containsExactly(
-        FileCopyCommand(".gitignore")
+        FileCommand(".gitignore")
       )
   }
 
@@ -95,7 +95,7 @@ class DslTest {
     assertThat(commands)
       .containsExactly(
         DirectoryCommand("src/test"),
-        FileCopyCommand("src/test/CanaryTest.kt")
+        FileCommand("src/test/CanaryTest.kt")
       )
       .inOrder()
   }
@@ -164,7 +164,7 @@ class DslTest {
         DirectoryCommand("one-directory"),
         DirectoryCommand("directory"),
         DirectoryCommand("directory/directory"),
-        FileCopyCommand("directory/file"),
+        FileCommand("directory/file"),
         DirectoryCommand("directory/templates"),
         TemplateCommand("directory/templates/rocker.html", "Fluid")
       )
@@ -184,7 +184,7 @@ class DslTest {
     // then
     assertThat(commands)
       .containsExactly(
-        FileCopyCommand(".gitignore", Resource("gitignore"))
+        FileCommand(".gitignore", Resource("gitignore"))
       )
   }
 
@@ -204,7 +204,7 @@ class DslTest {
     assertThat(commands)
       .containsExactly(
         DirectoryCommand("core"),
-        FileCopyCommand("core/.gitignore", Resource("gitignore"))
+        FileCommand("core/.gitignore", Resource("gitignore"))
       )
       .inOrder()
   }

@@ -23,7 +23,7 @@ class Scaffold(
   }
 
   fun fileCopy(fileName: String, resource: Resource = SAME_AS_DESTINATION) {
-    commands.add(FileCopyCommand(fileName, resource))
+    commands.add(FileCommand(fileName, resource))
   }
 
   fun <T> template(fileName: String, model: T, resource: Resource = SAME_AS_DESTINATION) {
