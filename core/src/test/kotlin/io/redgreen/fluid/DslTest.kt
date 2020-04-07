@@ -2,21 +2,26 @@ package io.redgreen.fluid
 
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class DslTest {
   @Test
-  fun `it should return an empty list for an empty scaffold`() {
+  fun `it throws an exception for a vacationing scaffold`() {
     // given
     val scaffold = scaffold {
       /* empty */
     }
 
     // when
-    val commands = scaffold.prepare()
+    val exception = assertThrows<IllegalStateException> {
+      scaffold.prepare()
+    }
 
     // then
-    assertThat(commands)
-      .isEmpty()
+    val errorMessage = "The scaffold is empty. You can make it useful by " +
+      "creating directories, copying files, or templates."
+    assertThat(exception.message)
+      .isEqualTo(errorMessage)
   }
 
   @Test

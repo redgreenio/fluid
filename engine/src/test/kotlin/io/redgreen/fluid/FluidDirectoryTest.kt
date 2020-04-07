@@ -1,10 +1,10 @@
 package io.redgreen.fluid
 
 import com.google.common.truth.Truth.assertThat
-import io.redgreen.fluid.Snapshot.Empty
 import io.redgreen.fluid.Snapshot.InMemory
 import io.redgreen.fluid.truth.InMemorySubject.Companion.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class FluidDirectoryTest {
   @Test
@@ -13,11 +13,13 @@ class FluidDirectoryTest {
     val noCommands = emptyList<Command>()
 
     // when
-    val snapshot = Fluid.createSnapshot(noCommands)
+    val exception = assertThrows<IllegalArgumentException> {
+      Fluid.createSnapshot(noCommands)
+    }
 
     // then
-    assertThat(snapshot)
-      .isEqualTo(Empty)
+    assertThat(exception.message)
+      .isEqualTo("'commands' should be a non-empty list.")
   }
 
   @Test

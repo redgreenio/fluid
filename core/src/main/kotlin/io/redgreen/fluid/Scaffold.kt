@@ -32,6 +32,11 @@ class Scaffold(
 
   fun prepare(): List<Command> {
     block()
+    commands.ifEmpty {
+      val message = "The scaffold is empty. You can make it useful by " +
+        "creating directories, copying files, or templates."
+      throw IllegalStateException(message)
+    }
     return commands.toList()
   }
 }
