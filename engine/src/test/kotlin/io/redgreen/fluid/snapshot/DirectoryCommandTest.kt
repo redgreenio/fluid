@@ -1,12 +1,14 @@
-package io.redgreen.fluid
+package io.redgreen.fluid.snapshot
 
 import com.google.common.truth.Truth.assertThat
-import io.redgreen.fluid.Snapshot.InMemory
-import io.redgreen.fluid.truth.InMemorySubject.Companion.assertThat
+import io.redgreen.fluid.Command
+import io.redgreen.fluid.DirectoryCommand
+import io.redgreen.fluid.Fluid
+import io.redgreen.fluid.truth.InMemorySnapshotSubject.Companion.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
-class FluidDirectoryTest {
+class DirectoryCommandTest {
   @Test
   fun `it should create an empty snapshot from an empty list of commands`() {
     // given
@@ -28,7 +30,7 @@ class FluidDirectoryTest {
     val commands = listOf(DirectoryCommand("root"))
 
     // when
-    val snapshot = Fluid.createSnapshot(commands) as InMemory
+    val snapshot = Fluid.createSnapshot(commands) as InMemorySnapshot
 
     // then
     assertThat(snapshot)
@@ -41,7 +43,7 @@ class FluidDirectoryTest {
     val commands = listOf(DirectoryCommand("root/dir-level-1"))
 
     // when
-    val snapshot = Fluid.createSnapshot(commands) as InMemory
+    val snapshot = Fluid.createSnapshot(commands) as InMemorySnapshot
 
     // then
     assertThat(snapshot)
@@ -58,7 +60,7 @@ class FluidDirectoryTest {
     )
 
     // when
-    val snapshot = Fluid.createSnapshot(commands) as InMemory
+    val snapshot = Fluid.createSnapshot(commands) as InMemorySnapshot
 
     // then
     assertThat(snapshot)
@@ -71,7 +73,7 @@ class FluidDirectoryTest {
     val commands = listOf(DirectoryCommand("root/./././/hello-world"))
 
     // when
-    val snapshot = Fluid.createSnapshot(commands) as InMemory
+    val snapshot = Fluid.createSnapshot(commands) as InMemorySnapshot
 
     // then
     assertThat(snapshot)
@@ -87,7 +89,7 @@ class FluidDirectoryTest {
     )
 
     // when
-    val snapshot = Fluid.createSnapshot(commands) as InMemory
+    val snapshot = Fluid.createSnapshot(commands) as InMemorySnapshot
 
     // then
     assertThat(snapshot)
@@ -100,7 +102,7 @@ class FluidDirectoryTest {
     val commands = listOf(DirectoryCommand("hello world"))
 
     // when
-    val snapshot = Fluid.createSnapshot(commands) as InMemory
+    val snapshot = Fluid.createSnapshot(commands) as InMemorySnapshot
 
     // then
     assertThat(snapshot)

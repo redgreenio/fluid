@@ -6,20 +6,20 @@ import com.google.common.truth.Subject
 import com.google.common.truth.Subject.Factory
 import com.google.common.truth.Truth.assertAbout
 import com.google.common.truth.Truth.assertThat
-import io.redgreen.fluid.Snapshot.InMemory
+import io.redgreen.fluid.snapshot.InMemorySnapshot
 
-class InMemorySubject(
+class InMemorySnapshotSubject(
   metadata: FailureMetadata,
-  private val actual: InMemory
+  private val actual: InMemorySnapshot
 ) : Subject(metadata, actual) {
   companion object {
-    private val inMemoryInstances = Factory<InMemorySubject, InMemory> { metadata, actual ->
-      InMemorySubject(metadata, actual)
+    private val inMemorySnapshots = Factory<InMemorySnapshotSubject, InMemorySnapshot> { metadata, actual ->
+      InMemorySnapshotSubject(metadata, actual)
     }
 
     @JvmStatic
-    fun assertThat(inMemory: InMemory): InMemorySubject {
-      return assertAbout(inMemoryInstances).that(inMemory)
+    fun assertThat(inMemorySnapshot: InMemorySnapshot): InMemorySnapshotSubject {
+      return assertAbout(inMemorySnapshots).that(inMemorySnapshot)
     }
   }
 
@@ -33,7 +33,7 @@ class InMemorySubject(
   }
 
   fun hasDirectories(vararg paths: String) {
-    paths.toList().onEach(this@InMemorySubject::hasDirectory)
+    paths.toList().onEach(this@InMemorySnapshotSubject::hasDirectory)
   }
 
   fun hasFile(path: String) {

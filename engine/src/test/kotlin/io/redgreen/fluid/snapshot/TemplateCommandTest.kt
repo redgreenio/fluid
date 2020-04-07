@@ -1,11 +1,13 @@
-package io.redgreen.fluid
+package io.redgreen.fluid.snapshot
 
-import io.redgreen.fluid.Snapshot.InMemory
+import io.redgreen.fluid.Fluid
+import io.redgreen.fluid.Resource
+import io.redgreen.fluid.TemplateCommand
 import io.redgreen.fluid.model.MultiModuleProject
-import io.redgreen.fluid.truth.InMemorySubject.Companion.assertThat
+import io.redgreen.fluid.truth.InMemorySnapshotSubject.Companion.assertThat
 import org.junit.jupiter.api.Test
 
-class FluidTemplateTest {
+class TemplateCommandTest {
   @Test
   fun `it should copy a template from the source path`() {
     // given
@@ -16,7 +18,7 @@ class FluidTemplateTest {
     )
 
     // when
-    val snapshot = Fluid.createSnapshot(commands) as InMemory
+    val snapshot = Fluid.createSnapshot(commands) as InMemorySnapshot
 
     // when
     val settingsGradle = """
@@ -35,7 +37,7 @@ class FluidTemplateTest {
     )
 
     // when
-    val snapshot = Fluid.createSnapshot(commands) as InMemory
+    val snapshot = Fluid.createSnapshot(commands) as InMemorySnapshot
 
     // then
     assertThat(snapshot)
