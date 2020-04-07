@@ -11,7 +11,7 @@ class Scaffold(
   private val commands = mutableListOf<Command>()
   private var currentPath = ""
 
-  fun directory(
+  fun dir(
     path: String,
     block: Directory.() -> Unit = { /* empty */ }
   ) {

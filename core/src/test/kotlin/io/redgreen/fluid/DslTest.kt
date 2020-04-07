@@ -28,7 +28,7 @@ class DslTest {
   fun `it should return a directory command for a directory call`() {
     // given
     val scaffold = scaffold {
-      directory("src")
+      dir("src")
     }
 
     // when
@@ -45,8 +45,8 @@ class DslTest {
   fun `it should return directory commands for nested directories`() {
     // given
     val scaffold = scaffold {
-      directory("src") {
-        directory("main")
+      dir("src") {
+        dir("main")
       }
     }
 
@@ -83,7 +83,7 @@ class DslTest {
   fun `it should return a file copy command for files nested inside directories`() {
     // given
     val scaffold = scaffold {
-      directory("src/test") {
+      dir("src/test") {
         file("CanaryTest.kt")
       }
     }
@@ -123,7 +123,7 @@ class DslTest {
     // given
     val model = MultiModuleProject("bamboo-tools", "fluid")
     val scaffold = scaffold {
-      directory("fluid") {
+      dir("fluid") {
         template("fluid.iml", model)
       }
     }
@@ -143,13 +143,13 @@ class DslTest {
   fun `it should work with all kinds of elements`() {
     // given
     val scaffold = scaffold {
-      directory("one-directory")
+      dir("one-directory")
 
-      directory("directory") {
-        directory("directory")
+      dir("directory") {
+        dir("directory")
         file("file")
 
-        directory("templates") {
+        dir("templates") {
           template("rocker.html", "Fluid")
         }
       }
@@ -192,7 +192,7 @@ class DslTest {
   fun `it should allow specifying resource path while copying files into directories`() {
     // given
     val scaffold = scaffold {
-      directory("core") {
+      dir("core") {
         file(".gitignore", Resource("gitignore"))
       }
     }
@@ -232,7 +232,7 @@ class DslTest {
     // given
     val model = MultiModuleProject("bamboo-tools", "fluid")
     val scaffold = scaffold {
-      directory("fluid") {
+      dir("fluid") {
         template("build.gradle", model, Resource("templates/build.gradle"))
       }
     }
