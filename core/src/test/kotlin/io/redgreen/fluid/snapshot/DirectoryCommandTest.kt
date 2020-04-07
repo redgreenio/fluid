@@ -1,36 +1,16 @@
 package io.redgreen.fluid.snapshot
 
-import com.google.common.truth.Truth.assertThat
-import io.redgreen.fluid.Command
-import io.redgreen.fluid.DirectoryCommand
-import io.redgreen.fluid.Fluid
-import io.redgreen.fluid.truth.InMemorySnapshotSubject.Companion.assertThat
+import io.redgreen.fluid.api.DirectoryCommand
+import io.redgreen.fluid.snapshot.test.InMemorySnapshotSubject.Companion.assertThat
+import io.redgreen.fluid.snapshot.test.buildSnapshot
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 
 class DirectoryCommandTest {
   @Test
-  fun `it should create an empty snapshot from an empty list of commands`() {
-    // given
-    val noCommands = emptyList<Command>()
-
-    // when
-    val exception = assertThrows<IllegalArgumentException> {
-      Fluid.createSnapshot(noCommands)
-    }
-
-    // then
-    assertThat(exception.message)
-      .isEqualTo("'commands' should be a non-empty list.")
-  }
-
-  @Test
   fun `it should create a root directory in the in-memory snapshot`() {
-    // given
-    val commands = listOf(DirectoryCommand("root"))
-
     // when
-    val snapshot = Fluid.createSnapshot(commands) as InMemorySnapshot
+    val snapshot = DirectoryCommand("root")
+      .buildSnapshot()
 
     // then
     assertThat(snapshot)
@@ -39,11 +19,9 @@ class DirectoryCommandTest {
 
   @Test
   fun `it should create a all directories in the snapshot`() {
-    // given
-    val commands = listOf(DirectoryCommand("root/dir-level-1"))
-
     // when
-    val snapshot = Fluid.createSnapshot(commands) as InMemorySnapshot
+    val snapshot = DirectoryCommand("root/dir-level-1")
+      .buildSnapshot()
 
     // then
     assertThat(snapshot)
@@ -60,7 +38,7 @@ class DirectoryCommandTest {
     )
 
     // when
-    val snapshot = Fluid.createSnapshot(commands) as InMemorySnapshot
+    val snapshot = commands.buildSnapshot()
 
     // then
     assertThat(snapshot)
@@ -69,11 +47,9 @@ class DirectoryCommandTest {
 
   @Test
   fun `it should ignore multiple slashes and dots in the directory path`() {
-    // given
-    val commands = listOf(DirectoryCommand("root/./././/hello-world"))
-
     // when
-    val snapshot = Fluid.createSnapshot(commands) as InMemorySnapshot
+    val snapshot = DirectoryCommand("root/./././/hello-world")
+      .buildSnapshot()
 
     // then
     assertThat(snapshot)
@@ -89,7 +65,7 @@ class DirectoryCommandTest {
     )
 
     // when
-    val snapshot = Fluid.createSnapshot(commands) as InMemorySnapshot
+    val snapshot = commands.buildSnapshot()
 
     // then
     assertThat(snapshot)
@@ -98,11 +74,9 @@ class DirectoryCommandTest {
 
   @Test
   fun `it should create directories with spaces`() {
-    // given
-    val commands = listOf(DirectoryCommand("hello world"))
-
     // when
-    val snapshot = Fluid.createSnapshot(commands) as InMemorySnapshot
+    val snapshot = DirectoryCommand("hello world")
+      .buildSnapshot()
 
     // then
     assertThat(snapshot)

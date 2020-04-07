@@ -1,6 +1,7 @@
-package io.redgreen.fluid
+package io.redgreen.fluid.api
 
-import io.redgreen.fluid.Resource.Companion.SAME_AS_DESTINATION
+import io.redgreen.fluid.dsl.Resource
+import io.redgreen.fluid.dsl.Resource.Companion.SAME_AS_DESTINATION
 
 sealed class Command
 

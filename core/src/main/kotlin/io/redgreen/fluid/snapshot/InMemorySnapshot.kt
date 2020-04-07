@@ -4,12 +4,11 @@ import com.google.common.jimfs.Configuration
 import com.google.common.jimfs.Jimfs
 import freemarker.cache.ClassTemplateLoader
 import freemarker.template.Configuration.VERSION_2_3_30
-import io.redgreen.fluid.DirectoryCommand
-import io.redgreen.fluid.FileCommand
-import io.redgreen.fluid.Fluid
-import io.redgreen.fluid.Resource
-import io.redgreen.fluid.TemplateCommand
+import io.redgreen.fluid.api.DirectoryCommand
+import io.redgreen.fluid.api.FileCommand
 import io.redgreen.fluid.api.Snapshot
+import io.redgreen.fluid.api.TemplateCommand
+import io.redgreen.fluid.dsl.Resource
 import java.io.ByteArrayInputStream
 import java.io.StringWriter
 import java.nio.file.FileSystem
@@ -53,7 +52,6 @@ class InMemorySnapshot private constructor(
       .readText()
   }
 
-  // TODO(rj) 6-Apr-20 Return a result sealed class with success and failure
   private fun createDirectory(path: String) {
     Files.createDirectories(root.resolve(path))
   }
@@ -72,7 +70,7 @@ class InMemorySnapshot private constructor(
     // TODO Cache these, they are expensive to create
     val configuration = FreemarkerConfiguration(VERSION_2_3_30).apply {
       defaultEncoding = "UTF-8"
-      templateLoader = ClassTemplateLoader(Fluid::class.java.classLoader, "")
+      templateLoader = ClassTemplateLoader(this::class.java.classLoader, "")
     }
 
     val root = mapOf(

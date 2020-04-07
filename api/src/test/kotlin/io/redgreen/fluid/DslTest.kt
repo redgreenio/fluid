@@ -1,12 +1,17 @@
 package io.redgreen.fluid
 
 import com.google.common.truth.Truth.assertThat
+import io.redgreen.fluid.api.DirectoryCommand
+import io.redgreen.fluid.api.FileCommand
+import io.redgreen.fluid.api.TemplateCommand
+import io.redgreen.fluid.dsl.Resource
+import io.redgreen.fluid.dsl.scaffold
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 class DslTest {
   @Test
-  fun `it throws an exception for a vacationing scaffold`() {
+  fun `it throws an exception for an empty scaffold`() {
     // given
     val scaffold = scaffold {
       /* empty */

@@ -1,6 +1,10 @@
 package io.redgreen.fluid
 
+import io.redgreen.fluid.api.Command
+import io.redgreen.fluid.api.DirectoryCommand
+import io.redgreen.fluid.api.FileCommand
 import io.redgreen.fluid.api.Snapshot
+import io.redgreen.fluid.api.TemplateCommand
 import io.redgreen.fluid.snapshot.InMemorySnapshot
 
 object Fluid {

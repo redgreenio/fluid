@@ -1,4 +1,4 @@
-package io.redgreen.fluid
+package io.redgreen.fluid.dsl
 
 data class Resource(
   val filePath: String

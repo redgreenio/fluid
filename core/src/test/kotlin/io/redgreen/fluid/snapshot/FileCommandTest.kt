@@ -1,19 +1,16 @@
 package io.redgreen.fluid.snapshot
 
-import io.redgreen.fluid.FileCommand
-import io.redgreen.fluid.Fluid
-import io.redgreen.fluid.Resource
-import io.redgreen.fluid.truth.InMemorySnapshotSubject.Companion.assertThat
+import io.redgreen.fluid.api.FileCommand
+import io.redgreen.fluid.dsl.Resource
+import io.redgreen.fluid.snapshot.test.InMemorySnapshotSubject.Companion.assertThat
+import io.redgreen.fluid.snapshot.test.buildSnapshot
 import org.junit.jupiter.api.Test
 
 class FileCommandTest {
   @Test
   fun `it should copy files from the source path`() {
-    // given
-    val commands = listOf(FileCommand("hello-world.txt"))
-
     // when
-    val snapshot = Fluid.createSnapshot(commands) as InMemorySnapshot
+    val snapshot = FileCommand("hello-world.txt").buildSnapshot()
 
     // then
     assertThat(snapshot)
@@ -24,11 +21,9 @@ class FileCommandTest {
 
   @Test
   fun `it should copy file from an explicitly specified resource path`() {
-    // given
-    val commands = listOf(FileCommand(".gitignore", Resource("gitignore")))
-
     // when
-    val snapshot = Fluid.createSnapshot(commands) as InMemorySnapshot
+    val snapshot = FileCommand(".gitignore", Resource("gitignore"))
+      .buildSnapshot()
 
     // then
     assertThat(snapshot)

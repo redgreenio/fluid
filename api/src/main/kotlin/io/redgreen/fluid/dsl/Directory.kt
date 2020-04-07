@@ -1,6 +1,9 @@
-package io.redgreen.fluid
+package io.redgreen.fluid.dsl
 
-import io.redgreen.fluid.Resource.Companion.SAME_AS_DESTINATION
+import io.redgreen.fluid.api.Command
+import io.redgreen.fluid.api.FileCommand
+import io.redgreen.fluid.api.TemplateCommand
+import io.redgreen.fluid.dsl.Resource.Companion.SAME_AS_DESTINATION
 
 class Directory(
   private val currentPath: String,

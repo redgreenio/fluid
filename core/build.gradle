@@ -11,7 +11,10 @@ repositories {
 }
 
 dependencies {
+  implementation project(':fluid:api')
   implementation artefacts.kotlin.jdkStdlib
+  implementation artefacts.jimfs
+  implementation artefacts.freemarker
 
   testImplementation artefacts.junit.api
   testRuntimeOnly artefacts.junit.runtime

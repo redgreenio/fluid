@@ -1,4 +1,4 @@
-package io.redgreen.fluid.truth
+package io.redgreen.fluid.snapshot.test
 
 import com.google.common.truth.Fact.simpleFact
 import com.google.common.truth.FailureMetadata

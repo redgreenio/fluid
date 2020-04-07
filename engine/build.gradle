@@ -11,8 +11,6 @@ dependencies {
   implementation project(':fluid:core')
   implementation artefacts.kotlin.jdkStdlib
   implementation artefacts.logback
-  implementation artefacts.jimfs
-  implementation artefacts.freemarker
 
   testImplementation artefacts.junit.api
   testRuntimeOnly artefacts.junit.runtime
