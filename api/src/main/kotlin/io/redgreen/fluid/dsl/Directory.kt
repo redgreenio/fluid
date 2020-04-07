@@ -13,7 +13,7 @@ class Directory(
     commands.add(FileCommand("$currentPath/$fileName", resource))
   }
 
-  fun <T> template(fileName: String, model: T, resource: Resource = SAME_AS_DESTINATION) {
+  fun <T : Any> template(fileName: String, model: T, resource: Resource = SAME_AS_DESTINATION) {
     commands.add(TemplateCommand("$currentPath/$fileName", model, resource))
   }
 }

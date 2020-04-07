@@ -31,7 +31,7 @@ class Scaffold(
     commands.add(FileCommand(fileName, resource))
   }
 
-  fun <T> template(fileName: String, model: T, resource: Resource = SAME_AS_DESTINATION) {
+  fun <T : Any> template(fileName: String, model: T, resource: Resource = SAME_AS_DESTINATION) {
     commands.add(TemplateCommand(fileName, model, resource))
   }
 

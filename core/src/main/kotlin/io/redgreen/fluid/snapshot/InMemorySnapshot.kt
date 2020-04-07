@@ -32,7 +32,7 @@ class InMemorySnapshot private constructor(
     copyFile(command.destinationPath, command.resource)
   }
 
-  override fun <T> execute(command: TemplateCommand<T>) {
+  override fun <T : Any> execute(command: TemplateCommand<T>) {
     copyTemplate(command.fileName, command.model, command.resource)
   }
 
@@ -66,7 +66,7 @@ class InMemorySnapshot private constructor(
     } ?: throw IllegalStateException("Unable to find source: '$source'")
   }
 
-  private fun <T> copyTemplate(
+  private fun <T : Any> copyTemplate(
     destination: String,
     model: T,
     resource: Resource

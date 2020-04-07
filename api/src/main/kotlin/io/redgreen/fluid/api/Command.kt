@@ -14,7 +14,7 @@ data class FileCommand(
   val resource: Resource = SAME_AS_DESTINATION
 ) : Command()
 
-data class TemplateCommand<T>(
+data class TemplateCommand<T : Any>(
   val fileName: String,
   val model: T,
   val resource: Resource = SAME_AS_DESTINATION

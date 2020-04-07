@@ -11,8 +11,8 @@ class FreemarkerTemplateEngine : TemplateEngine {
     private const val ROOT_BASE_PACKAGE_PATH = ""
   }
 
-  override fun <T> processTemplate(templatePath: String, model: T): String {
-    val configuration = getConfiguration(String::class.java)
+  override fun <T : Any> processTemplate(templatePath: String, model: T): String {
+    val configuration = getConfiguration(this::class.java)
 
     val dataModel = mapOf(KEY_MODEL to model)
 
