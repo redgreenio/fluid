@@ -4,12 +4,12 @@ import com.google.common.jimfs.Configuration
 import com.google.common.jimfs.Jimfs
 import freemarker.cache.ClassTemplateLoader
 import freemarker.template.Configuration.VERSION_2_3_30
-import io.redgreen.fluid.Command
 import io.redgreen.fluid.DirectoryCommand
 import io.redgreen.fluid.FileCopyCommand
 import io.redgreen.fluid.Fluid
 import io.redgreen.fluid.Resource
 import io.redgreen.fluid.TemplateCommand
+import io.redgreen.fluid.api.Snapshot
 import java.io.ByteArrayInputStream
 import java.io.StringWriter
 import java.nio.file.FileSystem
@@ -22,6 +22,18 @@ class InMemorySnapshot private constructor(
   private val root = fileSystem.getPath("")
 
   constructor() : this(Jimfs.newFileSystem(Configuration.unix()))
+
+  override fun execute(command: DirectoryCommand) {
+    createDirectory(command.path)
+  }
+
+  override fun execute(command: FileCopyCommand) {
+    copyFile(command.destinationPath, command.resource)
+  }
+
+  override fun <T> execute(command: TemplateCommand<T>) {
+    copyTemplate(command.fileName, command.model, command.resource)
+  }
 
   fun directoryExists(path: String): Boolean {
     val resolvedPath = root.resolve(path)
@@ -39,15 +51,6 @@ class InMemorySnapshot private constructor(
       .toUri()
       .toURL()
       .readText()
-  }
-
-  internal fun execute(command: Command) {
-    @Suppress("UNUSED_VARIABLE") // Because, we need exhaustive handling of all command types
-    val x = when (command) {
-      is DirectoryCommand -> createDirectory(command.path)
-      is FileCopyCommand -> copyFile(command.destinationPath, command.resource)
-      is TemplateCommand<*> -> copyTemplate(command.fileName, command.model, command.resource)
-    }
   }
 
   // TODO(rj) 6-Apr-20 Return a result sealed class with success and failure
