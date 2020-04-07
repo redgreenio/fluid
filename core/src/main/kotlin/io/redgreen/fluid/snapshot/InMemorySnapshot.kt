@@ -2,25 +2,27 @@ package io.redgreen.fluid.snapshot
 
 import com.google.common.jimfs.Configuration
 import com.google.common.jimfs.Jimfs
-import freemarker.cache.ClassTemplateLoader
-import freemarker.template.Configuration.VERSION_2_3_30
 import io.redgreen.fluid.api.DirectoryCommand
 import io.redgreen.fluid.api.FileCommand
 import io.redgreen.fluid.api.Snapshot
 import io.redgreen.fluid.api.TemplateCommand
 import io.redgreen.fluid.dsl.Resource
+import io.redgreen.fluid.template.FreemarkerTemplateEngine
+import io.redgreen.fluid.template.TemplateEngine
 import java.io.ByteArrayInputStream
-import java.io.StringWriter
 import java.nio.file.FileSystem
 import java.nio.file.Files
-import freemarker.template.Configuration as FreemarkerConfiguration
 
 class InMemorySnapshot private constructor(
-  fileSystem: FileSystem
+  fileSystem: FileSystem,
+  private val templateEngine: TemplateEngine
 ) : Snapshot {
-  private val root = fileSystem.getPath("")
+  private val snapshotRoot = fileSystem.getPath("")
 
-  constructor() : this(Jimfs.newFileSystem(Configuration.unix()))
+  constructor() : this(
+    Jimfs.newFileSystem(Configuration.unix()),
+    FreemarkerTemplateEngine()
+  )
 
   override fun execute(command: DirectoryCommand) {
     createDirectory(command.path)
@@ -35,17 +37,17 @@ class InMemorySnapshot private constructor(
   }
 
   fun directoryExists(path: String): Boolean {
-    val resolvedPath = root.resolve(path)
+    val resolvedPath = snapshotRoot.resolve(path)
     return Files.exists(resolvedPath) && Files.isDirectory(resolvedPath)
   }
 
   fun fileExists(path: String): Boolean {
-    val resolvedPath = root.resolve(path)
+    val resolvedPath = snapshotRoot.resolve(path)
     return Files.exists(resolvedPath) && !Files.isDirectory(resolvedPath)
   }
 
   fun readText(path: String): String {
-    return root
+    return snapshotRoot
       .resolve(path)
       .toUri()
       .toURL()
@@ -53,38 +55,26 @@ class InMemorySnapshot private constructor(
   }
 
   private fun createDirectory(path: String) {
-    Files.createDirectories(root.resolve(path))
+    Files.createDirectories(snapshotRoot.resolve(path))
   }
 
   private fun copyFile(destination: String, resource: Resource) {
     val source = if (resource.isSameAsDestination()) destination else resource.filePath
 
     this::class.java.classLoader.getResourceAsStream(source)?.use { inputStream ->
-      Files.copy(inputStream, root.resolve(destination))
+      Files.copy(inputStream, snapshotRoot.resolve(destination))
     } ?: throw IllegalStateException("Unable to find source: '$source'")
   }
 
-  private fun <T> copyTemplate(destination: String, model: T, resource: Resource) {
-    val source = if (resource.isSameAsDestination()) destination else resource.filePath
-
-    // TODO Cache these, they are expensive to create
-    val configuration = FreemarkerConfiguration(VERSION_2_3_30).apply {
-      defaultEncoding = "UTF-8"
-      templateLoader = ClassTemplateLoader(this::class.java.classLoader, "")
-    }
-
-    val root = mapOf(
-      "model" to model
-    )
-
-    val template = configuration.getTemplate(source)
-    val writer = StringWriter()
-    template.process(root, writer)
-
-    val processedTemplate = writer.toString()
-
+  private fun <T> copyTemplate(
+    destination: String,
+    model: T,
+    resource: Resource
+  ) {
+    val templatePath = if (resource.isSameAsDestination()) destination else resource.filePath
+    val processedTemplate = templateEngine.processTemplate(templatePath, model)
     ByteArrayInputStream(processedTemplate.toByteArray()).use { inputStream ->
-      Files.copy(inputStream, this.root.resolve(destination))
+      Files.copy(inputStream, this.snapshotRoot.resolve(destination))
     }
   }
 }
