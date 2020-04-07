@@ -5,6 +5,6 @@ import io.redgreen.fluid.dsl.Scaffold
 
 class LibraryProjectGenerator : Generator {
   override fun scaffold(): Scaffold {
-    return gradleJavaKotlinLibraryScaffold
+    return libraryProjectScaffold
   }
 }

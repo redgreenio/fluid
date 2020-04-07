@@ -13,9 +13,7 @@ class InMemorySnapshotSubject(
   private val actual: InMemorySnapshot
 ) : Subject(metadata, actual) {
   companion object {
-    private val inMemorySnapshots = Factory<InMemorySnapshotSubject, InMemorySnapshot> { metadata, actual ->
-      InMemorySnapshotSubject(metadata, actual)
-    }
+    private val inMemorySnapshots = Factory(::InMemorySnapshotSubject)
 
     @JvmStatic
     fun assertThat(inMemorySnapshot: InMemorySnapshot): InMemorySnapshotSubject {
