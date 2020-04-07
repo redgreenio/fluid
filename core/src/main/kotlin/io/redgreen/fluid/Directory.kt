@@ -6,7 +6,7 @@ class Directory(
   private val currentPath: String,
   private val commands: MutableList<Command>
 ) {
-  fun fileCopy(fileName: String, resource: Resource = SAME_AS_DESTINATION) {
+  fun file(fileName: String, resource: Resource = SAME_AS_DESTINATION) {
     commands.add(FileCommand("$currentPath/$fileName", resource))
   }
 

@@ -66,7 +66,7 @@ class DslTest {
   fun `it should return a file copy command for a file copy call`() {
     // given
     val scaffold = scaffold {
-      fileCopy(".gitignore")
+      file(".gitignore")
     }
 
     // when
@@ -84,7 +84,7 @@ class DslTest {
     // given
     val scaffold = scaffold {
       directory("src/test") {
-        fileCopy("CanaryTest.kt")
+        file("CanaryTest.kt")
       }
     }
 
@@ -147,7 +147,7 @@ class DslTest {
 
       directory("directory") {
         directory("directory")
-        fileCopy("file")
+        file("file")
 
         directory("templates") {
           template("rocker.html", "Fluid")
@@ -175,7 +175,7 @@ class DslTest {
   fun `it should allow specifying resource path while copying files`() {
     // given
     val scaffold = scaffold {
-      fileCopy(".gitignore", Resource("gitignore"))
+      file(".gitignore", Resource("gitignore"))
     }
 
     // when
@@ -193,7 +193,7 @@ class DslTest {
     // given
     val scaffold = scaffold {
       directory("core") {
-        fileCopy(".gitignore", Resource("gitignore"))
+        file(".gitignore", Resource("gitignore"))
       }
     }
 
