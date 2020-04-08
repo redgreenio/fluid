@@ -4,10 +4,9 @@ import io.redgreen.fluid.dsl.Resource
 import io.redgreen.fluid.dsl.scaffold
 
 internal val libraryProjectScaffold = scaffold {
-  val sourceSets = listOf("main", "test")
-
-  sourceSets.onEach { sourceSet ->
-    dir("src") {
+  dir("src") {
+    val sourceSets = listOf("main", "test")
+    sourceSets.onEach { sourceSet ->
       dir(sourceSet) {
         dir("java")
         dir("kotlin")
