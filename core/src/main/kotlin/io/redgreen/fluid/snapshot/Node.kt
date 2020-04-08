@@ -23,7 +23,7 @@ data class Node(
       }
     }
 
-    private fun push(node: Node, segments: List<Segment>) {
+    private tailrec fun push(node: Node, segments: List<Segment>) {
       if (segments.isEmpty()) return
 
       val nodeName = segments.first()
@@ -37,10 +37,7 @@ data class Node(
         Node(nodeName).also { newNode -> node.children.add(newNode) }
       }
 
-      val remaining = segments.drop(1)
-      if (remaining.isNotEmpty()) {
-        push(currentNode, remaining)
-      }
+      push(currentNode, segments.drop(1))
     }
   }
 
