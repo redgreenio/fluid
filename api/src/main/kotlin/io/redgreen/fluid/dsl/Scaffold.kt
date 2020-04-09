@@ -36,6 +36,7 @@ class Scaffold(
   }
 
   fun prepare(): List<Command> {
+    commands.clear()
     block()
     commands.ifEmpty {
       val message = "The scaffold is empty. You can make it useful by " +
