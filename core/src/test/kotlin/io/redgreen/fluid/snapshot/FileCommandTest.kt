@@ -29,4 +29,20 @@ class FileCommandTest {
     assertThat(snapshot)
       .hasFileWithContents(".gitignore", "/build")
   }
+
+  @Test
+  fun `it should copy binary files from the source path`() {
+    // given
+    val strawberryBytes = this::class.java.classLoader
+      .getResourceAsStream("strawberry.png")!!
+      .readAllBytes()
+
+    // when
+    val snapshot = FileCommand("strawberry.png")
+      .buildSnapshot()
+
+    // then
+    assertThat(snapshot)
+      .hasFileWithContents("strawberry.png", strawberryBytes)
+  }
 }

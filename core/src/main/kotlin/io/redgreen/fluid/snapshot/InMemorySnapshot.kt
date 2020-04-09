@@ -90,6 +90,14 @@ class InMemorySnapshot private constructor(
       .readText()
   }
 
+  fun readBytes(path: String): ByteArray {
+    return snapshotRoot
+      .resolve(path)
+      .toUri()
+      .toURL()
+      .readBytes()
+  }
+
   private fun createDirectory(path: String) {
     Files.createDirectories(snapshotRoot.resolve(path))
   }

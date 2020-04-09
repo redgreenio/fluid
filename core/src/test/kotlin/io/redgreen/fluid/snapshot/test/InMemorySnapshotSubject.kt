@@ -52,4 +52,14 @@ class InMemorySnapshotSubject(
     assertThat(actualContents)
       .isEqualTo(contents)
   }
+
+  fun hasFileWithContents(
+    path: String,
+    contents: ByteArray
+  ) {
+    hasFile(path)
+    val actualContents = actual.readBytes(path)
+    assertThat(actualContents)
+      .isEqualTo(contents)
+  }
 }
