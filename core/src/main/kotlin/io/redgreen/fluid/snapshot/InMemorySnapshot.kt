@@ -15,6 +15,7 @@ import io.redgreen.fluid.dsl.Resource
 import io.redgreen.fluid.template.FreemarkerTemplateEngine
 import io.redgreen.fluid.template.TemplateEngine
 import java.io.ByteArrayInputStream
+import java.io.File
 import java.io.InputStream
 import java.nio.file.FileSystem
 import java.nio.file.FileVisitOption
@@ -30,6 +31,7 @@ class InMemorySnapshot private constructor(
 ) : Snapshot {
   companion object {
     private const val ROOT = "/"
+    private const val SEPARATOR = "/"
 
     private val UNIX_CONFIGURATION = Configuration
       .builder(PathType.unix())
@@ -52,7 +54,17 @@ class InMemorySnapshot private constructor(
   )
 
   override fun execute(command: DirectoryCommand) {
-    createDirectory(command.path)
+    val resourceDirectoryPath = generatorClass.classLoader.getResource(command.path)?.path
+    if (resourceDirectoryPath != null) {
+      val sourceDirectory = File(resourceDirectoryPath)
+      val filesInSourceDirectory = sourceDirectory.listFiles()?.toList() ?: emptyList()
+      filesInSourceDirectory.onEach { file ->
+        val destination = "${command.path}$SEPARATOR${file.name}"
+        copyFile(destination, Resource(destination))
+      }
+    } else {
+      createDirectory(command.path)
+    }
   }
 
   override fun execute(command: FileCommand) {
@@ -90,10 +102,10 @@ class InMemorySnapshot private constructor(
 
   private fun copyFile(destination: String, resource: Resource) {
     val source = if (resource.isSameAsDestination()) destination else resource.filePath
-
+    createMissingDirectoriesInPath(destination)
     generatorClass.classLoader.getResourceAsStream(source)?.use { inputStream ->
       Files.copy(inputStream, snapshotRoot.resolve(destination))
-    } ?: throw IllegalStateException("Unable to find source file: '$source'")
+    } ?: throw IllegalStateException("Unable to find source file: '$source'") // TODO: Add tests for missing files and templates
   }
 
   private fun <T : Any> copyTemplate(
@@ -103,8 +115,16 @@ class InMemorySnapshot private constructor(
   ) {
     val templatePath = if (resource.isSameAsDestination()) destination else resource.filePath
     val processedTemplate = templateEngine.processTemplate(templatePath, model)
+    createMissingDirectoriesInPath(destination)
     ByteArrayInputStream(processedTemplate.toByteArray()).use { inputStream ->
       Files.copy(inputStream, this.snapshotRoot.resolve(destination))
+    }
+  }
+
+  private fun createMissingDirectoriesInPath(destination: String) {
+    if (destination.contains(SEPARATOR)) {
+      val fileDirectoryPath = destination.substring(0, destination.lastIndexOf(SEPARATOR))
+      Files.createDirectories(snapshotRoot.resolve(fileDirectoryPath))
     }
   }
 

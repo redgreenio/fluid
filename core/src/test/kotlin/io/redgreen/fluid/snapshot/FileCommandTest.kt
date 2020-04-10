@@ -50,4 +50,15 @@ class FileCommandTest {
     assertThat(snapshot)
       .hasFileWithContents("strawberry.png", strawberryBytes)
   }
+
+  @Test
+  fun `it should copy files from a directory path`() {
+    // when
+    val snapshot = FileCommand("docs/doc1.txt", Resource("docs/doc1.txt"))
+      .buildSnapshot()
+
+    // then
+    assertThat(snapshot)
+      .has(FileEntry("docs/doc1.txt"))
+  }
 }

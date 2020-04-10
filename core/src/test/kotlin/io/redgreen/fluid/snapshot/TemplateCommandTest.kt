@@ -49,6 +49,17 @@ class TemplateCommandTest {
       .hasFileWithContents(fileName, "Hello, Ajay!")
   }
 
+  @Test
+  fun `it should copy templates from a directory path`() {
+    // when
+    val snapshot = TemplateCommand("messages/greeting.txt", "Ajay")
+      .buildSnapshot()
+
+    // then
+    assertThat(snapshot)
+      .hasFileWithContents("messages/greeting.txt", "Hello, Ajay!")
+  }
+
   data class MultiModuleProject(
     val projectName: String,
     val moduleName: String
