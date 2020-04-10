@@ -24,8 +24,8 @@ class SnapshotSubject(
       assertAbout(snapshotSubjects).that(snapshot)
   }
 
-  fun has(entry: FileSystemEntry, vararg entries: FileSystemEntry) {
-    if (!actual.getEntries().containsAll(listOf(entry, *entries))) {
+  fun has(entry: FileSystemEntry) {
+    if (!actual.getEntries().contains(entry)) {
       val entryName = getReadableEntryName(entry)
       failWithoutActual(
         simpleFact("expected: a $entryName at '${entry.path}'"),

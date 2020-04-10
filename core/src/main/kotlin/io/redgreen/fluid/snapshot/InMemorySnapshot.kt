@@ -55,15 +55,10 @@ class InMemorySnapshot private constructor(
 
   override fun execute(command: DirectoryCommand) {
     val resourceDirectoryPath = generatorClass.classLoader.getResource(command.path)?.path
-    if (resourceDirectoryPath != null) {
-      val sourceDirectory = File(resourceDirectoryPath)
-      val filesInSourceDirectory = sourceDirectory.listFiles()?.toList() ?: emptyList()
-      filesInSourceDirectory.onEach { file ->
-        val destination = "${command.path}$SEPARATOR${file.name}"
-        copyFile(destination, Resource(destination))
-      }
-    } else {
+    if (resourceDirectoryPath == null) {
       createDirectory(command.path)
+    } else {
+      copyDirectory(command, resourceDirectoryPath)
     }
   }
 
@@ -98,6 +93,36 @@ class InMemorySnapshot private constructor(
 
   private fun createDirectory(path: String) {
     Files.createDirectories(snapshotRoot.resolve(path))
+  }
+
+  private fun copyDirectory(
+    command: DirectoryCommand,
+    resourceDirectoryPath: String
+  ) {
+    val sourceDirectory = File(resourceDirectoryPath)
+    val filesInSourceDirectory = mutableListOf<File>()
+    findFilesInDirectory(sourceDirectory, filesInSourceDirectory)
+
+    filesInSourceDirectory.onEach { sourceFile ->
+      val sourceFilePath = sourceFile.path
+      val destination = sourceFilePath.substring(sourceFilePath.indexOf(command.path), sourceFilePath.length)
+      copyFile(destination, Resource(destination))
+    }
+  }
+
+  private fun findFilesInDirectory(
+    directory: File,
+    filesCollector: MutableList<File>
+  ) {
+    val filesFound = directory.listFiles()?.toList() ?: return
+
+    for (file in filesFound) {
+      if (file.isFile) {
+        filesCollector.add(file)
+      } else {
+        findFilesInDirectory(file, filesCollector)
+      }
+    }
   }
 
   private fun copyFile(destination: String, resource: Resource) {
