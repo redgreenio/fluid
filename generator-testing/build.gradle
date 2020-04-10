@@ -12,9 +12,11 @@ repositories {
 
 dependencies {
   implementation project(':fluid:api')
+  implementation project(':fluid:core')
+  implementation project(':fluid:testing')
   implementation artefacts.kotlin.jdkStdlib
+  implementation artefacts.truth
 
-  testImplementation project(':fluid:generator-testing')
   testImplementation artefacts.junit.api
   testRuntimeOnly artefacts.junit.runtime
   testImplementation artefacts.truth

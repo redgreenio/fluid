@@ -12,7 +12,6 @@ repositories {
 
 dependencies {
   implementation project(':fluid:api')
-  implementation project(':fluid:core')
   implementation artefacts.kotlin.jdkStdlib
   implementation artefacts.truth
 

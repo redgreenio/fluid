@@ -1,9 +1,10 @@
 package io.redgreen.fluid.snapshot
 
 import io.redgreen.fluid.api.FileCommand
+import io.redgreen.fluid.api.FileEntry
 import io.redgreen.fluid.dsl.Resource
-import io.redgreen.fluid.snapshot.test.InMemorySnapshotSubject.Companion.assertThat
 import io.redgreen.fluid.snapshot.test.buildSnapshot
+import io.redgreen.fluid.testing.SnapshotSubject.Companion.assertThat
 import org.junit.jupiter.api.Test
 
 class FileCommandTest {
@@ -14,7 +15,7 @@ class FileCommandTest {
 
     // then
     assertThat(snapshot)
-      .hasFile("hello-world.txt")
+      .hasExactly(FileEntry("hello-world.txt"))
     assertThat(snapshot)
       .hasFileWithContents("hello-world.txt", "how you doin'?")
   }
@@ -26,6 +27,8 @@ class FileCommandTest {
       .buildSnapshot()
 
     // then
+    assertThat(snapshot)
+      .hasExactly(FileEntry(".gitignore"))
     assertThat(snapshot)
       .hasFileWithContents(".gitignore", "/build")
   }
@@ -42,6 +45,8 @@ class FileCommandTest {
       .buildSnapshot()
 
     // then
+    assertThat(snapshot)
+      .hasExactly(FileEntry("strawberry.png"))
     assertThat(snapshot)
       .hasFileWithContents("strawberry.png", strawberryBytes)
   }

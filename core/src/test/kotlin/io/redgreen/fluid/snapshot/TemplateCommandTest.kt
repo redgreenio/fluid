@@ -1,9 +1,10 @@
 package io.redgreen.fluid.snapshot
 
+import io.redgreen.fluid.api.FileEntry
 import io.redgreen.fluid.api.TemplateCommand
 import io.redgreen.fluid.dsl.Resource
-import io.redgreen.fluid.snapshot.test.InMemorySnapshotSubject.Companion.assertThat
 import io.redgreen.fluid.snapshot.test.buildSnapshot
+import io.redgreen.fluid.testing.SnapshotSubject.Companion.assertThat
 import org.junit.jupiter.api.Test
 
 class TemplateCommandTest {
@@ -25,6 +26,8 @@ class TemplateCommandTest {
       """.trimIndent()
 
     assertThat(snapshot)
+      .hasExactly(FileEntry("settings.gradle"))
+    assertThat(snapshot)
       .hasFileWithContents("settings.gradle", contents)
   }
 
@@ -40,6 +43,8 @@ class TemplateCommandTest {
       .buildSnapshot()
 
     // then
+    assertThat(snapshot)
+      .hasExactly(FileEntry(fileName))
     assertThat(snapshot)
       .hasFileWithContents(fileName, "Hello, Ajay!")
   }

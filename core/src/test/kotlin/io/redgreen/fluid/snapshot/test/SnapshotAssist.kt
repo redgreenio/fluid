@@ -4,11 +4,12 @@ import io.redgreen.fluid.api.Command
 import io.redgreen.fluid.api.DirectoryCommand
 import io.redgreen.fluid.api.FileCommand
 import io.redgreen.fluid.api.Generator
+import io.redgreen.fluid.api.Snapshot
 import io.redgreen.fluid.api.TemplateCommand
 import io.redgreen.fluid.dsl.Scaffold
 import io.redgreen.fluid.snapshot.InMemorySnapshot
 
-fun List<Command>.buildSnapshot(): InMemorySnapshot {
+fun List<Command>.buildSnapshot(): Snapshot {
   val generatorClass = object : Generator {
     override fun scaffold(): Scaffold {
       val message = "This generator class is used only to test fetching resources " +
@@ -28,5 +29,5 @@ fun List<Command>.buildSnapshot(): InMemorySnapshot {
   }
 }
 
-fun Command.buildSnapshot(): InMemorySnapshot =
+fun Command.buildSnapshot(): Snapshot =
   listOf(this).buildSnapshot()

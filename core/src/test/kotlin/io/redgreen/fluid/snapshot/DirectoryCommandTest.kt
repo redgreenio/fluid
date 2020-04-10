@@ -1,8 +1,9 @@
 package io.redgreen.fluid.snapshot
 
 import io.redgreen.fluid.api.DirectoryCommand
-import io.redgreen.fluid.snapshot.test.InMemorySnapshotSubject.Companion.assertThat
+import io.redgreen.fluid.api.DirectoryEntry
 import io.redgreen.fluid.snapshot.test.buildSnapshot
+import io.redgreen.fluid.testing.SnapshotSubject.Companion.assertThat
 import org.junit.jupiter.api.Test
 
 class DirectoryCommandTest {
@@ -14,7 +15,7 @@ class DirectoryCommandTest {
 
     // then
     assertThat(snapshot)
-      .hasDirectory("root")
+      .hasExactly(DirectoryEntry("root"))
   }
 
   @Test
@@ -25,7 +26,7 @@ class DirectoryCommandTest {
 
     // then
     assertThat(snapshot)
-      .hasDirectory("root/dir-level-1")
+      .hasExactly(DirectoryEntry("root/dir-level-1"))
   }
 
   @Test
@@ -42,7 +43,7 @@ class DirectoryCommandTest {
 
     // then
     assertThat(snapshot)
-      .hasDirectory("root/dir-level-1/dir-level-2")
+      .hasExactly(DirectoryEntry("root/dir-level-1/dir-level-2"))
   }
 
   @Test
@@ -53,7 +54,7 @@ class DirectoryCommandTest {
 
     // then
     assertThat(snapshot)
-      .hasDirectory("root/hello-world")
+      .hasExactly(DirectoryEntry("root/hello-world"))
   }
 
   @Test
@@ -69,7 +70,10 @@ class DirectoryCommandTest {
 
     // then
     assertThat(snapshot)
-      .hasDirectories("root/child", "sibling")
+      .hasExactly(
+        DirectoryEntry("root/child"),
+        DirectoryEntry("sibling")
+      )
   }
 
   @Test
@@ -80,6 +84,6 @@ class DirectoryCommandTest {
 
     // then
     assertThat(snapshot)
-      .hasDirectory("hello world")
+      .hasExactly(DirectoryEntry("hello world"))
   }
 }

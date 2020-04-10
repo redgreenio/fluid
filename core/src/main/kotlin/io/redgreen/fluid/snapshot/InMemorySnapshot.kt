@@ -15,17 +15,19 @@ import io.redgreen.fluid.dsl.Resource
 import io.redgreen.fluid.template.FreemarkerTemplateEngine
 import io.redgreen.fluid.template.TemplateEngine
 import java.io.ByteArrayInputStream
+import java.io.InputStream
 import java.nio.file.FileSystem
 import java.nio.file.FileVisitOption
 import java.nio.file.Files
 import java.nio.file.Path
+import java.util.Optional
 import kotlin.streams.toList
 
 class InMemorySnapshot private constructor(
-  generatorClass: Class<out Generator>,
+  private val generatorClass: Class<out Generator>,
   fileSystem: FileSystem,
   private val templateEngine: TemplateEngine
-) : Snapshot(generatorClass) {
+) : Snapshot {
   companion object {
     private const val ROOT = "/"
 
@@ -36,7 +38,7 @@ class InMemorySnapshot private constructor(
       .setAttributeViews("basic")
       .build()
 
-    fun forGenerator(generatorClass: Class<out Generator>): InMemorySnapshot {
+    fun forGenerator(generatorClass: Class<out Generator>): Snapshot {
       return InMemorySnapshot(generatorClass)
     }
   }
@@ -72,30 +74,14 @@ class InMemorySnapshot private constructor(
       .normalize()
   }
 
-  fun directoryExists(path: String): Boolean {
-    val resolvedPath = snapshotRoot.resolve(path)
-    return Files.exists(resolvedPath) && Files.isDirectory(resolvedPath)
-  }
-
-  fun fileExists(path: String): Boolean {
-    val resolvedPath = snapshotRoot.resolve(path)
-    return Files.exists(resolvedPath) && !Files.isDirectory(resolvedPath)
-  }
-
-  fun readText(path: String): String {
-    return snapshotRoot
-      .resolve(path)
-      .toUri()
-      .toURL()
-      .readText()
-  }
-
-  fun readBytes(path: String): ByteArray {
-    return snapshotRoot
-      .resolve(path)
-      .toUri()
-      .toURL()
-      .readBytes()
+  override fun inputStream(path: String): Optional<InputStream> {
+    val inputStream = try {
+      snapshotRoot.resolve(path).toUri().toURL().openStream()
+    } catch (exception: Exception) {
+      exception.printStackTrace()
+      null
+    }
+    return inputStream?.let { Optional.of(it) } ?: Optional.empty()
   }
 
   private fun createDirectory(path: String) {
@@ -105,7 +91,7 @@ class InMemorySnapshot private constructor(
   private fun copyFile(destination: String, resource: Resource) {
     val source = if (resource.isSameAsDestination()) destination else resource.filePath
 
-    classLoaderClass.classLoader.getResourceAsStream(source)?.use { inputStream ->
+    generatorClass.classLoader.getResourceAsStream(source)?.use { inputStream ->
       Files.copy(inputStream, snapshotRoot.resolve(destination))
     } ?: throw IllegalStateException("Unable to find source file: '$source'")
   }
