@@ -50,7 +50,7 @@ class InMemorySnapshot private constructor(
   private constructor(generatorClass: Class<out Generator>) : this(
     generatorClass,
     Jimfs.newFileSystem(UNIX_CONFIGURATION),
-    FreemarkerTemplateEngine()
+    FreemarkerTemplateEngine(generatorClass)
   )
 
   override fun execute(command: DirectoryCommand) {

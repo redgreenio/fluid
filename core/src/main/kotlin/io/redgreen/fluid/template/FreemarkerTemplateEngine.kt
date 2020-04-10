@@ -4,7 +4,9 @@ import freemarker.cache.ClassTemplateLoader
 import freemarker.template.Configuration
 import java.io.StringWriter
 
-class FreemarkerTemplateEngine : TemplateEngine {
+class FreemarkerTemplateEngine(
+  private val classLoaderClass: Class<*>
+) : TemplateEngine {
   companion object {
     private const val UTF_8 = "UTF-8"
     private const val KEY_MODEL = "model"
@@ -12,7 +14,7 @@ class FreemarkerTemplateEngine : TemplateEngine {
   }
 
   override fun <T : Any> processTemplate(templatePath: String, model: T): String {
-    val configuration = getConfiguration(this::class.java)
+    val configuration = getConfiguration(classLoaderClass)
 
     val dataModel = mapOf(KEY_MODEL to model)
 
