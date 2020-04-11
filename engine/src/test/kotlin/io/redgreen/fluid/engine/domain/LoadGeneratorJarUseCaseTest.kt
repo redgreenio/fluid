@@ -14,6 +14,12 @@ import java.io.File
 class LoadGeneratorJarUseCaseTest {
   companion object {
     private const val PATH_JAR_TEST_ARTIFACTS = "src/test/resources/jar-test-artifacts"
+
+    internal fun getJarTestArtifact(artifactFileName: String): String =
+      File("")
+        .resolve(PATH_JAR_TEST_ARTIFACTS)
+        .resolve(artifactFileName)
+        .absolutePath
   }
 
   private val useCase = LoadGeneratorJarUseCase()
@@ -113,10 +119,4 @@ class LoadGeneratorJarUseCaseTest {
     assertThat(result)
       .isEqualTo(MissingDefaultConstructor(missingDefaultConstructorJarPath, generatorClassName))
   }
-
-  private fun getJarTestArtifact(artifactFileName: String): String =
-    File("")
-      .resolve(PATH_JAR_TEST_ARTIFACTS)
-      .resolve(artifactFileName)
-      .absolutePath
 }

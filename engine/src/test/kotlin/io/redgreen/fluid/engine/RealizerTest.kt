@@ -6,6 +6,8 @@ import io.redgreen.fluid.api.Snapshot
 import io.redgreen.fluid.dsl.Scaffold
 import io.redgreen.fluid.dsl.scaffold
 import io.redgreen.fluid.engine.assist.ShellScaffoldGenerator
+import io.redgreen.fluid.engine.model.DirectoryCreated
+import io.redgreen.fluid.engine.model.FileCreated
 import io.redgreen.fluid.snapshot.InMemorySnapshotFactory
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
@@ -28,12 +30,17 @@ class RealizerTest {
     )
 
     // when
-    realizer.realize(destinationRoot, snapshot)
+    val realizations = realizer.realize(destinationRoot, snapshot)
 
     // then
     val realizedDirectory = destinationRoot.resolve(directoryName)
     assertThat(realizedDirectory.exists())
       .isTrue()
+
+    assertThat(realizations)
+      .containsExactly(
+        DirectoryCreated(directoryName)
+      )
   }
 
   @Test
@@ -48,17 +55,26 @@ class RealizerTest {
     )
 
     // when
-    realizer.realize(destinationRoot, snapshot)
+    val realizations = realizer.realize(destinationRoot, snapshot)
 
-    // then
+    // then - file exists
     val realizedFile = destinationRoot.resolve("images/strawberry.png")
     assertThat(realizedFile.exists())
       .isTrue()
 
+    // then - contents are the same
     val resourceBytes = this::class.java.classLoader.getResourceAsStream("images/strawberry.png")!!.readAllBytes()
     val realizedBytes = realizedFile.readBytes()
     assertThat(resourceBytes)
       .isEqualTo(realizedBytes)
+
+    // then - produces realization
+    assertThat(realizations)
+      .containsExactly(
+        FileCreated("images/strawberry.png"),
+        DirectoryCreated("images")
+      )
+      .inOrder()
   }
 
   private fun getSnapshot(scaffold: Scaffold): Snapshot {
