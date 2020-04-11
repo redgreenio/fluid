@@ -25,7 +25,7 @@ import java.util.Optional
 import kotlin.streams.toList
 
 class InMemorySnapshot private constructor(
-  private val generatorClass: Class<out Generator>,
+  generatorClass: Class<out Generator>,
   fileSystem: FileSystem,
   private val templateEngine: TemplateEngine
 ) : Snapshot {
@@ -43,6 +43,7 @@ class InMemorySnapshot private constructor(
       InMemorySnapshot(generatorClass)
   }
 
+  private val classLoader = generatorClass.classLoader
   private val snapshotRoot = fileSystem.getPath(ROOT)
 
   private constructor(generatorClass: Class<out Generator>) : this(
@@ -52,7 +53,7 @@ class InMemorySnapshot private constructor(
   )
 
   override fun execute(command: DirectoryCommand) {
-    val resourceDirectoryPath = generatorClass.classLoader.getResource(command.path)?.path
+    val resourceDirectoryPath = classLoader.getResource(command.path)?.path
     if (resourceDirectoryPath == null) {
       createDirectory(command.path)
     } else {
@@ -126,7 +127,7 @@ class InMemorySnapshot private constructor(
   private fun copyFile(destination: String, resource: Resource) {
     val source = if (resource.isSameAsDestination()) destination else resource.filePath
     createMissingDirectoriesInPath(destination)
-    generatorClass.classLoader.getResourceAsStream(source)?.use { inputStream ->
+    classLoader.getResourceAsStream(source)?.use { inputStream ->
       Files.copy(inputStream, snapshotRoot.resolve(destination))
     } ?: throw IllegalStateException("Unable to find source file: '$source'") // TODO: Add tests for missing files and templates
   }

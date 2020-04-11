@@ -5,7 +5,7 @@ import freemarker.template.Configuration
 import java.io.StringWriter
 
 class FreemarkerTemplateEngine(
-  private val classLoaderClass: Class<*>
+  classLoaderClass: Class<*>
 ) : TemplateEngine {
   companion object {
     private const val UTF_8 = "UTF-8"
@@ -13,8 +13,10 @@ class FreemarkerTemplateEngine(
     private const val ROOT_BASE_PACKAGE_PATH = ""
   }
 
+  private val classLoader = classLoaderClass.classLoader
+
   override fun <T : Any> processTemplate(templatePath: String, model: T): String {
-    val configuration = getConfiguration(classLoaderClass)
+    val configuration = getConfiguration()
 
     val dataModel = mapOf(KEY_MODEL to model)
 
@@ -25,10 +27,10 @@ class FreemarkerTemplateEngine(
     return writer.toString()
   }
 
-  private fun getConfiguration(classLoaderClass: Class<*>): Configuration {
+  private fun getConfiguration(): Configuration {
     return Configuration(Configuration.VERSION_2_3_30).apply {
       defaultEncoding = UTF_8
-      templateLoader = ClassTemplateLoader(classLoaderClass.classLoader, ROOT_BASE_PACKAGE_PATH)
+      templateLoader = ClassTemplateLoader(classLoader, ROOT_BASE_PACKAGE_PATH)
     }
   }
 }
