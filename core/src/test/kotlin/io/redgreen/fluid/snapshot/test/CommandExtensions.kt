@@ -3,20 +3,12 @@ package io.redgreen.fluid.snapshot.test
 import io.redgreen.fluid.api.Command
 import io.redgreen.fluid.api.DirectoryCommand
 import io.redgreen.fluid.api.FileCommand
-import io.redgreen.fluid.api.Generator
 import io.redgreen.fluid.api.Snapshot
 import io.redgreen.fluid.api.TemplateCommand
-import io.redgreen.fluid.dsl.Scaffold
 import io.redgreen.fluid.snapshot.InMemorySnapshot
 
 fun List<Command>.buildSnapshot(): Snapshot {
-  val generatorClass = object : Generator {
-    override fun scaffold(): Scaffold {
-      val message = "This generator class is used only to test fetching resources " +
-        "using the the class loader. This piece of code shouldn't be executed."
-      throw IllegalStateException(message)
-    }
-  }::class.java
+  val generatorClass = NoOpGenerator::class.java
 
   return InMemorySnapshot.forGenerator(generatorClass).also { snapshot ->
     this.onEach { command ->

@@ -40,9 +40,8 @@ class InMemorySnapshot private constructor(
       .setAttributeViews("basic")
       .build()
 
-    fun forGenerator(generatorClass: Class<out Generator>): Snapshot {
-      return InMemorySnapshot(generatorClass)
-    }
+    internal fun forGenerator(generatorClass: Class<out Generator>): Snapshot =
+      InMemorySnapshot(generatorClass)
   }
 
   private val snapshotRoot = fileSystem.getPath(ROOT)

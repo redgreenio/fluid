@@ -19,7 +19,7 @@ class DslTest {
 
     // when
     val exception = assertThrows<IllegalStateException> {
-      scaffold.prepare()
+      scaffold.transformDslToCommands()
     }
 
     // then
@@ -37,7 +37,7 @@ class DslTest {
     }
 
     // when
-    val commands = scaffold.prepare()
+    val commands = scaffold.transformDslToCommands()
 
     // then
     assertThat(commands)
@@ -56,7 +56,7 @@ class DslTest {
     }
 
     // when
-    val commands = scaffold.prepare()
+    val commands = scaffold.transformDslToCommands()
 
     // then
     assertThat(commands)
@@ -75,7 +75,7 @@ class DslTest {
     }
 
     // when
-    val commands = scaffold.prepare()
+    val commands = scaffold.transformDslToCommands()
 
     // then
     assertThat(commands)
@@ -94,7 +94,7 @@ class DslTest {
     }
 
     // when
-    val commands = scaffold.prepare()
+    val commands = scaffold.transformDslToCommands()
 
     // then
     assertThat(commands)
@@ -114,7 +114,7 @@ class DslTest {
     }
 
     // when
-    val commands = scaffold.prepare()
+    val commands = scaffold.transformDslToCommands()
 
     // then
     assertThat(commands)
@@ -134,7 +134,7 @@ class DslTest {
     }
 
     // when
-    val commands = scaffold.prepare()
+    val commands = scaffold.transformDslToCommands()
 
     // then
     assertThat(commands)
@@ -161,7 +161,7 @@ class DslTest {
     }
 
     // when
-    val commands = scaffold.prepare()
+    val commands = scaffold.transformDslToCommands()
 
     // then
     assertThat(commands)
@@ -184,7 +184,7 @@ class DslTest {
     }
 
     // when
-    val commands = scaffold.prepare()
+    val commands = scaffold.transformDslToCommands()
 
     // then
     assertThat(commands)
@@ -203,7 +203,7 @@ class DslTest {
     }
 
     // when
-    val commands = scaffold.prepare()
+    val commands = scaffold.transformDslToCommands()
 
     // then
     assertThat(commands)
@@ -223,7 +223,7 @@ class DslTest {
     }
 
     // when
-    val commands = scaffold.prepare()
+    val commands = scaffold.transformDslToCommands()
 
     // then
     assertThat(commands)
@@ -243,7 +243,7 @@ class DslTest {
     }
 
     // when
-    val commands = scaffold.prepare()
+    val commands = scaffold.transformDslToCommands()
 
     // then
     assertThat(commands)

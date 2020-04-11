@@ -4,14 +4,9 @@ import com.google.common.truth.FailureMetadata
 import com.google.common.truth.Subject
 import com.google.common.truth.Subject.Factory
 import com.google.common.truth.Truth.assertAbout
-import io.redgreen.fluid.api.Command
-import io.redgreen.fluid.api.DirectoryCommand
-import io.redgreen.fluid.api.FileCommand
 import io.redgreen.fluid.api.FileSystemEntry
 import io.redgreen.fluid.api.Generator
-import io.redgreen.fluid.api.Snapshot
-import io.redgreen.fluid.api.TemplateCommand
-import io.redgreen.fluid.snapshot.InMemorySnapshot
+import io.redgreen.fluid.snapshot.InMemorySnapshotFactory
 import io.redgreen.fluid.testing.SnapshotSubject.Companion.assertThat
 
 class GeneratorSubject(
@@ -28,7 +23,8 @@ class GeneratorSubject(
   }
 
   private val snapshot by lazy {
-    createSnapshot(actual.scaffold().prepare())
+    actual.scaffold()
+      .buildSnapshot(InMemorySnapshotFactory(), actual::class.java as Class<Generator>)
   }
 
   fun generatesExactly(
@@ -47,18 +43,5 @@ class GeneratorSubject(
   fun generatesFileWithContent(path: String, bytes: ByteArray) {
     assertThat(snapshot)
       .hasFileWithContents(path, bytes)
-  }
-
-  private fun createSnapshot(commands: List<Command>): Snapshot {
-    val snapshot = InMemorySnapshot.forGenerator(actual::class.java)
-
-    commands.onEach { command ->
-      when (command) {
-        is DirectoryCommand -> snapshot.execute(command)
-        is FileCommand -> snapshot.execute(command)
-        is TemplateCommand<*> -> snapshot.execute(command)
-      }
-    }
-    return snapshot
   }
 }

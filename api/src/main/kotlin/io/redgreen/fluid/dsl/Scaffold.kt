@@ -3,6 +3,8 @@ package io.redgreen.fluid.dsl
 import io.redgreen.fluid.api.Command
 import io.redgreen.fluid.api.DirectoryCommand
 import io.redgreen.fluid.api.FileCommand
+import io.redgreen.fluid.api.Snapshot
+import io.redgreen.fluid.api.SnapshotFactory
 import io.redgreen.fluid.api.TemplateCommand
 import io.redgreen.fluid.dsl.Resource.Companion.SAME_AS_DESTINATION
 
@@ -35,7 +37,13 @@ class Scaffold(
     commands.add(TemplateCommand(fileName, model, resource))
   }
 
-  fun prepare(): List<Command> {
+  fun <T : Any> buildSnapshot(factory: SnapshotFactory<T>, param: T): Snapshot {
+    val snapshot = factory.newInstance(param)
+    transformDslToCommands().onEach { command -> dispatchCommandsToSnapshot(snapshot, command) }
+    return snapshot
+  }
+
+  internal fun transformDslToCommands(): List<Command> {
     commands.clear()
     block()
     commands.ifEmpty {
@@ -45,5 +53,16 @@ class Scaffold(
     }
 
     return commands.toList()
+  }
+
+  private fun dispatchCommandsToSnapshot(
+    snapshot: Snapshot,
+    command: Command
+  ) {
+    when (command) {
+      is DirectoryCommand -> snapshot.execute(command)
+      is FileCommand -> snapshot.execute(command)
+      is TemplateCommand<*> -> snapshot.execute(command)
+    }
   }
 }
