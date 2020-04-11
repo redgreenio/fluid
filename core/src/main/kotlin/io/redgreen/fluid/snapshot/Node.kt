@@ -69,7 +69,9 @@ data class Node(
   }
 
   private fun constructPath(segments: Stack<Segment>): String =
-    segments.elements().toList().drop(1).joinToString(PATH_SEPARATOR) // Drops the leading '/' character
+    segments.elements().toList()
+      .drop(1) // Drops the leading '/' character
+      .joinToString(PATH_SEPARATOR)
 
   private fun isLeaf(): Boolean =
     children.isEmpty()
