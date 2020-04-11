@@ -70,54 +70,54 @@ class LoadGeneratorJarUseCase {
     }
   }
 
-  sealed class Result {
+  sealed class Result(open val jarPath: String) {
     /**
      * The specified path does not contain a file.
      */
-    data class JarNotFound(val jarPath: String) : Result()
+    data class JarNotFound(override val jarPath: String) : Result(jarPath)
 
     /**
      * The specified path has a file, but it is not a generator jar file.
      */
-    data class NotGeneratorJar(val jarPath: String) : Result()
+    data class NotGeneratorJar(override val jarPath: String) : Result(jarPath)
 
     /**
      * The jar file does not contain the mandatory 'Generator' attribute.
      */
-    data class ManifestMissingGeneratorAttribute(val jarPath: String) : Result()
+    data class ManifestMissingGeneratorAttribute(override val jarPath: String) : Result(jarPath)
 
     /**
      * The jar file contains a 'Generator' attribute, but the class specified by the attribute is missing
      * from the jar.
      */
     data class MissingGeneratorClassSpecifiedInManifest(
-      val jarPath: String,
+      override val jarPath: String,
       val missingClassName: String
-    ) : Result()
+    ) : Result(jarPath)
 
     /**
      * The class mentioned by the manifest's 'Generator' attribute does not implement the @see[Generator]
      * interface.
      */
     data class DoesNotImplementGeneratorInterface(
-      val jarPath: String,
+      override val jarPath: String,
       val foundClassName: String
-    ) : Result()
+    ) : Result(jarPath)
 
     /**
      * The generator class specified in the manifest does not have a default constructor.
      */
     data class MissingDefaultConstructor(
-      val jarPath: String,
+      override val jarPath: String,
       val generatorClassName: String
-    ) : Result()
+    ) : Result(jarPath)
 
     /**
      * The generator contains a valid @see[Generator] implementation.
      */
     data class ValidGenerator(
-      val jarPath: String,
+      override val jarPath: String,
       val generatorClass: Class<out Generator>
-    ) : Result()
+    ) : Result(jarPath)
   }
 }
