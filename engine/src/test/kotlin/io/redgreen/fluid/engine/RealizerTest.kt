@@ -41,7 +41,9 @@ class RealizerTest {
     // given
     val snapshot = getSnapshot(
       scaffold {
-        file("images/strawberry.png")
+        dir("images") {
+          file("strawberry.png")
+        }
       }
     )
 

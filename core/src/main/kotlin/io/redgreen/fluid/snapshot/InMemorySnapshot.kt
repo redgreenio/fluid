@@ -128,7 +128,9 @@ class InMemorySnapshot private constructor(
     val source = if (resource.isSameAsDestination()) destination else resource.filePath
     createMissingDirectoriesInPath(destination)
     classLoader.getResourceAsStream(source)?.use { inputStream ->
-      Files.copy(inputStream, snapshotRoot.resolve(destination))
+      if (!Files.exists(snapshotRoot.resolve(destination))) {
+        Files.copy(inputStream, snapshotRoot.resolve(destination))
+      }
     } ?: throw IllegalStateException("Unable to find source file: '$source'") // TODO: Add tests for missing files and templates
   }
 
