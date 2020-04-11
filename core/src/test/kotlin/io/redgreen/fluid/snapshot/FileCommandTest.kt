@@ -3,7 +3,7 @@ package io.redgreen.fluid.snapshot
 import io.redgreen.fluid.api.FileCommand
 import io.redgreen.fluid.api.FileEntry
 import io.redgreen.fluid.dsl.Resource
-import io.redgreen.fluid.snapshot.test.buildSnapshot
+import io.redgreen.fluid.snapshot.assist.buildSnapshot
 import io.redgreen.fluid.testing.SnapshotSubject.Companion.assertThat
 import org.junit.jupiter.api.Test
 

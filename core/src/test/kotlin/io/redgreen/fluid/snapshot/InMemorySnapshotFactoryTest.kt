@@ -1,7 +1,7 @@
 package io.redgreen.fluid.snapshot
 
 import io.redgreen.fluid.api.Generator
-import io.redgreen.fluid.snapshot.test.NoOpGenerator
+import io.redgreen.fluid.snapshot.assist.NoOpGenerator
 import io.redgreen.fluid.testing.SnapshotSubject.Companion.assertThat
 import org.junit.jupiter.api.Test
 

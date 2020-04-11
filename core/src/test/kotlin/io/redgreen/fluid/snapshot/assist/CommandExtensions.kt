@@ -1,4 +1,4 @@
-package io.redgreen.fluid.snapshot.test
+package io.redgreen.fluid.snapshot.assist
 
 import io.redgreen.fluid.api.Command
 import io.redgreen.fluid.api.DirectoryCommand
