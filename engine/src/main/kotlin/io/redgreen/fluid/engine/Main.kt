@@ -17,7 +17,7 @@ fun main() {
 
   generatorClassLoader.loadClass(generatorClassName)
   val generatorClass = Class
-    .forName(generatorClassName, false, generatorClassLoader) as Class<Generator>
+    .forName(generatorClassName, false, generatorClassLoader).asSubclass(Generator::class.java)
 
   val generator = generatorClass.getDeclaredConstructor().newInstance() as Generator
 

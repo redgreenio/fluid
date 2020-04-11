@@ -50,7 +50,7 @@ class LoadGeneratorJarUseCase {
       if (!Generator::class.java.isAssignableFrom(loadedClass)) {
         DoesNotImplementGeneratorInterface(jarPath, loadedClass.name)
       } else {
-        validateClassImplementingGeneratorType(jarPath, loadedClass as Class<Generator>, generatorClassName)
+        validateClassImplementingGeneratorType(jarPath, loadedClass.asSubclass(Generator::class.java), generatorClassName)
       }
     } catch (e: ClassNotFoundException) {
       MissingGeneratorClassSpecifiedInManifest(jarPath, generatorClassName)
@@ -59,7 +59,7 @@ class LoadGeneratorJarUseCase {
 
   private fun validateClassImplementingGeneratorType(
     jarPath: String,
-    loadedClass: Class<Generator>,
+    loadedClass: Class<out Generator>,
     generatorClassName: String
   ): Result {
     return try {
@@ -117,7 +117,7 @@ class LoadGeneratorJarUseCase {
      */
     data class ValidGenerator(
       val jarPath: String,
-      val generatorClass: Class<Generator>
+      val generatorClass: Class<out Generator>
     ) : Result()
   }
 }

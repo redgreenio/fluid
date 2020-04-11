@@ -65,6 +65,6 @@ class RealizerTest {
     val generator = ShellScaffoldGenerator(scaffold)
     return generator
       .scaffold()
-      .buildSnapshot(InMemorySnapshotFactory(), generator::class.java as Class<Generator>)
+      .buildSnapshot(InMemorySnapshotFactory(), generator::class.java.asSubclass(Generator::class.java))
   }
 }

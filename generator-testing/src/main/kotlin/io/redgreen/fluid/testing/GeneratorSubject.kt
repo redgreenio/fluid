@@ -24,7 +24,7 @@ class GeneratorSubject(
 
   private val snapshot by lazy {
     actual.scaffold()
-      .buildSnapshot(InMemorySnapshotFactory(), actual::class.java as Class<Generator>)
+      .buildSnapshot(InMemorySnapshotFactory(), actual::class.java.asSubclass(Generator::class.java))
   }
 
   fun generatesExactly(

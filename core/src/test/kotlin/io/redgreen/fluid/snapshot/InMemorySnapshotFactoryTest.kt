@@ -12,7 +12,7 @@ class InMemorySnapshotFactoryTest {
     val snapshotFactory = InMemorySnapshotFactory()
 
     // when
-    val generatorClass = NoOpGenerator::class.java as Class<Generator>
+    val generatorClass = NoOpGenerator::class.java.asSubclass(Generator::class.java)
     val snapshotA = snapshotFactory.newInstance(generatorClass)
     val snapshotB = snapshotFactory.newInstance(generatorClass)
 
