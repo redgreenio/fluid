@@ -1,11 +1,13 @@
 package io.redgreen.fluid.engine.model
 
-sealed class Realization
+sealed class Realization(
+  open val path: String
+)
 
 data class DirectoryCreated(
-  val path: String
-) : Realization()
+  override val path: String
+) : Realization(path)
 
 data class FileCreated(
-  val path: String
-) : Realization()
+  override val path: String
+) : Realization(path)
