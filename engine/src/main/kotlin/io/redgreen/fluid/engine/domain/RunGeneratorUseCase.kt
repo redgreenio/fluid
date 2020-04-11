@@ -10,7 +10,7 @@ class RunGeneratorUseCase {
   fun invoke(
     generatorClass: Class<out Generator>,
     destinationDir: File
-  ) : Result {
+  ): Result {
     val generator = generatorClass.getDeclaredConstructor().newInstance() as Generator
     val snapshot = generator.scaffold().buildSnapshot(InMemorySnapshotFactory(), generatorClass)
     return Result(Realizer().realize(destinationDir, snapshot))

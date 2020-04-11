@@ -14,7 +14,7 @@ internal class Realizer {
   fun realize(
     destinationRoot: File,
     snapshot: Snapshot
-  ) : List<Realization> {
+  ): List<Realization> {
     return snapshot
       .getEntries()
       .onEach { entry -> writeToDisk(destinationRoot, snapshot, entry) }
