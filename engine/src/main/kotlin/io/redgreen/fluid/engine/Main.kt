@@ -4,13 +4,21 @@ import io.redgreen.fluid.api.Generator
 import io.redgreen.fluid.snapshot.InMemorySnapshotFactory
 import java.io.File
 import java.net.URLClassLoader
+import java.util.jar.JarInputStream
 
 fun main() {
-  val generatorJarFileUrl = File("fluid/sample-generator/out/bin/generator.jar").toURI().toURL()
+  val jarPath = "fluid/sample-generator/out/bin/sample-generator-1.0-SNAPSHOT.jar"
+
+  val generatorJarFileUrl = File(jarPath).toURI().toURL()
   val generatorClassLoader = URLClassLoader(arrayOf(generatorJarFileUrl))
-  generatorClassLoader.loadClass("com.example.generator.LibraryProjectGenerator")
+
+  val manifest = JarInputStream(generatorJarFileUrl.openStream()).manifest
+  val generatorClassName =  manifest.mainAttributes.getValue("Generator")
+
+  generatorClassLoader.loadClass(generatorClassName)
   val generatorClass = Class
-    .forName("com.example.generator.LibraryProjectGenerator", false, generatorClassLoader) as Class<Generator>
+    .forName(generatorClassName, false, generatorClassLoader) as Class<Generator>
+
   val generator = generatorClass.getDeclaredConstructor().newInstance() as Generator
 
   val snapshot = generator.scaffold().buildSnapshot(InMemorySnapshotFactory(), generatorClass)
