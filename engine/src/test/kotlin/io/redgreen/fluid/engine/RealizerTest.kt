@@ -23,11 +23,9 @@ class RealizerTest {
   fun `it should realize directories on the file system`() {
     // given
     val directoryName = "hello-world"
-    val snapshot = getSnapshot(
-      scaffold {
-        dir(directoryName)
-      }
-    )
+    val snapshot = scaffold {
+      dir(directoryName)
+    }.snapshot()
 
     // when
     val realizations = realizer.realize(destinationRoot, snapshot)
@@ -46,13 +44,11 @@ class RealizerTest {
   @Test
   fun `it should realize files on the file system`() {
     // given
-    val snapshot = getSnapshot(
-      scaffold {
-        dir("images") {
-          file("strawberry.png")
-        }
+    val snapshot = scaffold {
+      dir("images") {
+        file("strawberry.png")
       }
-    )
+    }.snapshot()
 
     // when
     val realizations = realizer.realize(destinationRoot, snapshot)
@@ -77,8 +73,8 @@ class RealizerTest {
       .inOrder()
   }
 
-  private fun getSnapshot(scaffold: Scaffold): Snapshot {
-    val generator = ShellScaffoldGenerator(scaffold)
+  private fun Scaffold.snapshot(): Snapshot {
+    val generator = ShellScaffoldGenerator(this)
     return generator
       .scaffold()
       .buildSnapshot(InMemorySnapshotFactory(), generator::class.java.asSubclass(Generator::class.java))
