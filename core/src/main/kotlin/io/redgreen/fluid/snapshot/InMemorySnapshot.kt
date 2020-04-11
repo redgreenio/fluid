@@ -31,7 +31,6 @@ class InMemorySnapshot private constructor(
 ) : Snapshot {
   companion object {
     private const val ROOT = "/"
-    private const val SEPARATOR = "/"
 
     private val UNIX_CONFIGURATION = Configuration
       .builder(PathType.unix())
@@ -146,10 +145,7 @@ class InMemorySnapshot private constructor(
   }
 
   private fun createMissingDirectoriesInPath(destination: String) {
-    if (destination.contains(SEPARATOR)) {
-      val fileDirectoryPath = destination.substring(0, destination.lastIndexOf(SEPARATOR))
-      Files.createDirectories(snapshotRoot.resolve(fileDirectoryPath))
-    }
+    Files.createDirectories(snapshotRoot.resolve(destination).parent)
   }
 
   private fun createFileSystemEntry(
