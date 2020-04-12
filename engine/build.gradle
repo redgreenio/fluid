@@ -2,6 +2,7 @@ plugins {
   id 'java-library'
   id 'org.jetbrains.kotlin.jvm'
   id 'com.github.ben-manes.versions'
+  id 'kotlin-kapt'
 }
 
 version '1.0-SNAPSHOT'
@@ -11,6 +12,8 @@ dependencies {
   implementation project(':fluid:core')
   implementation artefacts.kotlin.jdkStdlib
   implementation artefacts.logback
+  implementation artefacts.moshi.runtime
+  kapt artefacts.moshi.compiler
 
   testImplementation artefacts.junit.api
   testRuntimeOnly artefacts.junit.runtime
