@@ -1,7 +1,7 @@
 package io.redgreen.fluid.registry.domain
 
 import com.google.common.truth.Truth.assertThat
-import com.squareup.moshi.Moshi
+import io.redgreen.fluid.assist.moshi
 import io.redgreen.fluid.registry.domain.AddRegistryEntryUseCase.Result.EntryAdded
 import io.redgreen.fluid.registry.model.RegistryEntry
 import io.redgreen.fluid.registry.model.RegistryHome
@@ -22,12 +22,6 @@ class AddRegistryEntryUseCaseTest {
     registryHome.path
       .resolve("registry.json")
       .toFile()
-  }
-
-  private val moshi by lazy {
-    Moshi
-      .Builder()
-      .build()
   }
 
   private val useCase by lazy {
