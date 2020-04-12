@@ -8,8 +8,10 @@ import io.redgreen.fluid.engine.domain.LoadGeneratorJarUseCase.Result.MissingDef
 import io.redgreen.fluid.engine.domain.LoadGeneratorJarUseCase.Result.MissingGeneratorClassSpecifiedInManifest
 import io.redgreen.fluid.engine.domain.LoadGeneratorJarUseCase.Result.NotGeneratorJar
 import io.redgreen.fluid.engine.domain.LoadGeneratorJarUseCase.Result.ValidGenerator
+import io.redgreen.fluid.engine.model.GeneratorJar
 import java.io.File
 import java.net.URLClassLoader
+import java.nio.file.Path
 import java.util.jar.JarInputStream
 import java.util.jar.Manifest
 
@@ -117,7 +119,10 @@ class LoadGeneratorJarUseCase {
      */
     data class ValidGenerator(
       override val jarPath: String,
-      val generatorClass: Class<out Generator>
-    ) : Result(jarPath)
+      val generatorClass: Class<out Generator> // TODO Populate this class with manifest jar attributes?
+    ) : Result(jarPath) {
+      fun generatorJar(): GeneratorJar =
+        GeneratorJar(Path.of(jarPath), generatorClass)
+    }
   }
 }
