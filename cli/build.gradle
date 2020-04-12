@@ -1,6 +1,7 @@
 plugins {
   id 'application'
   id 'org.jetbrains.kotlin.jvm'
+  id 'kotlin-kapt'
 }
 
 group 'io.redgreen'
@@ -19,10 +20,18 @@ run {
 dependencies {
   implementation project(':fluid:engine')
   implementation artefacts.kotlin.jdkStdlib
+  implementation artefacts.picocli.runtime
+  kapt artefacts.picocli.compiler
 
   testImplementation artefacts.junit.api
   testRuntimeOnly artefacts.junit.runtime
   testImplementation artefacts.truth
+}
+
+kapt {
+  arguments {
+    arg("project", "${project.group}/${project.name}")
+  }
 }
 
 compileKotlin {
