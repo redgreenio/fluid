@@ -12,7 +12,6 @@ import io.redgreen.fluid.engine.domain.LoadGeneratorJarUseCase.Result.ValidGener
 import org.junit.jupiter.api.Test
 
 class LoadGeneratorJarUseCaseTest {
-
   private val useCase = LoadGeneratorJarUseCase()
 
   @Test

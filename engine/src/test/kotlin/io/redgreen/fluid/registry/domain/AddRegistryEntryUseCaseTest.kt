@@ -2,6 +2,8 @@ package io.redgreen.fluid.registry.domain
 
 import com.google.common.truth.Truth.assertThat
 import io.redgreen.fluid.assist.moshi
+import io.redgreen.fluid.registry.assist.RegistryHomeSubject.Companion.assertThat
+import io.redgreen.fluid.registry.assist.createRegistryFile
 import io.redgreen.fluid.registry.domain.AddRegistryEntryUseCase.Result.EntryAdded
 import io.redgreen.fluid.registry.model.RegistryEntry
 import io.redgreen.fluid.registry.model.RegistryHome
@@ -11,17 +13,20 @@ import org.junit.jupiter.api.io.TempDir
 import java.nio.file.Path
 
 class AddRegistryEntryUseCaseTest {
+  companion object {
+    // Language injection inlining causes IDE error, however this can be suppressed for our use case.
+    @Suppress("JsonStandardCompliance")
+    private const val ARTIFACT_SOME_GENERATOR_PATH = "libs/some-generator.jar"
+
+    @Suppress("JsonStandardCompliance") // Same as above.
+    private const val ARTIFACT_SHINY_NEW_GENERATOR_PATH = "libs/shiny-new-generator.jar"
+  }
+
   @TempDir
-  internal lateinit var supposedlyUserHomeDir: Path // TODO Rename other classes to use a similar name
+  internal lateinit var supposedlyUserHomeDir: Path
 
   private val registryHome by lazy {
     RegistryHome.from(supposedlyUserHomeDir)
-  }
-
-  private val registryFile by lazy {
-    registryHome.path
-      .resolve("registry.json")
-      .toFile()
   }
 
   private val useCase by lazy {
@@ -33,7 +38,7 @@ class AddRegistryEntryUseCaseTest {
     {
       "entries": [
         {
-          "generatorPath": "libs/some-generator.jar"
+          "generatorPath": "$ARTIFACT_SOME_GENERATOR_PATH"
         }
       ]
     }
@@ -42,10 +47,11 @@ class AddRegistryEntryUseCaseTest {
   @Test
   fun `it should create a new file and add an entry if the file does not exist`() {
     // precondition
-    registryFileDoesNotExist()
+    assertThat(registryHome)
+      .registryFileExists(false)
 
     // given
-    val registryEntry = RegistryEntry("libs/some-generator.jar")
+    val registryEntry = RegistryEntry(ARTIFACT_SOME_GENERATOR_PATH)
 
     // when
     val result = useCase.invoke(registryEntry)
@@ -53,18 +59,19 @@ class AddRegistryEntryUseCaseTest {
     // then
     assertThat(result)
       .isEqualTo(EntryAdded)
-    assertThat(registryFile.readText())
-      .isEqualTo(registryFileContents)
+    assertThat(registryHome)
+      .registryFileContentsEqual(registryFileContents)
   }
 
   @Test
   fun `it should append an existing entry to an already existing registry file`() {
     // precondition
-    createRegistryFile(registryFileContents)
-    registryFileExists(registryFile.readText())
+    registryHome.createRegistryFile(registryFileContents)
+    assertThat(registryHome)
+      .registryFileContentsEqual(registryFileContents)
 
     // given
-    val registryEntry = RegistryEntry("libs/shiny-new-generator.jar")
+    val registryEntry = RegistryEntry(ARTIFACT_SHINY_NEW_GENERATOR_PATH)
 
     // when
     val result = useCase.invoke(registryEntry)
@@ -75,10 +82,10 @@ class AddRegistryEntryUseCaseTest {
       {
         "entries": [
           {
-            "generatorPath": "libs/some-generator.jar"
+            "generatorPath": "$ARTIFACT_SOME_GENERATOR_PATH"
           },
           {
-            "generatorPath": "libs/shiny-new-generator.jar"
+            "generatorPath": "$ARTIFACT_SHINY_NEW_GENERATOR_PATH"
           }
         ]
       }
@@ -86,19 +93,20 @@ class AddRegistryEntryUseCaseTest {
 
     assertThat(result)
       .isEqualTo(EntryAdded)
-    assertThat(registryFile.readText())
-      .isEqualTo(updatedRegistryFileContents)
+    assertThat(registryHome)
+      .registryFileContentsEqual(updatedRegistryFileContents)
   }
 
   @Test
   fun `it should replace a corrupt registry and add an entry`() {
     // precondition
     val corruptRegistryContents = " /* Representation of a corrupt registry file */ "
-    createRegistryFile(corruptRegistryContents)
-    registryFileExists(corruptRegistryContents)
+    registryHome.createRegistryFile(corruptRegistryContents)
+    assertThat(registryHome)
+      .registryFileContentsEqual(corruptRegistryContents)
 
     // given
-    val registryEntry = RegistryEntry("libs/some-generator.jar")
+    val registryEntry = RegistryEntry(ARTIFACT_SOME_GENERATOR_PATH)
 
     // when
     val result = useCase.invoke(registryEntry)
@@ -106,24 +114,7 @@ class AddRegistryEntryUseCaseTest {
     // then
     assertThat(result)
       .isEqualTo(EntryAdded)
-    assertThat(registryFile.readText())
-      .isEqualTo(registryFileContents)
-  }
-
-  private fun registryFileDoesNotExist() {
-    assertThat(registryFile.exists())
-      .isFalse()
-  }
-
-  private fun createRegistryFile(contents: String) {
-    registryFile.parentFile.mkdirs()
-    registryFile.writeText(contents)
-  }
-
-  private fun registryFileExists(contents: String) {
-    assertThat(registryFile.exists())
-      .isTrue()
-    assertThat(contents)
-      .isEqualTo(registryFile.readText())
+    assertThat(registryHome)
+      .registryFileContentsEqual(registryFileContents)
   }
 }

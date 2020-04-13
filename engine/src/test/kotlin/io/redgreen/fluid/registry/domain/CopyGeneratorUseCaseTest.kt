@@ -4,12 +4,12 @@ import com.google.common.truth.Truth.assertThat
 import io.redgreen.fluid.assist.ARTIFACT_VALID_GENERATOR
 import io.redgreen.fluid.engine.model.GeneratorJar
 import io.redgreen.fluid.registry.assist.GeneratorJarParameterResolver
+import io.redgreen.fluid.registry.assist.RegistryHomeSubject.Companion.assertThat
 import io.redgreen.fluid.registry.domain.CopyGeneratorUseCase.Result.GeneratorCopied
 import io.redgreen.fluid.registry.model.RegistryHome
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.io.TempDir
-import java.nio.file.Files
 import java.nio.file.Path
 
 @ExtendWith(GeneratorJarParameterResolver::class)
@@ -32,13 +32,11 @@ class CopyGeneratorUseCaseTest {
     val result = useCase.invoke(generatorJar)
 
     // then
-    val destinationPath = registryHome.path
-      .resolve("libs")
-      .resolve(ARTIFACT_VALID_GENERATOR)
+    val destinationPath = registryHome.artifactPath(ARTIFACT_VALID_GENERATOR)
 
     assertThat(result)
       .isEqualTo(GeneratorCopied(destinationPath))
-    assertThat(Files.exists(destinationPath))
-      .isTrue()
+    assertThat(registryHome)
+      .containsArtifact(ARTIFACT_VALID_GENERATOR)
   }
 }
