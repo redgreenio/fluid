@@ -11,10 +11,10 @@ repositories {
   mavenCentral()
 }
 
-mainClassName = 'io.redgreen.fluid.cli.MainKt'
+mainClassName = 'io.redgreen.fluid.cli.CliKt'
 
 run {
-  args = ['/home/rj/Desktop/test-drive/valid-generator.jar', '/home/rj/Desktop/test-drive/scaffold']
+  args = ['install', '-j', '/home/rj/Desktop/test-drive/valid-generator.jar']
 }
 
 dependencies {
@@ -22,6 +22,7 @@ dependencies {
   implementation artefacts.kotlin.jdkStdlib
   implementation artefacts.picocli.runtime
   kapt artefacts.picocli.compiler
+  implementation artefacts.moshi.runtime
 
   testImplementation artefacts.junit.api
   testRuntimeOnly artefacts.junit.runtime

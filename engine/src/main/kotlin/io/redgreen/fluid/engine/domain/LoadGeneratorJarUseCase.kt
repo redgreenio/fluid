@@ -20,7 +20,7 @@ class LoadGeneratorJarUseCase {
     private const val KEY_GENERATOR = "Generator"
   }
 
-  fun invoke(jarPath: String): Result {
+  fun invoke(jarPath: String): Result { // TODO Convert this to path?
     val maybeJarFile = File(jarPath)
 
     if (!maybeJarFile.exists()) return JarNotFound(jarPath)

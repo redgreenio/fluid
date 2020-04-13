@@ -1,19 +1,28 @@
 package io.redgreen.fluid.cli
 
 import io.redgreen.fluid.cli.internal.FluidCommandLine
-import io.redgreen.fluid.cli.internal.RunCommand
+import io.redgreen.fluid.cli.internal.InstallCommand
 import picocli.CommandLine
+import picocli.CommandLine.ParseResult
+import java.nio.file.Path
 import kotlin.system.exitProcess
 
-fun main() {
-  val args = arrayOf("run", "generator", "hello-world")
-  val parseResult = CommandLine(FluidCommandLine())
+fun main(args: Array<String>) {
+  exitProcess(executeCommand(parseArgs(System.getProperty("user.home"), args)))
+}
+
+private fun parseArgs(
+  userHome: String,
+  args: Array<String>
+): ParseResult {
+  return CommandLine(FluidCommandLine())
+    .addSubcommand(InstallCommand(Path.of(userHome)))
     .parseArgs(*args)
+}
 
-  val result = when (val subcommand = parseResult.subcommand().commandSpec().userObject()) {
-    is RunCommand -> subcommand.call()
-    else -> throw IllegalStateException("Unknown subcommand: ${subcommand::class.java.name}")
+private fun executeCommand(parseResult: ParseResult): Int {
+  return when (val subcommand = parseResult.subcommand().commandSpec().userObject()) {
+    is InstallCommand -> subcommand.call()
+    else -> throw UnsupportedOperationException("Unknown command: ${subcommand::class.java.simpleName}")
   }
-
-  exitProcess(result)
 }
