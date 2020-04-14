@@ -59,7 +59,9 @@ class RealizerTest {
       .isTrue()
 
     // then - contents are the same
-    val resourceBytes = this::class.java.classLoader.getResourceAsStream("images/strawberry.png")!!.readAllBytes()
+    val resourceBytes = this::class.java.classLoader
+      .getResourceAsStream("images/strawberry.png")!!
+      .readBytes()
     val realizedBytes = realizedFile.readBytes()
     assertThat(resourceBytes)
       .isEqualTo(realizedBytes)

@@ -43,7 +43,7 @@ class SnapshotSubject(
 
   fun hasFileWithContents(path: String, bytes: ByteArray) {
     assertFileWithContents(path) { inputStream ->
-      assertThat(inputStream.readAllBytes())
+      assertThat(inputStream.readBytes())
         .isEqualTo(bytes)
     }
   }

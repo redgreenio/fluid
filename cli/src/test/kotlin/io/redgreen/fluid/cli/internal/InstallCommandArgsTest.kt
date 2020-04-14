@@ -3,10 +3,10 @@ package io.redgreen.fluid.cli.internal
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Test
 import picocli.CommandLine
-import java.nio.file.Path
+import java.nio.file.Paths
 
 class InstallCommandArgsTest {
-  private val installCommand = InstallCommand(Path.of("/Users/Ajay"))
+  private val installCommand = InstallCommand(Paths.get("/Users/Ajay"))
 
   @Test
   fun `it should parse args for install jar command (short form)`() {
@@ -18,7 +18,7 @@ class InstallCommandArgsTest {
 
     // then
     assertThat(installCommand.artifactPath)
-      .isEqualTo(Path.of("my-generator.jar"))
+      .isEqualTo(Paths.get("my-generator.jar"))
   }
 
   @Test
@@ -31,6 +31,6 @@ class InstallCommandArgsTest {
 
     // then
     assertThat(installCommand.artifactPath)
-      .isEqualTo(Path.of("my-generator.jar"))
+      .isEqualTo(Paths.get("my-generator.jar"))
   }
 }

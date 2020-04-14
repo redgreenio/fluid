@@ -49,7 +49,7 @@ class AddRegistryEntryUseCase(
     registryFilePath: Path,
     entry: RegistryEntry
   ): Registry {
-    val registryJson = Files.readString(registryFilePath)
+    val registryJson = registryFilePath.toFile().readText()
     return try {
       val registry = registryAdapter.fromJson(registryJson)!!
       registry.addEntry(entry)

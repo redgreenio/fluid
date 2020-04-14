@@ -10,7 +10,7 @@ import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.Missin
 import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.NotGeneratorJar
 import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.ValidGenerator
 import org.junit.jupiter.api.Test
-import java.nio.file.Path
+import java.nio.file.Paths
 
 class ValidateGeneratorJarUseCaseTest {
   private val useCase = ValidateGeneratorJarUseCase()
@@ -18,7 +18,7 @@ class ValidateGeneratorJarUseCaseTest {
   @Test
   fun `it should return file does not exists for a non-existent location`() {
     // given
-    val nonExistentPath = Path.of("non-existent.jar")
+    val nonExistentPath = Paths.get("non-existent.jar")
 
     // when
     val result = useCase.invoke(nonExistentPath)

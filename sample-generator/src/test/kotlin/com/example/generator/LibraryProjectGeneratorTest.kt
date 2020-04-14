@@ -27,7 +27,7 @@ class LibraryProjectGeneratorTest {
   fun `it should copy a binary file`() {
     val strawberryBytes = this::class.java.classLoader
       .getResourceAsStream("strawberry.png")!!
-      .readAllBytes()
+      .readBytes()
 
     assertThat(generator)
       .generatesFileWithContent("icon.png", strawberryBytes)

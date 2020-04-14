@@ -4,7 +4,7 @@ import io.redgreen.fluid.cli.internal.FluidCommandLine
 import io.redgreen.fluid.cli.internal.InstallCommand
 import picocli.CommandLine
 import picocli.CommandLine.ParseResult
-import java.nio.file.Path
+import java.nio.file.Paths
 import kotlin.system.exitProcess
 
 fun main(args: Array<String>) {
@@ -16,7 +16,7 @@ private fun parseArgs(
   args: Array<String>
 ): ParseResult {
   return CommandLine(FluidCommandLine())
-    .addSubcommand(InstallCommand(Path.of(userHome)))
+    .addSubcommand(InstallCommand(Paths.get(userHome)))
     .parseArgs(*args)
 }
 

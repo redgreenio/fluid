@@ -38,7 +38,7 @@ class FileCommandTest {
     // given
     val strawberryBytes = this::class.java.classLoader
       .getResourceAsStream("strawberry.png")!!
-      .readAllBytes()
+      .readBytes()
 
     // when
     val snapshot = FileCommand("strawberry.png")
