@@ -3,11 +3,14 @@ plugins {
   id 'org.jetbrains.kotlin.jvm'
   id 'com.github.ben-manes.versions'
   id 'kotlin-kapt'
+  id 'ru.vyarus.animalsniffer'
 }
 
 version '1.0-SNAPSHOT'
 
 dependencies {
+  signature 'org.codehaus.mojo.signature:java18:1.0@signature'
+
   implementation project(':fluid:api')
   implementation project(':fluid:core')
   implementation artefacts.kotlin.jdkStdlib

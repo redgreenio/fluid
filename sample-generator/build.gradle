@@ -4,6 +4,7 @@ plugins {
   id 'java-library'
   id 'org.jetbrains.kotlin.jvm'
   id 'net.nemerosa.versioning' version '2.6.1'
+  id 'ru.vyarus.animalsniffer'
 }
 
 group 'io.redgreen'
@@ -28,6 +29,8 @@ jar {
 }
 
 dependencies {
+  signature 'org.codehaus.mojo.signature:java18:1.0@signature'
+
   implementation project(':fluid:api')
   implementation artefacts.kotlin.jdkStdlib
 

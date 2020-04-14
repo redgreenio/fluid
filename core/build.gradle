@@ -1,6 +1,7 @@
 plugins {
   id 'java-library'
   id 'org.jetbrains.kotlin.jvm'
+  id 'ru.vyarus.animalsniffer'
 }
 
 group 'io.redgreen'
@@ -11,6 +12,8 @@ repositories {
 }
 
 dependencies {
+  signature 'org.codehaus.mojo.signature:java18:1.0@signature'
+
   implementation project(':fluid:api')
   implementation artefacts.kotlin.jdkStdlib
   implementation artefacts.jimfs
