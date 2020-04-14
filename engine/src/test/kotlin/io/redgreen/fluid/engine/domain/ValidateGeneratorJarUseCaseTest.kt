@@ -1,7 +1,7 @@
 package io.redgreen.fluid.engine.domain
 
 import com.google.common.truth.Truth.assertThat
-import io.redgreen.fluid.assist.getTestJarArtifact
+import io.redgreen.fluid.assist.getTestArtifact
 import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.DoesNotImplementGeneratorInterface
 import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.JarNotFound
 import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.ManifestMissingGeneratorAttribute
@@ -10,6 +10,7 @@ import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.Missin
 import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.NotGeneratorJar
 import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.ValidGenerator
 import org.junit.jupiter.api.Test
+import java.nio.file.Path
 
 class ValidateGeneratorJarUseCaseTest {
   private val useCase = ValidateGeneratorJarUseCase()
@@ -17,20 +18,20 @@ class ValidateGeneratorJarUseCaseTest {
   @Test
   fun `it should return file does not exists for a non-existent location`() {
     // given
-    val nonExistentJarPath = "non-existent.jar"
+    val nonExistentPath = Path.of("non-existent.jar")
 
     // when
-    val result = useCase.invoke(nonExistentJarPath)
+    val result = useCase.invoke(nonExistentPath)
 
     // then
     assertThat(result)
-      .isEqualTo(JarNotFound(nonExistentJarPath))
+      .isEqualTo(JarNotFound(nonExistentPath))
   }
 
   @Test
   fun `it should return invalid generator jar if the file path points to file that is not a jar`() {
     // given
-    val notJarPath = getTestJarArtifact("not-a-jar.jar")
+    val notJarPath = getTestArtifact("not-a-jar.jar")
 
     // when
     val result = useCase.invoke(notJarPath)
@@ -43,27 +44,27 @@ class ValidateGeneratorJarUseCaseTest {
   @Test
   fun `it should return missing generator attribute if the manifest does not contain the generator attribute`() {
     // given
-    val missingAttributeJarPath = getTestJarArtifact("missing-generator-attribute.jar")
+    val artifactWithMissingAttributesPath = getTestArtifact("missing-generator-attribute.jar")
 
     // when
-    val result = useCase.invoke(missingAttributeJarPath)
+    val result = useCase.invoke(artifactWithMissingAttributesPath)
 
     // then
     assertThat(result)
-      .isEqualTo(ManifestMissingGeneratorAttribute(missingAttributeJarPath))
+      .isEqualTo(ManifestMissingGeneratorAttribute(artifactWithMissingAttributesPath))
   }
 
   @Test
   fun `it should return a valid generator result if the manifest contains a valid generator class`() {
     // given
-    val validGeneratorJarPath = getTestJarArtifact("valid-generator.jar")
+    val validArtifactPath = getTestArtifact("valid-generator.jar")
 
     // when
-    val result = useCase.invoke(validGeneratorJarPath) as ValidGenerator
+    val result = useCase.invoke(validArtifactPath) as ValidGenerator
 
     // then
-    assertThat(result.jarPath)
-      .isEqualTo(validGeneratorJarPath)
+    assertThat(result.artifactPath)
+      .isEqualTo(validArtifactPath)
     assertThat(result.generatorClass.name)
       .isEqualTo("com.example.generator.LibraryProjectGenerator")
   }
@@ -71,42 +72,42 @@ class ValidateGeneratorJarUseCaseTest {
   @Test
   fun `it should return missing generator class if the class specified in the manifest is missing in the jar`() {
     // given
-    val missingGeneratorClassJarPath = getTestJarArtifact("missing-generator-class.jar")
+    val artifactWithMissingGeneratorClassPath = getTestArtifact("missing-generator-class.jar")
     val missingClassName = "com.example.generator.MissingGeneratorClass"
 
     // when
-    val result = useCase.invoke(missingGeneratorClassJarPath)
+    val result = useCase.invoke(artifactWithMissingGeneratorClassPath)
 
     // then
     assertThat(result)
-      .isEqualTo(MissingGeneratorClassSpecifiedInManifest(missingGeneratorClassJarPath, missingClassName))
+      .isEqualTo(MissingGeneratorClassSpecifiedInManifest(artifactWithMissingGeneratorClassPath, missingClassName))
   }
 
   @Test
   fun `it should return unexpected generator type if the class specified in the manifest is not a generator`() {
     // given
-    val unexpectedGeneratorTypeJarPath = getTestJarArtifact("unexpected-generator-type.jar")
+    val artifactWithUnexpectedGeneratorTypePath = getTestArtifact("unexpected-generator-type.jar")
     val unexpectedClassName = "com.example.generator.LibraryProjectConfig"
 
     // when
-    val result = useCase.invoke(unexpectedGeneratorTypeJarPath)
+    val result = useCase.invoke(artifactWithUnexpectedGeneratorTypePath)
 
     // then
     assertThat(result)
-      .isEqualTo(DoesNotImplementGeneratorInterface(unexpectedGeneratorTypeJarPath, unexpectedClassName))
+      .isEqualTo(DoesNotImplementGeneratorInterface(artifactWithUnexpectedGeneratorTypePath, unexpectedClassName))
   }
 
   @Test
   fun `it should return missing default constructor if the generator does not have a default constructor`() {
     // given
-    val missingDefaultConstructorJarPath = getTestJarArtifact("generator-no-default-constructor.jar")
+    val artifactWithMissingDefaultConstructorPath = getTestArtifact("generator-no-default-constructor.jar")
     val generatorClassName = "com.example.generator.LibraryProjectGenerator"
 
     // when
-    val result = useCase.invoke(missingDefaultConstructorJarPath)
+    val result = useCase.invoke(artifactWithMissingDefaultConstructorPath)
 
     // then
     assertThat(result)
-      .isEqualTo(MissingDefaultConstructor(missingDefaultConstructorJarPath, generatorClassName))
+      .isEqualTo(MissingDefaultConstructor(artifactWithMissingDefaultConstructorPath, generatorClassName))
   }
 }

@@ -8,8 +8,9 @@ import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.Missin
 import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.MissingGeneratorClassSpecifiedInManifest
 import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.NotGeneratorJar
 import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.ValidGenerator
-import java.io.File
 import java.net.URLClassLoader
+import java.nio.file.Files
+import java.nio.file.Path
 import java.util.jar.JarInputStream
 import java.util.jar.Manifest
 
@@ -18,106 +19,114 @@ class ValidateGeneratorJarUseCase {
     private const val KEY_GENERATOR = "Generator"
   }
 
-  fun invoke(jarPath: String): Result { // TODO Convert this to path?
-    val maybeJarFile = File(jarPath)
+  fun invoke(artifactPath: Path): Result {
+    if (!Files.exists(artifactPath)) {
+      return JarNotFound(artifactPath)
+    }
 
-    if (!maybeJarFile.exists()) return JarNotFound(jarPath)
+    val jarManifest = getJarManifest(artifactPath) // TODO This information will be derived from an XML document
+      ?: return NotGeneratorJar(artifactPath)
 
-    val jarManifest = getJarManifest(maybeJarFile)
-      ?: return NotGeneratorJar(jarPath)
+    val generatorClassName = getGeneratorClassName(jarManifest) // TODO Possibly replace with a ValidatePluginManifestUseCase??
+      ?: return ManifestMissingGeneratorAttribute(artifactPath)
 
-    val generatorClassName = getGeneratorClassName(jarManifest)
-      ?: return ManifestMissingGeneratorAttribute(jarPath)
-
-    return validateGeneratorClassSpecifiedInManifest(jarPath, generatorClassName)
+    return validateGeneratorClassSpecifiedInManifest(
+      artifactPath,
+      generatorClassName
+    )
   }
 
-  private fun getJarManifest(maybeJarFile: File): Manifest? =
-    JarInputStream(maybeJarFile.inputStream()).manifest
+  private fun getJarManifest(maybeArtifactPath: Path): Manifest? =
+    Files.newInputStream(maybeArtifactPath).use { inputStream ->
+      JarInputStream(inputStream).use { jarStream ->
+        return jarStream.manifest
+      }
+    }
 
   private fun getGeneratorClassName(manifest: Manifest): String? =
     manifest.mainAttributes.getValue(KEY_GENERATOR)
 
-  private fun getGeneratorClassLoader(jarPath: String): ClassLoader =
-    URLClassLoader(arrayOf(File(jarPath).toURI().toURL()))
-
   private fun validateGeneratorClassSpecifiedInManifest(
-    jarPath: String,
+    artifactPath: Path,
     generatorClassName: String
   ): Result {
     return try {
-      val loadedClass = getGeneratorClassLoader(jarPath).loadClass(generatorClassName)
+      val loadedClass = getGeneratorClassLoader(artifactPath).loadClass(generatorClassName)
       if (!Generator::class.java.isAssignableFrom(loadedClass)) {
-        DoesNotImplementGeneratorInterface(jarPath, loadedClass.name)
+        DoesNotImplementGeneratorInterface(artifactPath, loadedClass.name)
       } else {
-        validateClassImplementingGeneratorType(jarPath, loadedClass.asSubclass(Generator::class.java), generatorClassName)
+        val generatorClass = loadedClass.asSubclass(Generator::class.java)
+        validateClassImplementingGeneratorType(artifactPath, generatorClass, generatorClassName)
       }
     } catch (e: ClassNotFoundException) {
-      MissingGeneratorClassSpecifiedInManifest(jarPath, generatorClassName)
+      MissingGeneratorClassSpecifiedInManifest(artifactPath, generatorClassName)
     }
   }
 
+  private fun getGeneratorClassLoader(artifactPath: Path): ClassLoader =
+    URLClassLoader(arrayOf(artifactPath.toUri().toURL()))
+
   private fun validateClassImplementingGeneratorType(
-    jarPath: String,
+    artifactPath: Path,
     loadedClass: Class<out Generator>,
     generatorClassName: String
   ): Result {
     return try {
       loadedClass.getConstructor()
-      ValidGenerator(jarPath, loadedClass)
+      ValidGenerator(artifactPath, loadedClass)
     } catch (e: NoSuchMethodException) {
-      MissingDefaultConstructor(jarPath, generatorClassName)
+      MissingDefaultConstructor(artifactPath, generatorClassName)
     }
   }
 
-  sealed class Result(open val jarPath: String) {
+  sealed class Result(open val artifactPath: Path) {
     /**
      * The specified path does not contain a file.
      */
-    data class JarNotFound(override val jarPath: String) : Result(jarPath)
+    data class JarNotFound(override val artifactPath: Path) : Result(artifactPath)
 
     /**
      * The specified path has a file, but it is not a generator jar file.
      */
-    data class NotGeneratorJar(override val jarPath: String) : Result(jarPath)
+    data class NotGeneratorJar(override val artifactPath: Path) : Result(artifactPath)
 
     /**
      * The jar file does not contain the mandatory 'Generator' attribute.
      */
-    data class ManifestMissingGeneratorAttribute(override val jarPath: String) : Result(jarPath)
+    data class ManifestMissingGeneratorAttribute(override val artifactPath: Path) : Result(artifactPath)
 
     /**
      * The jar file contains a 'Generator' attribute, but the class specified by the attribute is missing
      * from the jar.
      */
     data class MissingGeneratorClassSpecifiedInManifest(
-      override val jarPath: String,
+      override val artifactPath: Path,
       val missingClassName: String
-    ) : Result(jarPath)
+    ) : Result(artifactPath)
 
     /**
      * The class mentioned by the manifest's 'Generator' attribute does not implement the @see[Generator]
      * interface.
      */
     data class DoesNotImplementGeneratorInterface(
-      override val jarPath: String,
+      override val artifactPath: Path,
       val foundClassName: String
-    ) : Result(jarPath)
+    ) : Result(artifactPath)
 
     /**
      * The generator class specified in the manifest does not have a default constructor.
      */
     data class MissingDefaultConstructor(
-      override val jarPath: String,
+      override val artifactPath: Path,
       val generatorClassName: String
-    ) : Result(jarPath)
+    ) : Result(artifactPath)
 
     /**
      * The generator contains a valid @see[Generator] implementation.
      */
-    data class ValidGenerator(
-      override val jarPath: String,
-      val generatorClass: Class<out Generator> // TODO Populate this class with manifest jar attributes?
-    ) : Result(jarPath)
+    data class ValidGenerator internal constructor(
+      override val artifactPath: Path,
+      val generatorClass: Class<out Generator>
+    ) : Result(artifactPath)
   }
 }

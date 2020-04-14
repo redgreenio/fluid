@@ -18,16 +18,16 @@ class CopyGeneratorUseCase(
   }
 
   fun invoke(validGenerator: ValidGenerator): Result {
-    val sourceJarPath = Path.of(validGenerator.jarPath)
-    val generatorJarFileName = sourceJarPath.fileName.toString()
-    val destinationJarPath = registryGeneratorsDirPath.resolve(generatorJarFileName)
+    val sourcePath = validGenerator.artifactPath
+    val artifactFileName = sourcePath.fileName.toString()
+    val destinationPath = registryGeneratorsDirPath.resolve(artifactFileName)
 
     if (!Files.exists(registryGeneratorsDirPath)) {
       Files.createDirectories(registryGeneratorsDirPath)
     }
 
-    Files.copy(sourceJarPath, destinationJarPath)
-    return GeneratorCopied(destinationJarPath)
+    Files.copy(sourcePath, destinationPath)
+    return GeneratorCopied(destinationPath)
   }
 
   sealed class Result {
