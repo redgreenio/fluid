@@ -1,21 +1,19 @@
 package io.redgreen.fluid.engine.domain
 
 import io.redgreen.fluid.api.Generator
-import io.redgreen.fluid.engine.domain.LoadGeneratorJarUseCase.Result.DoesNotImplementGeneratorInterface
-import io.redgreen.fluid.engine.domain.LoadGeneratorJarUseCase.Result.JarNotFound
-import io.redgreen.fluid.engine.domain.LoadGeneratorJarUseCase.Result.ManifestMissingGeneratorAttribute
-import io.redgreen.fluid.engine.domain.LoadGeneratorJarUseCase.Result.MissingDefaultConstructor
-import io.redgreen.fluid.engine.domain.LoadGeneratorJarUseCase.Result.MissingGeneratorClassSpecifiedInManifest
-import io.redgreen.fluid.engine.domain.LoadGeneratorJarUseCase.Result.NotGeneratorJar
-import io.redgreen.fluid.engine.domain.LoadGeneratorJarUseCase.Result.ValidGenerator
-import io.redgreen.fluid.engine.model.GeneratorJar
+import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.DoesNotImplementGeneratorInterface
+import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.JarNotFound
+import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.ManifestMissingGeneratorAttribute
+import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.MissingDefaultConstructor
+import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.MissingGeneratorClassSpecifiedInManifest
+import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.NotGeneratorJar
+import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.ValidGenerator
 import java.io.File
 import java.net.URLClassLoader
-import java.nio.file.Path
 import java.util.jar.JarInputStream
 import java.util.jar.Manifest
 
-class LoadGeneratorJarUseCase {
+class ValidateGeneratorJarUseCase {
   companion object {
     private const val KEY_GENERATOR = "Generator"
   }
@@ -120,9 +118,6 @@ class LoadGeneratorJarUseCase {
     data class ValidGenerator(
       override val jarPath: String,
       val generatorClass: Class<out Generator> // TODO Populate this class with manifest jar attributes?
-    ) : Result(jarPath) {
-      fun generatorJar(): GeneratorJar =
-        GeneratorJar(Path.of(jarPath), generatorClass)
-    }
+    ) : Result(jarPath)
   }
 }

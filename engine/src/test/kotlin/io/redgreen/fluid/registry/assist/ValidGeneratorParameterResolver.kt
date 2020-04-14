@@ -2,14 +2,13 @@ package io.redgreen.fluid.registry.assist
 
 import io.redgreen.fluid.assist.ARTIFACT_VALID_GENERATOR
 import io.redgreen.fluid.assist.getTestJarArtifact
-import io.redgreen.fluid.engine.domain.LoadGeneratorJarUseCase
-import io.redgreen.fluid.engine.domain.LoadGeneratorJarUseCase.Result.ValidGenerator
-import io.redgreen.fluid.engine.model.GeneratorJar
+import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase
+import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.ValidGenerator
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.extension.ParameterContext
 import org.junit.jupiter.api.extension.ParameterResolver
 
-class GeneratorJarParameterResolver : ParameterResolver {
+class ValidGeneratorParameterResolver : ParameterResolver {
   companion object {
     private val VALID_GENERATOR_JAR_PATH = getTestJarArtifact(ARTIFACT_VALID_GENERATOR)
   }
@@ -18,14 +17,11 @@ class GeneratorJarParameterResolver : ParameterResolver {
     parameterContext: ParameterContext,
     extensionContext: ExtensionContext
   ): Boolean =
-    parameterContext.parameter.type == GeneratorJar::class.java
+    parameterContext.parameter.type == ValidGenerator::class.java
 
   override fun resolveParameter(
     parameterContext: ParameterContext,
     extensionContext: ExtensionContext
-  ): Any {
-    return (LoadGeneratorJarUseCase()
-      .invoke(VALID_GENERATOR_JAR_PATH) as ValidGenerator)
-      .generatorJar()
-  }
+  ): Any =
+    ValidateGeneratorJarUseCase().invoke(VALID_GENERATOR_JAR_PATH)
 }

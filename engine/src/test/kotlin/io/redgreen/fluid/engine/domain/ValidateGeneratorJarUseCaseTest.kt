@@ -2,17 +2,17 @@ package io.redgreen.fluid.engine.domain
 
 import com.google.common.truth.Truth.assertThat
 import io.redgreen.fluid.assist.getTestJarArtifact
-import io.redgreen.fluid.engine.domain.LoadGeneratorJarUseCase.Result.DoesNotImplementGeneratorInterface
-import io.redgreen.fluid.engine.domain.LoadGeneratorJarUseCase.Result.JarNotFound
-import io.redgreen.fluid.engine.domain.LoadGeneratorJarUseCase.Result.ManifestMissingGeneratorAttribute
-import io.redgreen.fluid.engine.domain.LoadGeneratorJarUseCase.Result.MissingDefaultConstructor
-import io.redgreen.fluid.engine.domain.LoadGeneratorJarUseCase.Result.MissingGeneratorClassSpecifiedInManifest
-import io.redgreen.fluid.engine.domain.LoadGeneratorJarUseCase.Result.NotGeneratorJar
-import io.redgreen.fluid.engine.domain.LoadGeneratorJarUseCase.Result.ValidGenerator
+import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.DoesNotImplementGeneratorInterface
+import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.JarNotFound
+import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.ManifestMissingGeneratorAttribute
+import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.MissingDefaultConstructor
+import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.MissingGeneratorClassSpecifiedInManifest
+import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.NotGeneratorJar
+import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.ValidGenerator
 import org.junit.jupiter.api.Test
 
-class LoadGeneratorJarUseCaseTest {
-  private val useCase = LoadGeneratorJarUseCase()
+class ValidateGeneratorJarUseCaseTest {
+  private val useCase = ValidateGeneratorJarUseCase()
 
   @Test
   fun `it should return file does not exists for a non-existent location`() {

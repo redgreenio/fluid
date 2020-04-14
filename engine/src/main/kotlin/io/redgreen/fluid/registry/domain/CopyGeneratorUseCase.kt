@@ -1,6 +1,6 @@
 package io.redgreen.fluid.registry.domain
 
-import io.redgreen.fluid.engine.model.GeneratorJar
+import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.ValidGenerator
 import io.redgreen.fluid.registry.domain.CopyGeneratorUseCase.Result.GeneratorCopied
 import io.redgreen.fluid.registry.model.RegistryHome
 import java.nio.file.Files
@@ -17,8 +17,8 @@ class CopyGeneratorUseCase(
     registryHome.path.resolve(GENERATORS_DIR).toAbsolutePath()
   }
 
-  fun invoke(generatorJar: GeneratorJar): Result {
-    val sourceJarPath = generatorJar.path
+  fun invoke(validGenerator: ValidGenerator): Result {
+    val sourceJarPath = Path.of(validGenerator.jarPath)
     val generatorJarFileName = sourceJarPath.fileName.toString()
     val destinationJarPath = registryGeneratorsDirPath.resolve(generatorJarFileName)
 
