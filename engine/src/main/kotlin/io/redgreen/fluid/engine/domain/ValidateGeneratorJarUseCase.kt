@@ -10,11 +10,10 @@ import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.NotGen
 import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.ValidGenerator
 import io.redgreen.fluid.engine.domain.ValidateManifestJsonUseCase.Result.Valid
 import io.redgreen.fluid.engine.model.Manifest
+import io.redgreen.fluid.extensions.computeSha256
 import java.net.URLClassLoader
 import java.nio.file.Files
 import java.nio.file.Path
-import java.security.DigestInputStream
-import java.security.MessageDigest
 import java.util.Optional
 import java.util.zip.ZipException
 import java.util.zip.ZipFile
@@ -90,23 +89,11 @@ class ValidateGeneratorJarUseCase {
   ): Result {
     return try {
       loadedClass.getConstructor()
-      ValidGenerator(manifest, loadedClass, computeSha256(artifactPath), artifactPath)
+      val sha256 = computeSha256(Files.newInputStream(artifactPath))
+      ValidGenerator(manifest, loadedClass, sha256, artifactPath)
     } catch (e: NoSuchMethodException) {
       MissingDefaultConstructor(artifactPath, manifest.generator.implementation)
     }
-  }
-
-  private fun computeSha256(artifactPath: Path): String {
-    val messageDigest = MessageDigest.getInstance("SHA-256")
-    Files.newInputStream(artifactPath).use { inputStream ->
-      DigestInputStream(inputStream, messageDigest).use { digestInputStream ->
-        var readBytes: Int
-        do {
-          readBytes = digestInputStream.read()
-        } while (readBytes != -1)
-      }
-    }
-    return messageDigest.digest().joinToString("") { String.format("%02x", it) }
   }
 
   sealed class Result(open val artifactPath: Path) {
