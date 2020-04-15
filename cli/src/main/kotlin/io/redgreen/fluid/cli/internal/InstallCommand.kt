@@ -32,7 +32,7 @@ internal class InstallCommand(
     return if (result is ValidGenerator) {
       installGeneratorJarUseCase.invoke(result)
       Printer.print { "Digest: sha256:f9dfddf63636d84ef479d645ab5885156ae030f611a56f3a7ac7f2fdd86d7e4e" }
-      Printer.print { "Installed generator ':id' from '${result.artifactPath}'" }
+      Printer.print { "Installed generator '${result.manifest.generator.id}' from '${result.artifactPath}'" }
       EXIT_CODE_SUCCESS
     } else {
       -1

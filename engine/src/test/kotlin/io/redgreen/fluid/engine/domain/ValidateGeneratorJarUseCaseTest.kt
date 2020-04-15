@@ -4,7 +4,7 @@ import com.google.common.truth.Truth.assertThat
 import io.redgreen.fluid.assist.getTestArtifact
 import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.DoesNotImplementGeneratorInterface
 import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.JarNotFound
-import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.ManifestMissingAttributes
+import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.MissingManifestAttributes
 import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.MissingDefaultConstructor
 import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.MissingGeneratorClassSpecifiedInManifest
 import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.NotGeneratorJar
@@ -51,7 +51,7 @@ class ValidateGeneratorJarUseCaseTest {
 
     // then
     assertThat(result)
-      .isEqualTo(ManifestMissingAttributes(artifactWithMissingAttributesPath))
+      .isEqualTo(MissingManifestAttributes(artifactWithMissingAttributesPath))
   }
 
   @Test

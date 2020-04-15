@@ -3,9 +3,9 @@ package io.redgreen.fluid.engine.domain
 import io.redgreen.fluid.api.Generator
 import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.DoesNotImplementGeneratorInterface
 import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.JarNotFound
-import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.ManifestMissingAttributes
 import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.MissingDefaultConstructor
 import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.MissingGeneratorClassSpecifiedInManifest
+import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.MissingManifestAttributes
 import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.NotGeneratorJar
 import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.ValidGenerator
 import io.redgreen.fluid.engine.domain.ValidateManifestJsonUseCase.Result.Valid
@@ -40,15 +40,9 @@ class ValidateGeneratorJarUseCase {
     } else {
       val validationResult = manifestValidationResultOptional.get()
       if (validationResult is Valid) {
-        val generatorClassName = getGeneratorClassName(validationResult.manifest)
-          ?: return ManifestMissingAttributes(artifactPath)
-
-        return validateGeneratorClassSpecifiedInManifest(
-          artifactPath,
-          generatorClassName
-        )
+        validateGeneratorClassSpecifiedInManifest(artifactPath, validationResult.manifest)
       } else {
-        ManifestMissingAttributes(artifactPath)
+        MissingManifestAttributes(artifactPath)
       }
     }
   }
@@ -66,20 +60,18 @@ class ValidateGeneratorJarUseCase {
     return Optional.empty()
   }
 
-  private fun getGeneratorClassName(manifest: Manifest): String? =
-    manifest.generator.implementation
-
   private fun validateGeneratorClassSpecifiedInManifest(
     artifactPath: Path,
-    generatorClassName: String
+    manifest: Manifest
   ): Result {
+    val generatorClassName = manifest.generator.implementation
     return try {
       val loadedClass = getGeneratorClassLoader(artifactPath).loadClass(generatorClassName)
       if (!Generator::class.java.isAssignableFrom(loadedClass)) {
         DoesNotImplementGeneratorInterface(artifactPath, loadedClass.name)
       } else {
         val generatorClass = loadedClass.asSubclass(Generator::class.java)
-        validateClassImplementingGeneratorType(artifactPath, generatorClass, generatorClassName)
+        validateClassImplementingGeneratorType(artifactPath, generatorClass, manifest)
       }
     } catch (e: ClassNotFoundException) {
       MissingGeneratorClassSpecifiedInManifest(artifactPath, generatorClassName)
@@ -92,13 +84,13 @@ class ValidateGeneratorJarUseCase {
   private fun validateClassImplementingGeneratorType(
     artifactPath: Path,
     loadedClass: Class<out Generator>,
-    generatorClassName: String
+    manifest: Manifest
   ): Result {
     return try {
       loadedClass.getConstructor()
-      ValidGenerator(artifactPath, loadedClass)
+      ValidGenerator(artifactPath, manifest, loadedClass)
     } catch (e: NoSuchMethodException) {
-      MissingDefaultConstructor(artifactPath, generatorClassName)
+      MissingDefaultConstructor(artifactPath, manifest.generator.implementation)
     }
   }
 
@@ -116,7 +108,7 @@ class ValidateGeneratorJarUseCase {
     /**
      * The jar file does not contain the mandatory 'Generator' attribute.
      */
-    data class ManifestMissingAttributes(override val artifactPath: Path) : Result(artifactPath)
+    data class MissingManifestAttributes(override val artifactPath: Path) : Result(artifactPath)
 
     /**
      * The jar file contains a 'Generator' attribute, but the class specified by the attribute is missing
@@ -149,6 +141,7 @@ class ValidateGeneratorJarUseCase {
      */
     data class ValidGenerator internal constructor(
       override val artifactPath: Path,
+      val manifest: Manifest,
       val generatorClass: Class<out Generator>
     ) : Result(artifactPath)
   }
