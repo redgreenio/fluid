@@ -8,6 +8,10 @@ plugins {
 
 version '1.0-SNAPSHOT'
 
+repositories {
+  maven { url 'https://jitpack.io' } // for artefacts.jsonSchema
+}
+
 dependencies {
   signature 'org.codehaus.mojo.signature:java18:1.0@signature'
 
@@ -17,6 +21,7 @@ dependencies {
   implementation artefacts.logback
   implementation artefacts.moshi.runtime
   kapt artefacts.moshi.compiler
+  implementation artefacts.jsonSchema
 
   testImplementation artefacts.junit.api
   testRuntimeOnly artefacts.junit.runtime

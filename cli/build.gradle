@@ -9,7 +9,7 @@ group 'io.redgreen'
 version '1.0-SNAPSHOT'
 
 repositories {
-  mavenCentral()
+  maven { url 'https://jitpack.io' } // Because, ':cli' depends on ':engine' therefore transitively depends on artefacts.jsonSchema
 }
 
 mainClassName = 'io.redgreen.fluid.cli.CliKt'
