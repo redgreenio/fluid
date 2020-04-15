@@ -1,14 +1,18 @@
 package io.redgreen.fluid.engine.domain
 
 import com.google.common.truth.Truth.assertThat
+import io.redgreen.fluid.api.Generator
 import io.redgreen.fluid.assist.getTestArtifact
 import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.DoesNotImplementGeneratorInterface
 import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.JarNotFound
-import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.MissingManifestAttributes
 import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.MissingDefaultConstructor
 import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.MissingGeneratorClassSpecifiedInManifest
+import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.MissingManifestAttributes
 import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.NotGeneratorJar
 import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.ValidGenerator
+import io.redgreen.fluid.engine.model.GeneratorEntry
+import io.redgreen.fluid.engine.model.MaintainerEntry
+import io.redgreen.fluid.engine.model.Manifest
 import org.junit.jupiter.api.Test
 import java.nio.file.Paths
 
@@ -63,10 +67,8 @@ class ValidateGeneratorJarUseCaseTest {
     val result = useCase.invoke(validArtifactPath) as ValidGenerator
 
     // then
-    assertThat(result.artifactPath)
-      .isEqualTo(validArtifactPath)
-    assertThat(result.generatorClass.name)
-      .isEqualTo("com.example.generator.LibraryProjectGenerator")
+    assertThat(result)
+      .isEqualTo(getExpectedValidGenerator(result.generatorClass.classLoader))
   }
 
   @Test
@@ -109,5 +111,25 @@ class ValidateGeneratorJarUseCaseTest {
     // then
     assertThat(result)
       .isEqualTo(MissingDefaultConstructor(artifactWithMissingDefaultConstructorPath, generatorClassName))
+  }
+
+  private fun getExpectedValidGenerator(generatorClassLoader: ClassLoader): ValidGenerator {
+    val generator = GeneratorEntry(
+      "generator-id",
+      "com.example.generator.LibraryProjectGenerator",
+      "Name",
+      "Description",
+      "0.1.0"
+    )
+    val maintainer = MaintainerEntry("Acme Inc.,", "https://example.com", "oss@example.com")
+    val generatorClass = generatorClassLoader
+      .loadClass("com.example.generator.LibraryProjectGenerator")
+      .asSubclass(Generator::class.java)
+    return ValidGenerator(
+      Manifest(generator, maintainer),
+      generatorClass,
+      "e06d23a21cb227896cf1c5503d04727841920da07279605787726869c043e618",
+      Paths.get("src/test/resources/jar-test-artifacts/valid-generator.jar")
+    )
   }
 }
