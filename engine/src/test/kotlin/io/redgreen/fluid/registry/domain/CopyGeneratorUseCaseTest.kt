@@ -5,6 +5,7 @@ import io.redgreen.fluid.assist.ARTIFACT_VALID_GENERATOR
 import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.ValidGenerator
 import io.redgreen.fluid.registry.assist.RegistrySubject.Companion.assertThat
 import io.redgreen.fluid.registry.assist.ValidGeneratorParameterResolver
+import io.redgreen.fluid.registry.assist.ValidGeneratorParameterResolver.TestArtifact
 import io.redgreen.fluid.registry.assist.artifactPath
 import io.redgreen.fluid.registry.domain.CopyGeneratorUseCase.Result.GeneratorCopied
 import io.redgreen.fluid.registry.model.Registry
@@ -24,7 +25,7 @@ class CopyGeneratorUseCaseTest {
 
   @Test
   fun `it should copy generator jars inside the registry's libs directory`(
-    validGenerator: ValidGenerator
+    @TestArtifact(ARTIFACT_VALID_GENERATOR) validGenerator: ValidGenerator
   ) {
     // given
     val useCase = CopyGeneratorUseCase(registry)

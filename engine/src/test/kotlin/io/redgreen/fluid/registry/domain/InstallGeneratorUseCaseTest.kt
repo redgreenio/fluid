@@ -5,6 +5,7 @@ import io.redgreen.fluid.assist.ARTIFACT_VALID_GENERATOR
 import io.redgreen.fluid.assist.moshi
 import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.ValidGenerator
 import io.redgreen.fluid.registry.assist.ValidGeneratorParameterResolver
+import io.redgreen.fluid.registry.assist.ValidGeneratorParameterResolver.TestArtifact
 import io.redgreen.fluid.registry.domain.InstallGeneratorUseCase.Result.GeneratorInstalled
 import io.redgreen.fluid.registry.model.Registry
 import io.redgreen.fluid.registry.model.RegistryEntry
@@ -24,7 +25,7 @@ class InstallGeneratorUseCaseTest {
 
   @Test
   fun `it should add an entry to the registry after installation`(
-    validGenerator: ValidGenerator
+    @TestArtifact(ARTIFACT_VALID_GENERATOR) validGenerator: ValidGenerator
   ) {
     // given
     val useCase = InstallGeneratorUseCase(registry, moshi)
