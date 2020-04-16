@@ -5,5 +5,5 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class RegistryEntry(
   val id: String,
-  val generatorPath: String
+  val relativePath: String
 )
