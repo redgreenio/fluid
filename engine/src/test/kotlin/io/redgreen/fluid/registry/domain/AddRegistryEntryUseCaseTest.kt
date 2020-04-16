@@ -39,7 +39,7 @@ class AddRegistryEntryUseCaseTest {
       "entries": [
         {
           "id": "generator-id",
-          "relativeArtifactPath": "$ARTIFACT_SOME_GENERATOR_PATH"
+          "artifactName": "$ARTIFACT_SOME_GENERATOR_PATH"
         }
       ]
     }
@@ -84,11 +84,11 @@ class AddRegistryEntryUseCaseTest {
         "entries": [
           {
             "id": "generator-id",
-            "relativeArtifactPath": "$ARTIFACT_SOME_GENERATOR_PATH"
+            "artifactName": "$ARTIFACT_SOME_GENERATOR_PATH"
           },
           {
             "id": "generator-id",
-            "relativeArtifactPath": "$ARTIFACT_SHINY_NEW_GENERATOR_PATH"
+            "artifactName": "$ARTIFACT_SHINY_NEW_GENERATOR_PATH"
           }
         ]
       }

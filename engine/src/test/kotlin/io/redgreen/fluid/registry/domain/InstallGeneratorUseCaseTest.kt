@@ -36,7 +36,7 @@ class InstallGeneratorUseCaseTest {
     // then
     assertThat(result)
       .isEqualTo(
-        GeneratorInstalled(RegistryEntry("generator-id", "libs/$ARTIFACT_VALID_GENERATOR"))
+        GeneratorInstalled(RegistryEntry("generator-id", ARTIFACT_VALID_GENERATOR))
       )
   }
 }

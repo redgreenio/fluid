@@ -19,7 +19,7 @@ class LookupGeneratorUseCase {
 
     return if (registryEntryOptional.isPresent) {
       val registryEntry = registryEntryOptional.get()
-      val artifactPath = registry.path.resolve(registryEntry.relativeArtifactPath)
+      val artifactPath = registry.artifactsPath.resolve(registryEntry.artifactName)
       val installedGenerator = ValidateGeneratorUseCase().invoke(artifactPath) as ValidGenerator
       lookupGeneratorInRegistry(installedGenerator, generatorToInstall)
     } else {

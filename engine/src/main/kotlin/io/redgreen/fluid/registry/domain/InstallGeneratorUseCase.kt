@@ -15,19 +15,17 @@ class InstallGeneratorUseCase(
   fun invoke(validGenerator: ValidGenerator): Result {
     return when (val result = CopyGeneratorUseCase(registry).invoke(validGenerator)) {
       is GeneratorCopied -> {
-        val relativePath = getRelativePath(result.destinationPath).toString()
+        val artifactName = getArtifactName(result.destinationPath)
         val generatorId = result.manifest.generator.id
-        val entry = RegistryEntry(generatorId, relativePath)
+        val entry = RegistryEntry(generatorId, artifactName)
         AddRegistryEntryUseCase(registry, moshi).invoke(entry)
         GeneratorInstalled(entry)
       }
     }
   }
 
-  private fun getRelativePath(jarPath: Path): Path {
-    val requiredNames = 2 // the "libs" directory and the "jar" path names
-    return jarPath.subpath(jarPath.nameCount - requiredNames, jarPath.nameCount)
-  }
+  private fun getArtifactName(jarPath: Path): String =
+    jarPath.fileName.toString()
 
   sealed class Result {
     data class GeneratorInstalled(
