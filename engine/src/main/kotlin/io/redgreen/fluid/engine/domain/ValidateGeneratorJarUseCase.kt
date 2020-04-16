@@ -3,20 +3,23 @@ package io.redgreen.fluid.engine.domain
 import io.redgreen.fluid.api.Generator
 import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.DoesNotImplementGeneratorInterface
 import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.JarNotFound
-import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.ManifestMissingGeneratorAttribute
+import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.ManifestMissingAttributes
 import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.MissingDefaultConstructor
 import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.MissingGeneratorClassSpecifiedInManifest
 import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.NotGeneratorJar
 import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.ValidGenerator
+import io.redgreen.fluid.engine.domain.ValidateManifestJsonUseCase.Result.Valid
+import io.redgreen.fluid.engine.model.Manifest
 import java.net.URLClassLoader
 import java.nio.file.Files
 import java.nio.file.Path
-import java.util.jar.JarInputStream
-import java.util.jar.Manifest
+import java.util.Optional
+import java.util.zip.ZipException
+import java.util.zip.ZipFile
 
 class ValidateGeneratorJarUseCase {
   companion object {
-    private const val KEY_GENERATOR = "Generator"
+    private const val MANIFEST_FILE_NAME = "manifest.json"
   }
 
   fun invoke(artifactPath: Path): Result {
@@ -24,27 +27,47 @@ class ValidateGeneratorJarUseCase {
       return JarNotFound(artifactPath)
     }
 
-    val jarManifest = getJarManifest(artifactPath) // TODO This information will be derived from an XML document
-      ?: return NotGeneratorJar(artifactPath)
-
-    val generatorClassName = getGeneratorClassName(jarManifest) // TODO Possibly replace with a ValidatePluginManifestUseCase??
-      ?: return ManifestMissingGeneratorAttribute(artifactPath)
-
-    return validateGeneratorClassSpecifiedInManifest(
-      artifactPath,
-      generatorClassName
-    )
-  }
-
-  private fun getJarManifest(maybeArtifactPath: Path): Manifest? =
-    Files.newInputStream(maybeArtifactPath).use { inputStream ->
-      JarInputStream(inputStream).use { jarStream ->
-        return jarStream.manifest
-      }
+    val zipFile = try {
+      ZipFile(artifactPath.toFile())
+    } catch (e: ZipException) {
+      e.printStackTrace()
+      return NotGeneratorJar(artifactPath)
     }
 
+    val manifestValidationResultOptional = validateManifestJson(zipFile)
+    return if (!manifestValidationResultOptional.isPresent) {
+      NotGeneratorJar(artifactPath)
+    } else {
+      val validationResult = manifestValidationResultOptional.get()
+      if (validationResult is Valid) {
+        val generatorClassName = getGeneratorClassName(validationResult.manifest)
+          ?: return ManifestMissingAttributes(artifactPath)
+
+        return validateGeneratorClassSpecifiedInManifest(
+          artifactPath,
+          generatorClassName
+        )
+      } else {
+        ManifestMissingAttributes(artifactPath)
+      }
+    }
+  }
+
+  private fun validateManifestJson(zipFile: ZipFile): Optional<ValidateManifestJsonUseCase.Result> {
+    val entries = zipFile.entries()
+
+    for (entry in entries) {
+      if (entry.name != MANIFEST_FILE_NAME) continue
+      val manifestJson = zipFile.getInputStream(entry).reader().readText()
+      val useCase = ValidateManifestJsonUseCase()
+      return Optional.of(useCase.invoke(manifestJson))
+    }
+
+    return Optional.empty()
+  }
+
   private fun getGeneratorClassName(manifest: Manifest): String? =
-    manifest.mainAttributes.getValue(KEY_GENERATOR)
+    manifest.generator.implementation
 
   private fun validateGeneratorClassSpecifiedInManifest(
     artifactPath: Path,
@@ -93,7 +116,7 @@ class ValidateGeneratorJarUseCase {
     /**
      * The jar file does not contain the mandatory 'Generator' attribute.
      */
-    data class ManifestMissingGeneratorAttribute(override val artifactPath: Path) : Result(artifactPath)
+    data class ManifestMissingAttributes(override val artifactPath: Path) : Result(artifactPath)
 
     /**
      * The jar file contains a 'Generator' attribute, but the class specified by the attribute is missing

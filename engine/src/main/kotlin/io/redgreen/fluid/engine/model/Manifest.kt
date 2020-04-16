@@ -4,6 +4,6 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class Manifest(
-  val generator: GeneratorMeta,
-  val maintainer: Maintainer
+  val generator: GeneratorEntry,
+  val maintainer: MaintainerEntry
 )

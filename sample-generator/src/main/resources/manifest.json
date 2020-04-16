@@ -1,0 +1,15 @@
+{
+  "generator": {
+    "name": "Name",
+    "description": "Description",
+    "version": "0.1.0",
+    "id": "generator-id",
+    "implementation": "com.example.generator.LibraryProjectGenerator"
+  },
+
+  "maintainer": {
+    "name": "Acme Inc.,",
+    "website": "https://example.com",
+    "email": "oss@example.com"
+  }
+}

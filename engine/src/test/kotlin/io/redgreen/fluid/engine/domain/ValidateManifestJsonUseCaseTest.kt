@@ -5,8 +5,8 @@ import io.redgreen.fluid.engine.domain.ValidateManifestJsonUseCase.Result.Invali
 import io.redgreen.fluid.engine.domain.ValidateManifestJsonUseCase.Result.MalformedJson
 import io.redgreen.fluid.engine.domain.ValidateManifestJsonUseCase.Result.Valid
 import io.redgreen.fluid.engine.json.Violation
-import io.redgreen.fluid.engine.model.GeneratorMeta
-import io.redgreen.fluid.engine.model.Maintainer
+import io.redgreen.fluid.engine.model.GeneratorEntry
+import io.redgreen.fluid.engine.model.MaintainerEntry
 import io.redgreen.fluid.engine.model.Manifest
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
@@ -40,14 +40,14 @@ class ValidateManifestJsonUseCaseTest {
     val result = useCase.invoke(manifestJson)
 
     // then
-    val generator = GeneratorMeta(
+    val generator = GeneratorEntry(
       "generator-id",
       "com.example.generator.ApplicationProjectGenerator",
       "Name",
       "Description",
       "0.1.0"
     )
-    val maintainer = Maintainer("Acme Inc.,", "https://example.com", "oss@example.com")
+    val maintainer = MaintainerEntry("Acme Inc.,", "https://example.com", "oss@example.com")
     val manifest = Manifest(generator, maintainer)
     assertThat(result)
       .isEqualTo(Valid(manifest))
