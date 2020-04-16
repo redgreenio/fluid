@@ -1,6 +1,7 @@
 package io.redgreen.fluid.registry.domain
 
 import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.ValidGenerator
+import io.redgreen.fluid.engine.model.Manifest
 import io.redgreen.fluid.registry.domain.CopyGeneratorUseCase.Result.GeneratorCopied
 import io.redgreen.fluid.registry.model.RegistryHome
 import java.nio.file.Files
@@ -27,12 +28,13 @@ class CopyGeneratorUseCase(
     }
 
     Files.copy(sourcePath, destinationPath)
-    return GeneratorCopied(destinationPath)
+    return GeneratorCopied(destinationPath, validGenerator.manifest)
   }
 
   sealed class Result {
     data class GeneratorCopied(
-      val destinationPath: Path
+      val destinationPath: Path,
+      val manifest: Manifest
     ) : Result()
   }
 }

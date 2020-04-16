@@ -30,12 +30,12 @@ class InstallGeneratorUseCaseTest {
     val useCase = InstallGeneratorUseCase(registryHome, moshi)
 
     // when
-    val result = useCase.invoke(validGenerator)
+    val result = useCase.invoke(validGenerator) as GeneratorInstalled
 
     // then
     assertThat(result)
       .isEqualTo(
-        GeneratorInstalled(RegistryEntry("libs/$ARTIFACT_VALID_GENERATOR"))
+        GeneratorInstalled(RegistryEntry("generator-id", "libs/$ARTIFACT_VALID_GENERATOR"))
       )
   }
 }

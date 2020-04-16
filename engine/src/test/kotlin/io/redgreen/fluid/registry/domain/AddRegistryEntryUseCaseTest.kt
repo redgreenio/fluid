@@ -38,6 +38,7 @@ class AddRegistryEntryUseCaseTest {
     {
       "entries": [
         {
+          "id": "generator-id",
           "generatorPath": "$ARTIFACT_SOME_GENERATOR_PATH"
         }
       ]
@@ -51,7 +52,7 @@ class AddRegistryEntryUseCaseTest {
       .registryFileExists(false)
 
     // given
-    val registryEntry = RegistryEntry(ARTIFACT_SOME_GENERATOR_PATH)
+    val registryEntry = RegistryEntry("generator-id", ARTIFACT_SOME_GENERATOR_PATH)
 
     // when
     val result = useCase.invoke(registryEntry)
@@ -71,7 +72,7 @@ class AddRegistryEntryUseCaseTest {
       .registryFileContentsEqual(registryFileContents)
 
     // given
-    val registryEntry = RegistryEntry(ARTIFACT_SHINY_NEW_GENERATOR_PATH)
+    val registryEntry = RegistryEntry("generator-id", ARTIFACT_SHINY_NEW_GENERATOR_PATH)
 
     // when
     val result = useCase.invoke(registryEntry)
@@ -82,9 +83,11 @@ class AddRegistryEntryUseCaseTest {
       {
         "entries": [
           {
+            "id": "generator-id",
             "generatorPath": "$ARTIFACT_SOME_GENERATOR_PATH"
           },
           {
+            "id": "generator-id",
             "generatorPath": "$ARTIFACT_SHINY_NEW_GENERATOR_PATH"
           }
         ]
@@ -106,7 +109,7 @@ class AddRegistryEntryUseCaseTest {
       .registryFileContentsEqual(corruptRegistryContents)
 
     // given
-    val registryEntry = RegistryEntry(ARTIFACT_SOME_GENERATOR_PATH)
+    val registryEntry = RegistryEntry("generator-id", ARTIFACT_SOME_GENERATOR_PATH)
 
     // when
     val result = useCase.invoke(registryEntry)

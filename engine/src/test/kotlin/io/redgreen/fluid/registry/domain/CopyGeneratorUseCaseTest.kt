@@ -35,7 +35,7 @@ class CopyGeneratorUseCaseTest {
     val destinationPath = registryHome.artifactPath(ARTIFACT_VALID_GENERATOR)
 
     assertThat(result)
-      .isEqualTo(GeneratorCopied(destinationPath))
+      .isEqualTo(GeneratorCopied(destinationPath, validGenerator.manifest))
     assertThat(registryHome)
       .containsArtifact(ARTIFACT_VALID_GENERATOR)
   }

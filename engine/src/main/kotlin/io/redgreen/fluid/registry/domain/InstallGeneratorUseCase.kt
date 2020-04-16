@@ -15,7 +15,9 @@ class InstallGeneratorUseCase(
   fun invoke(validGenerator: ValidGenerator): Result {
     return when (val result = CopyGeneratorUseCase(registryHome).invoke(validGenerator)) {
       is GeneratorCopied -> {
-        val entry = RegistryEntry(getRelativePath(result.destinationPath).toString())
+        val relativePath = getRelativePath(result.destinationPath).toString()
+        val generatorId = result.manifest.generator.id
+        val entry = RegistryEntry(generatorId, relativePath)
         AddRegistryEntryUseCase(registryHome, moshi).invoke(entry)
         GeneratorInstalled(entry)
       }
