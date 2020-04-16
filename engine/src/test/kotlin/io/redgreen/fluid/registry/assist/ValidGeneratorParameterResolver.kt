@@ -1,8 +1,8 @@
 package io.redgreen.fluid.registry.assist
 
 import io.redgreen.fluid.assist.getTestArtifact
-import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase
-import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.ValidGenerator
+import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase
+import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.ValidGenerator
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.extension.ParameterContext
 import org.junit.jupiter.api.extension.ParameterResolver
@@ -19,7 +19,7 @@ class ValidGeneratorParameterResolver : ParameterResolver {
     extensionContext: ExtensionContext
   ): Any {
     val artifact = parameterContext.parameter.getAnnotation(TestArtifact::class.java)
-    return ValidateGeneratorJarUseCase().invoke(getTestArtifact(artifact.name))
+    return ValidateGeneratorUseCase().invoke(getTestArtifact(artifact.name))
   }
 
   annotation class TestArtifact(

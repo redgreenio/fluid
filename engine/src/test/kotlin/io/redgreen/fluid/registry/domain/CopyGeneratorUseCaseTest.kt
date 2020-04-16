@@ -2,7 +2,7 @@ package io.redgreen.fluid.registry.domain
 
 import com.google.common.truth.Truth.assertThat
 import io.redgreen.fluid.assist.ARTIFACT_VALID_GENERATOR
-import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.ValidGenerator
+import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.ValidGenerator
 import io.redgreen.fluid.registry.assist.RegistrySubject.Companion.assertThat
 import io.redgreen.fluid.registry.assist.ValidGeneratorParameterResolver
 import io.redgreen.fluid.registry.assist.ValidGeneratorParameterResolver.TestArtifact

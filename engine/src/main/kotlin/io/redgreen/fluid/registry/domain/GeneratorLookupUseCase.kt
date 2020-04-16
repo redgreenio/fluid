@@ -1,7 +1,7 @@
 package io.redgreen.fluid.registry.domain
 
-import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase
-import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.ValidGenerator
+import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase
+import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.ValidGenerator
 import io.redgreen.fluid.registry.domain.GeneratorLookupUseCase.Result.AlreadyInstalled
 import io.redgreen.fluid.registry.domain.GeneratorLookupUseCase.Result.HashesDiffer
 import io.redgreen.fluid.registry.domain.GeneratorLookupUseCase.Result.NotInstalled
@@ -20,7 +20,7 @@ class GeneratorLookupUseCase {
     return if (registryEntryOptional.isPresent) {
       val registryEntry = registryEntryOptional.get()
       val artifactPath = registry.path.resolve(registryEntry.relativeArtifactPath)
-      val installedGenerator = ValidateGeneratorJarUseCase().invoke(artifactPath) as ValidGenerator
+      val installedGenerator = ValidateGeneratorUseCase().invoke(artifactPath) as ValidGenerator
 
       if (installedGenerator.sha256 == generatorToInstall.sha256) {
         AlreadyInstalled

@@ -4,7 +4,7 @@ import com.google.common.truth.Truth.assertThat
 import io.redgreen.fluid.api.Generator
 import io.redgreen.fluid.assist.ARTIFACT_VALID_GENERATOR
 import io.redgreen.fluid.assist.getTestArtifact
-import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.ValidGenerator
+import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.ValidGenerator
 import io.redgreen.fluid.engine.model.DirectoryCreated
 import io.redgreen.fluid.engine.model.FileCreated
 import org.junit.jupiter.api.Test
@@ -19,7 +19,7 @@ class RunGeneratorUseCaseTest {
   fun `it should run a valid generator`() {
     // given
     val validArtifactPath = getTestArtifact(ARTIFACT_VALID_GENERATOR)
-    val validGenerator = ValidateGeneratorJarUseCase().invoke(validArtifactPath) as ValidGenerator
+    val validGenerator = ValidateGeneratorUseCase().invoke(validArtifactPath) as ValidGenerator
     val generatorClass = validGenerator.generatorClass
       .asSubclass(Generator::class.java)
 

@@ -1,7 +1,7 @@
 package io.redgreen.fluid.registry.domain
 
 import com.squareup.moshi.Moshi
-import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.ValidGenerator
+import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.ValidGenerator
 import io.redgreen.fluid.registry.domain.CopyGeneratorUseCase.Result.GeneratorCopied
 import io.redgreen.fluid.registry.domain.InstallGeneratorUseCase.Result.GeneratorInstalled
 import io.redgreen.fluid.registry.model.Registry

@@ -1,13 +1,13 @@
 package io.redgreen.fluid.engine.domain
 
 import io.redgreen.fluid.api.Generator
-import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.DoesNotImplementGeneratorInterface
-import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.JarNotFound
-import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.MissingDefaultConstructor
-import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.MissingGeneratorClassSpecifiedInManifest
-import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.MissingManifestAttributes
-import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.NotGeneratorJar
-import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.ValidGenerator
+import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.DoesNotImplementGeneratorInterface
+import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.JarNotFound
+import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.MissingDefaultConstructor
+import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.MissingGeneratorClassSpecifiedInManifest
+import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.MissingManifestAttributes
+import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.NotGeneratorJar
+import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.ValidGenerator
 import io.redgreen.fluid.engine.domain.ValidateManifestJsonUseCase.Result.Valid
 import io.redgreen.fluid.engine.model.Manifest
 import io.redgreen.fluid.extensions.computeSha256
@@ -18,7 +18,7 @@ import java.util.Optional
 import java.util.zip.ZipException
 import java.util.zip.ZipFile
 
-class ValidateGeneratorJarUseCase {
+class ValidateGeneratorUseCase {
   companion object {
     private const val MANIFEST_FILE_NAME = "manifest.json"
   }

@@ -3,21 +3,21 @@ package io.redgreen.fluid.engine.domain
 import com.google.common.truth.Truth.assertThat
 import io.redgreen.fluid.api.Generator
 import io.redgreen.fluid.assist.getTestArtifact
-import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.DoesNotImplementGeneratorInterface
-import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.JarNotFound
-import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.MissingDefaultConstructor
-import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.MissingGeneratorClassSpecifiedInManifest
-import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.MissingManifestAttributes
-import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.NotGeneratorJar
-import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.ValidGenerator
+import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.DoesNotImplementGeneratorInterface
+import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.JarNotFound
+import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.MissingDefaultConstructor
+import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.MissingGeneratorClassSpecifiedInManifest
+import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.MissingManifestAttributes
+import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.NotGeneratorJar
+import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.ValidGenerator
 import io.redgreen.fluid.engine.model.GeneratorEntry
 import io.redgreen.fluid.engine.model.MaintainerEntry
 import io.redgreen.fluid.engine.model.Manifest
 import org.junit.jupiter.api.Test
 import java.nio.file.Paths
 
-class ValidateGeneratorJarUseCaseTest {
-  private val useCase = ValidateGeneratorJarUseCase()
+class ValidateGeneratorUseCaseTest {
+  private val useCase = ValidateGeneratorUseCase()
 
   @Test
   fun `it should return file does not exists for a non-existent location`() {

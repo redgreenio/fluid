@@ -3,8 +3,8 @@ package io.redgreen.fluid.cli.internal
 import com.squareup.moshi.Moshi
 import io.redgreen.fluid.cli.internal.FluidCommandLine.Companion.EXIT_CODE_SUCCESS
 import io.redgreen.fluid.cli.ui.Printer
-import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase
-import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.ValidGenerator
+import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase
+import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.ValidGenerator
 import io.redgreen.fluid.registry.domain.InstallGeneratorUseCase
 import io.redgreen.fluid.registry.model.Registry
 import picocli.CommandLine.Command
@@ -19,18 +19,18 @@ internal class InstallCommand(
   @Option(names = ["-j", "--jar"])
   internal lateinit var artifactPath: Path
 
-  private val validateGeneratorJarUseCase by lazy {
-    ValidateGeneratorJarUseCase()
+  private val validateGeneratorUseCase by lazy {
+    ValidateGeneratorUseCase()
   }
 
-  private val installGeneratorJarUseCase by lazy {
+  private val installGeneratorUseCase by lazy {
     InstallGeneratorUseCase(Registry.from(userHomeDir), Moshi.Builder().build())
   }
 
   override fun call(): Int {
-    val result = validateGeneratorJarUseCase.invoke(artifactPath)
+    val result = validateGeneratorUseCase.invoke(artifactPath)
     return if (result is ValidGenerator) {
-      installGeneratorJarUseCase.invoke(result)
+      installGeneratorUseCase.invoke(result)
       Printer.print { "Digest: sha256:${result.sha256}" }
       Printer.print { "Installed generator '${result.manifest.generator.id}' from '${result.artifactPath}'" }
       EXIT_CODE_SUCCESS
