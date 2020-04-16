@@ -31,11 +31,15 @@ internal class InstallCommand(
     val result = validateGeneratorUseCase.invoke(artifactPath)
     return if (result is ValidGenerator) {
       installGeneratorUseCase.invoke(result)
-      Printer.print { "Digest: sha256:${result.sha256}" }
-      Printer.print { "Installed generator '${result.manifest.generator.id}' from '${result.artifactPath}'" }
+      printInstallationNotes(result)
       EXIT_CODE_SUCCESS
     } else {
       -1
     }
+  }
+
+  private fun printInstallationNotes(validGenerator: ValidGenerator) {
+    Printer.print { "Digest: sha256:${validGenerator.sha256}" }
+    Printer.print { "Installed generator '${validGenerator.manifest.generator.id}' from '${validGenerator.artifactPath}'" }
   }
 }
