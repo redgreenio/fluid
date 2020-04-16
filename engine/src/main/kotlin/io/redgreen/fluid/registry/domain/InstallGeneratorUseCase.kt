@@ -4,21 +4,21 @@ import com.squareup.moshi.Moshi
 import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.ValidGenerator
 import io.redgreen.fluid.registry.domain.CopyGeneratorUseCase.Result.GeneratorCopied
 import io.redgreen.fluid.registry.domain.InstallGeneratorUseCase.Result.GeneratorInstalled
+import io.redgreen.fluid.registry.model.Registry
 import io.redgreen.fluid.registry.model.RegistryEntry
-import io.redgreen.fluid.registry.model.RegistryHome
 import java.nio.file.Path
 
 class InstallGeneratorUseCase(
-  private val registryHome: RegistryHome,
+  private val registry: Registry,
   private val moshi: Moshi
 ) {
   fun invoke(validGenerator: ValidGenerator): Result {
-    return when (val result = CopyGeneratorUseCase(registryHome).invoke(validGenerator)) {
+    return when (val result = CopyGeneratorUseCase(registry).invoke(validGenerator)) {
       is GeneratorCopied -> {
         val relativePath = getRelativePath(result.destinationPath).toString()
         val generatorId = result.manifest.generator.id
         val entry = RegistryEntry(generatorId, relativePath)
-        AddRegistryEntryUseCase(registryHome, moshi).invoke(entry)
+        AddRegistryEntryUseCase(registry, moshi).invoke(entry)
         GeneratorInstalled(entry)
       }
     }

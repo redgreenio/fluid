@@ -6,8 +6,8 @@ import io.redgreen.fluid.assist.moshi
 import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.ValidGenerator
 import io.redgreen.fluid.registry.assist.ValidGeneratorParameterResolver
 import io.redgreen.fluid.registry.domain.InstallGeneratorUseCase.Result.GeneratorInstalled
+import io.redgreen.fluid.registry.model.Registry
 import io.redgreen.fluid.registry.model.RegistryEntry
-import io.redgreen.fluid.registry.model.RegistryHome
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.io.TempDir
@@ -18,8 +18,8 @@ class InstallGeneratorUseCaseTest {
   @TempDir
   internal lateinit var supposedlyUserHomeDir: Path
 
-  private val registryHome by lazy {
-    RegistryHome.from(supposedlyUserHomeDir)
+  private val registry by lazy {
+    Registry.from(supposedlyUserHomeDir)
   }
 
   @Test
@@ -27,7 +27,7 @@ class InstallGeneratorUseCaseTest {
     validGenerator: ValidGenerator
   ) {
     // given
-    val useCase = InstallGeneratorUseCase(registryHome, moshi)
+    val useCase = InstallGeneratorUseCase(registry, moshi)
 
     // when
     val result = useCase.invoke(validGenerator) as GeneratorInstalled

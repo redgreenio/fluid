@@ -3,19 +3,19 @@ package io.redgreen.fluid.registry.domain
 import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.ValidGenerator
 import io.redgreen.fluid.engine.model.Manifest
 import io.redgreen.fluid.registry.domain.CopyGeneratorUseCase.Result.GeneratorCopied
-import io.redgreen.fluid.registry.model.RegistryHome
+import io.redgreen.fluid.registry.model.Registry
 import java.nio.file.Files
 import java.nio.file.Path
 
 class CopyGeneratorUseCase(
-  private val registryHome: RegistryHome
+  private val registry: Registry
 ) {
   companion object {
     private const val GENERATORS_DIR = "libs"
   }
 
   private val registryGeneratorsDirPath by lazy {
-    registryHome.path.resolve(GENERATORS_DIR).toAbsolutePath()
+    registry.path.resolve(GENERATORS_DIR).toAbsolutePath()
   }
 
   fun invoke(validGenerator: ValidGenerator): Result {

@@ -6,7 +6,7 @@ import io.redgreen.fluid.cli.ui.Printer
 import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase
 import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.ValidGenerator
 import io.redgreen.fluid.registry.domain.InstallGeneratorUseCase
-import io.redgreen.fluid.registry.model.RegistryHome
+import io.redgreen.fluid.registry.model.Registry
 import picocli.CommandLine.Command
 import picocli.CommandLine.Option
 import java.nio.file.Path
@@ -24,7 +24,7 @@ internal class InstallCommand(
   }
 
   private val installGeneratorJarUseCase by lazy {
-    InstallGeneratorUseCase(RegistryHome.from(userHomeDir), Moshi.Builder().build())
+    InstallGeneratorUseCase(Registry.from(userHomeDir), Moshi.Builder().build())
   }
 
   override fun call(): Int {

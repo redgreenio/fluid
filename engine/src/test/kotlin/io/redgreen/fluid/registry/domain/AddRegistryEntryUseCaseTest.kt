@@ -2,11 +2,11 @@ package io.redgreen.fluid.registry.domain
 
 import com.google.common.truth.Truth.assertThat
 import io.redgreen.fluid.assist.moshi
-import io.redgreen.fluid.registry.assist.RegistryHomeSubject.Companion.assertThat
+import io.redgreen.fluid.registry.assist.RegistrySubject.Companion.assertThat
 import io.redgreen.fluid.registry.assist.createRegistryFile
 import io.redgreen.fluid.registry.domain.AddRegistryEntryUseCase.Result.EntryAdded
+import io.redgreen.fluid.registry.model.Registry
 import io.redgreen.fluid.registry.model.RegistryEntry
-import io.redgreen.fluid.registry.model.RegistryHome
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
@@ -25,12 +25,12 @@ class AddRegistryEntryUseCaseTest {
   @TempDir
   internal lateinit var supposedlyUserHomeDir: Path
 
-  private val registryHome by lazy {
-    RegistryHome.from(supposedlyUserHomeDir)
+  private val registry by lazy {
+    Registry.from(supposedlyUserHomeDir)
   }
 
   private val useCase by lazy {
-    AddRegistryEntryUseCase(registryHome, moshi)
+    AddRegistryEntryUseCase(registry, moshi)
   }
 
   @Language("JSON")
@@ -48,7 +48,7 @@ class AddRegistryEntryUseCaseTest {
   @Test
   fun `it should create a new file and add an entry if the file does not exist`() {
     // precondition
-    assertThat(registryHome)
+    assertThat(registry)
       .registryFileExists(false)
 
     // given
@@ -60,15 +60,15 @@ class AddRegistryEntryUseCaseTest {
     // then
     assertThat(result)
       .isEqualTo(EntryAdded)
-    assertThat(registryHome)
+    assertThat(registry)
       .registryFileContentsEqual(registryFileContents)
   }
 
   @Test
   fun `it should append an existing entry to an already existing registry file`() {
     // precondition
-    registryHome.createRegistryFile(registryFileContents)
-    assertThat(registryHome)
+    registry.createRegistryFile(registryFileContents)
+    assertThat(registry)
       .registryFileContentsEqual(registryFileContents)
 
     // given
@@ -96,7 +96,7 @@ class AddRegistryEntryUseCaseTest {
 
     assertThat(result)
       .isEqualTo(EntryAdded)
-    assertThat(registryHome)
+    assertThat(registry)
       .registryFileContentsEqual(updatedRegistryFileContents)
   }
 
@@ -104,8 +104,8 @@ class AddRegistryEntryUseCaseTest {
   fun `it should replace a corrupt registry and add an entry`() {
     // precondition
     val corruptRegistryContents = " /* Representation of a corrupt registry file */ "
-    registryHome.createRegistryFile(corruptRegistryContents)
-    assertThat(registryHome)
+    registry.createRegistryFile(corruptRegistryContents)
+    assertThat(registry)
       .registryFileContentsEqual(corruptRegistryContents)
 
     // given
@@ -117,7 +117,7 @@ class AddRegistryEntryUseCaseTest {
     // then
     assertThat(result)
       .isEqualTo(EntryAdded)
-    assertThat(registryHome)
+    assertThat(registry)
       .registryFileContentsEqual(registryFileContents)
   }
 }

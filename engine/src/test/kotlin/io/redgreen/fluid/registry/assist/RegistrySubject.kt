@@ -6,19 +6,19 @@ import com.google.common.truth.Subject
 import com.google.common.truth.Subject.Factory
 import com.google.common.truth.Truth.assertAbout
 import com.google.common.truth.Truth.assertThat
-import io.redgreen.fluid.registry.model.RegistryHome
+import io.redgreen.fluid.registry.model.Registry
 import java.nio.file.Files
 
-class RegistryHomeSubject(
+class RegistrySubject(
   metadata: FailureMetadata,
-  private val actual: RegistryHome
+  private val actual: Registry
 ) : Subject(metadata, actual) {
   companion object {
-    private val registryHomeSubjects = Factory(::RegistryHomeSubject)
+    private val registrySubjects = Factory(::RegistrySubject)
 
     @JvmStatic
-    fun assertThat(registryHome: RegistryHome): RegistryHomeSubject =
-      assertAbout(registryHomeSubjects).that(registryHome)
+    fun assertThat(registry: Registry): RegistrySubject =
+      assertAbout(registrySubjects).that(registry)
   }
 
   fun registryFileContentsEqual(expected: String) {

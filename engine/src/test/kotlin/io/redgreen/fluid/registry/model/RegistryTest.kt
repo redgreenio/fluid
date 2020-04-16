@@ -5,18 +5,18 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
 
-class RegistryHomeTest {
+class RegistryTest {
   @TempDir
   internal lateinit var supposedlyUserHome: File
 
   @Test
   fun `it can resolve a path to the fluid home directory`() {
     // when
-    val registryHome = RegistryHome.from(supposedlyUserHome.toPath())
+    val registry = Registry.from(supposedlyUserHome.toPath())
 
     // then
     val expectedPath = supposedlyUserHome.path + File.separator + ".fluid"
-    assertThat(registryHome.path.toString())
+    assertThat(registry.path.toString())
       .isEqualTo(expectedPath)
   }
 }

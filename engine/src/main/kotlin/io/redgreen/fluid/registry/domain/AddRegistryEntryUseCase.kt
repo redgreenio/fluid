@@ -4,15 +4,15 @@ import com.squareup.moshi.JsonEncodingException
 import com.squareup.moshi.JsonWriter
 import com.squareup.moshi.Moshi
 import io.redgreen.fluid.registry.domain.AddRegistryEntryUseCase.Result.EntryAdded
+import io.redgreen.fluid.registry.model.Registry
 import io.redgreen.fluid.registry.model.RegistryEntry
-import io.redgreen.fluid.registry.model.RegistryHome
 import io.redgreen.fluid.registry.model.RegistryManifest
 import okio.Buffer
 import java.nio.file.Files
 import java.nio.file.Path
 
 class AddRegistryEntryUseCase(
-  private val registryHome: RegistryHome,
+  private val registry: Registry,
   private val moshi: Moshi
 ) {
   private val registryManifestAdapter by lazy {
@@ -20,7 +20,7 @@ class AddRegistryEntryUseCase(
   }
 
   fun invoke(entry: RegistryEntry): Result {
-    val manifestPath = registryHome.registryManifestPath
+    val manifestPath = registry.registryManifestPath
     val registryManifest = createOrUpdateRegistryManifest(manifestPath, entry)
     writeToFile(manifestPath, registryManifest)
     return EntryAdded
@@ -30,7 +30,7 @@ class AddRegistryEntryUseCase(
     manifestFilePath: Path,
     entry: RegistryEntry
   ): RegistryManifest {
-    val registryFileExists = Files.exists(registryHome.path)
+    val registryFileExists = Files.exists(registry.path)
       && Files.exists(manifestFilePath)
 
     return if (registryFileExists) {
