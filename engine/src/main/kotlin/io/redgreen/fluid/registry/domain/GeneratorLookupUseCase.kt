@@ -7,6 +7,7 @@ import io.redgreen.fluid.registry.domain.GeneratorLookupUseCase.Result.HashesDif
 import io.redgreen.fluid.registry.domain.GeneratorLookupUseCase.Result.NotInstalled
 import io.redgreen.fluid.registry.domain.GeneratorLookupUseCase.Result.VersionsDiffer
 import io.redgreen.fluid.registry.model.Registry
+import io.redgreen.fluid.registry.model.VersionComparison
 
 class GeneratorLookupUseCase {
   fun invoke(
@@ -38,13 +39,16 @@ class GeneratorLookupUseCase {
     object AlreadyInstalled : Result()
 
     data class HashesDiffer(
-      val installedGeneratorHash: String,
-      val generatorToInstallHash: String
+      val installed: String,
+      val candidate: String
     ) : Result()
 
     data class VersionsDiffer(
-      val installedGeneratorVersion: String,
-      val generatorToInstallVersion: String
-    ) : Result()
+      val installed: String,
+      val candidate: String
+    ) : Result() {
+      fun compare(): VersionComparison =
+        VersionComparison.compare(installed, candidate)
+    }
   }
 }
