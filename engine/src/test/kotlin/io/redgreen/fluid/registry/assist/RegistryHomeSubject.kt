@@ -22,12 +22,12 @@ class RegistryHomeSubject(
   }
 
   fun registryFileContentsEqual(expected: String) {
-    assertThat(actual.registryFilePath.toFile().readText())
+    assertThat(actual.registryManifestPath.toFile().readText())
       .isEqualTo(expected)
   }
 
   fun registryFileExists(expected: Boolean) {
-    assertThat(Files.exists(actual.registryFilePath))
+    assertThat(Files.exists(actual.registryManifestPath))
       .isEqualTo(expected)
   }
 

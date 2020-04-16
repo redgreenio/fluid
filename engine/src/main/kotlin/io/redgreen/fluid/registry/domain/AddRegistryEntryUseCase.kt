@@ -4,9 +4,9 @@ import com.squareup.moshi.JsonEncodingException
 import com.squareup.moshi.JsonWriter
 import com.squareup.moshi.Moshi
 import io.redgreen.fluid.registry.domain.AddRegistryEntryUseCase.Result.EntryAdded
-import io.redgreen.fluid.registry.model.Registry
 import io.redgreen.fluid.registry.model.RegistryEntry
 import io.redgreen.fluid.registry.model.RegistryHome
+import io.redgreen.fluid.registry.model.RegistryManifest
 import okio.Buffer
 import java.nio.file.Files
 import java.nio.file.Path
@@ -15,65 +15,71 @@ class AddRegistryEntryUseCase(
   private val registryHome: RegistryHome,
   private val moshi: Moshi
 ) {
-  companion object {
-    private const val REGISTRY_FILE = "registry.json"
-  }
-
-  private val registryAdapter by lazy {
-    moshi.adapter(Registry::class.java)
+  private val registryManifestAdapter by lazy {
+    moshi.adapter(RegistryManifest::class.java)
   }
 
   fun invoke(entry: RegistryEntry): Result {
-    val registryFilePath = registryHome.path.resolve(REGISTRY_FILE)
-    val registry = createOrUpdateRegistry(registryFilePath, entry)
-    writeRegistryToFile(registryFilePath, registry)
+    val manifestPath = registryHome.registryManifestPath
+    val registryManifest = createOrUpdateRegistryManifest(manifestPath, entry)
+    writeToFile(manifestPath, registryManifest)
     return EntryAdded
   }
 
-  private fun createOrUpdateRegistry(
-    registryFilePath: Path,
+  private fun createOrUpdateRegistryManifest(
+    manifestFilePath: Path,
     entry: RegistryEntry
-  ): Registry {
+  ): RegistryManifest {
     val registryFileExists = Files.exists(registryHome.path)
-      && Files.exists(registryFilePath)
+      && Files.exists(manifestFilePath)
 
     return if (registryFileExists) {
-      getUpdatedRegistry(registryFilePath, entry)
+      addEntryToRegistryManifest(manifestFilePath, entry)
     } else {
-      createNewRegistryFile(registryFilePath)
-      getNewRegistry(entry)
+      createRegistryManifest(entry)
     }
   }
 
-  private fun getUpdatedRegistry(
-    registryFilePath: Path,
+  private fun addEntryToRegistryManifest(
+    registryManifestPath: Path,
     entry: RegistryEntry
-  ): Registry {
-    val registryJson = registryFilePath.toFile().readText()
+  ): RegistryManifest {
+    val registryJson = registryManifestPath.toFile().readText()
     return try {
-      val registry = registryAdapter.fromJson(registryJson)!!
+      val registry = registryManifestAdapter.fromJson(registryJson)!!
       registry.addEntry(entry)
     } catch (exception: JsonEncodingException) {
       // Corrupt registry
-      getNewRegistry(entry)
+      createRegistryManifest(entry)
     }
   }
 
-  private fun createNewRegistryFile(registryFilePath: Path) {
-    Files.createDirectories(registryFilePath.parent)
-    Files.createFile(registryFilePath)
-  }
+  private fun createRegistryManifest(
+    entry: RegistryEntry
+  ): RegistryManifest =
+    RegistryManifest(listOf(entry))
 
-  private fun getNewRegistry(entry: RegistryEntry): Registry =
-    Registry(listOf(entry))
-
-  private fun writeRegistryToFile(registryFilePath: Path, registry: Registry) {
+  private fun writeToFile(
+    registryManifestPath: Path,
+    registryManifest: RegistryManifest
+  ) {
     val buffer = Buffer()
     val jsonWriter = JsonWriter.of(buffer).apply { indent = "  " }
-    registryAdapter.toJson(jsonWriter, registry)
+    registryManifestAdapter.toJson(jsonWriter, registryManifest)
     val registryJsonContents = buffer.readUtf8()
 
-    registryFilePath.toFile().writeText(registryJsonContents)
+    if (!Files.exists(registryManifestPath)) {
+      createNewRegistryManifestFile(registryManifestPath)
+    }
+
+    registryManifestPath.toFile().writeText(registryJsonContents)
+  }
+
+  private fun createNewRegistryManifestFile(
+    registryManifestPath: Path
+  ) {
+    Files.createDirectories(registryManifestPath.parent)
+    Files.createFile(registryManifestPath)
   }
 
   sealed class Result {

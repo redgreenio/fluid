@@ -5,6 +5,7 @@ import io.redgreen.fluid.assist.ARTIFACT_VALID_GENERATOR
 import io.redgreen.fluid.engine.domain.ValidateGeneratorJarUseCase.Result.ValidGenerator
 import io.redgreen.fluid.registry.assist.RegistryHomeSubject.Companion.assertThat
 import io.redgreen.fluid.registry.assist.ValidGeneratorParameterResolver
+import io.redgreen.fluid.registry.assist.artifactPath
 import io.redgreen.fluid.registry.domain.CopyGeneratorUseCase.Result.GeneratorCopied
 import io.redgreen.fluid.registry.model.RegistryHome
 import org.junit.jupiter.api.Test

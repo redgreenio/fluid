@@ -6,20 +6,17 @@ class RegistryHome private constructor(val path: Path) {
   companion object {
     private const val FLUID_HOME_DIR = ".fluid"
     private const val FLUID_GENERATORS_DIR = "libs"
-    private const val REGISTRY_FILE_NAME = "registry.json"
+    private const val REGISTRY_MANIFEST_FILE = "registry-manifest.json"
 
     fun from(userHomeDir: Path): RegistryHome =
       RegistryHome(userHomeDir.resolve(FLUID_HOME_DIR))
   }
 
-  val registryFilePath: Path by lazy {
-    this.path
-      .resolve(REGISTRY_FILE_NAME)
+  val registryManifestPath: Path by lazy {
+    this.path.resolve(REGISTRY_MANIFEST_FILE)
   }
 
-  fun artifactPath(artifactFileName: String): Path {
-    return this.path
-      .resolve(FLUID_GENERATORS_DIR)
-      .resolve(artifactFileName)
+  val artifactsPath: Path by lazy {
+    this.path.resolve(FLUID_GENERATORS_DIR)
   }
 }
