@@ -7,10 +7,10 @@ import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.ValidGene
 import io.redgreen.fluid.engine.model.Manifest
 import io.redgreen.fluid.registry.assist.ValidGeneratorParameterResolver
 import io.redgreen.fluid.registry.assist.ValidGeneratorParameterResolver.TestArtifact
-import io.redgreen.fluid.registry.domain.GeneratorLookupUseCase.Result.AlreadyInstalled
-import io.redgreen.fluid.registry.domain.GeneratorLookupUseCase.Result.HashesDiffer
-import io.redgreen.fluid.registry.domain.GeneratorLookupUseCase.Result.NotInstalled
-import io.redgreen.fluid.registry.domain.GeneratorLookupUseCase.Result.VersionsDiffer
+import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.AlreadyInstalled
+import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.DifferentHashes
+import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.DifferentVersions
+import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.NotInstalled
 import io.redgreen.fluid.registry.model.Registry
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -18,7 +18,7 @@ import org.junit.jupiter.api.io.TempDir
 import java.nio.file.Path
 
 @ExtendWith(ValidGeneratorParameterResolver::class)
-class GeneratorLookupUseCaseTest {
+class LookupGeneratorUseCaseTest {
   @TempDir
   internal lateinit var supposedlyUserHomeDir: Path // TODO Remove duplication
 
@@ -30,8 +30,8 @@ class GeneratorLookupUseCaseTest {
     InstallGeneratorUseCase(registry, moshi)
   }
 
-  private val generatorLookupUseCase by lazy {
-    GeneratorLookupUseCase()
+  private val lookupGeneratorUseCase by lazy {
+    LookupGeneratorUseCase()
   }
 
   @Test
@@ -39,7 +39,7 @@ class GeneratorLookupUseCaseTest {
     @TestArtifact(ARTIFACT_VALID_GENERATOR) validGenerator: ValidGenerator
   ) {
     // when
-    val result = generatorLookupUseCase.invoke(registry, validGenerator)
+    val result = lookupGeneratorUseCase.invoke(registry, validGenerator)
 
     // then
     assertThat(result)
@@ -54,7 +54,7 @@ class GeneratorLookupUseCaseTest {
     installGeneratorUseCase.invoke(installedGenerator)
 
     // when
-    val result = generatorLookupUseCase.invoke(registry, installedGenerator)
+    val result = lookupGeneratorUseCase.invoke(registry, installedGenerator)
 
     // then
     assertThat(result)
@@ -70,11 +70,11 @@ class GeneratorLookupUseCaseTest {
     installGeneratorUseCase.invoke(installedGenerator)
 
     // when
-    val result = generatorLookupUseCase.invoke(registry, updatedGenerator)
+    val result = lookupGeneratorUseCase.invoke(registry, updatedGenerator)
 
     // then
     assertThat(result)
-      .isEqualTo(HashesDiffer(installedGenerator.sha256, updatedGenerator.sha256))
+      .isEqualTo(DifferentHashes(installedGenerator.sha256, updatedGenerator.sha256))
   }
 
   @Test
@@ -86,13 +86,13 @@ class GeneratorLookupUseCaseTest {
     installGeneratorUseCase.invoke(olderGenerator)
 
     // when
-    val result = generatorLookupUseCase.invoke(registry, newerGenerator)
+    val result = lookupGeneratorUseCase.invoke(registry, newerGenerator)
 
     // then
     val installedGeneratorVersion = getVersion(olderGenerator.manifest)
     val generatorToInstallVersion = getVersion(newerGenerator.manifest)
     assertThat(result)
-      .isEqualTo(VersionsDiffer(installedGeneratorVersion, generatorToInstallVersion))
+      .isEqualTo(DifferentVersions(installedGeneratorVersion, generatorToInstallVersion))
   }
 
   private fun getVersion(manifest: Manifest): String =

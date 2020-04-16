@@ -2,14 +2,14 @@ package io.redgreen.fluid.registry.domain
 
 import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase
 import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.ValidGenerator
-import io.redgreen.fluid.registry.domain.GeneratorLookupUseCase.Result.AlreadyInstalled
-import io.redgreen.fluid.registry.domain.GeneratorLookupUseCase.Result.HashesDiffer
-import io.redgreen.fluid.registry.domain.GeneratorLookupUseCase.Result.NotInstalled
-import io.redgreen.fluid.registry.domain.GeneratorLookupUseCase.Result.VersionsDiffer
+import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.AlreadyInstalled
+import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.DifferentHashes
+import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.DifferentVersions
+import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.NotInstalled
 import io.redgreen.fluid.registry.model.Registry
 import io.redgreen.fluid.registry.model.VersionComparison
 
-class GeneratorLookupUseCase {
+class LookupGeneratorUseCase {
   fun invoke(
     registry: Registry,
     generatorToInstall: ValidGenerator
@@ -21,16 +21,23 @@ class GeneratorLookupUseCase {
       val registryEntry = registryEntryOptional.get()
       val artifactPath = registry.path.resolve(registryEntry.relativeArtifactPath)
       val installedGenerator = ValidateGeneratorUseCase().invoke(artifactPath) as ValidGenerator
-
-      if (installedGenerator.sha256 == generatorToInstall.sha256) {
-        AlreadyInstalled
-      } else if (installedGenerator.manifest.generator.version == generatorToInstall.manifest.generator.version) {
-        HashesDiffer(installedGenerator.sha256, generatorToInstall.sha256)
-      } else {
-        VersionsDiffer(installedGenerator.manifest.generator.version, generatorToInstall.manifest.generator.version)
-      }
+      lookupGeneratorInRegistry(installedGenerator, generatorToInstall)
     } else {
       NotInstalled
+    }
+  }
+
+  private fun lookupGeneratorInRegistry(
+    installed: ValidGenerator,
+    candidate: ValidGenerator
+  ): Result {
+    val isFingerprintEqual = installed.sha256 == candidate.sha256
+    val isVersionEqual = installed.manifest.generator.version == candidate.manifest.generator.version
+
+    return when {
+      isFingerprintEqual -> AlreadyInstalled
+      isVersionEqual -> DifferentHashes(installed.sha256, candidate.sha256)
+      else -> DifferentVersions(installed.manifest.generator.version, candidate.manifest.generator.version)
     }
   }
 
@@ -38,12 +45,12 @@ class GeneratorLookupUseCase {
     object NotInstalled : Result()
     object AlreadyInstalled : Result()
 
-    data class HashesDiffer(
+    data class DifferentHashes(
       val installed: String,
       val candidate: String
     ) : Result()
 
-    data class VersionsDiffer(
+    data class DifferentVersions(
       val installed: String,
       val candidate: String
     ) : Result() {
