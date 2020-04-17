@@ -22,6 +22,7 @@ dependencies {
   implementation artefacts.picocli.runtime
   kapt artefacts.picocli.compiler
   implementation artefacts.moshi.runtime
+  implementation artefacts.chalk
 
   testImplementation artefacts.junit.api
   testRuntimeOnly artefacts.junit.runtime

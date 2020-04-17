@@ -1,11 +1,14 @@
 package io.redgreen.fluid.cli.internal
 
+import com.github.tomaslanger.chalk.Chalk
 import com.squareup.moshi.Moshi
 import io.redgreen.fluid.cli.internal.FluidCommandLine.Companion.EXIT_CODE_SUCCESS
+import io.redgreen.fluid.cli.internal.view.userMessage
 import io.redgreen.fluid.cli.ui.Printer
 import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase
 import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.ValidGenerator
 import io.redgreen.fluid.registry.domain.InstallGeneratorUseCase
+import io.redgreen.fluid.registry.domain.InstallGeneratorUseCase.Result.GeneratorInstalled
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.AlreadyInstalled
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.DifferentHashes
@@ -14,7 +17,10 @@ import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.NotInstal
 import io.redgreen.fluid.registry.model.Registry
 import picocli.CommandLine.Command
 import picocli.CommandLine.Option
+import java.io.BufferedReader
+import java.io.InputStreamReader
 import java.nio.file.Path
+import java.util.Scanner
 import java.util.concurrent.Callable
 
 @Command(name = "install")
@@ -30,32 +36,77 @@ internal class InstallCommand(
   private val lookupGeneratorUseCase by lazy { LookupGeneratorUseCase() }
 
   override fun call(): Int {
-    val validateGeneratorResult = validateGeneratorUseCase.invoke(candidatePath)
-    return if (validateGeneratorResult is ValidGenerator) {
-      when (val lookupResult = lookupGeneratorUseCase.invoke(registry, validateGeneratorResult)) {
-        NotInstalled -> performFreshInstall(validateGeneratorResult)
-        AlreadyInstalled -> printAlreadyInstalledMessage()
-        is DifferentHashes -> println(lookupResult)
-        is DifferentVersions -> println(lookupResult)
+    val validateCandidateResult = validateGeneratorUseCase.invoke(candidatePath)
+    return if (validateCandidateResult is ValidGenerator) {
+      val candidateGeneratorEntry = validateCandidateResult.manifest.generator
+
+      when (val lookupResult = lookupGeneratorUseCase.invoke(registry, validateCandidateResult)) {
+        NotInstalled -> performFreshInstall(validateCandidateResult)
+
+        AlreadyInstalled -> printAlreadyInstalledMessage(lookupResult as AlreadyInstalled, candidateGeneratorEntry.id)
+
+        is DifferentHashes -> {
+          printDifferentHashesMessage(lookupResult, candidateGeneratorEntry.id, candidateGeneratorEntry.version)
+          confirmWithUser({}, { Printer.println { "Installation aborted." } })
+        }
+
+        is DifferentVersions -> {
+          printDifferentVersionsMessage(lookupResult, candidateGeneratorEntry.id)
+          confirmWithUser({}, { Printer.println { "Installation aborted." } })
+        }
       }
 
       EXIT_CODE_SUCCESS
     } else {
-      TODO("Not a valid generator")
+      TODO("$validateCandidateResult")
     }
   }
 
-  private fun performFreshInstall(validGenerator: ValidGenerator) {
-    installGeneratorUseCase.invoke(validGenerator)
-    printFreshInstallMessage(validGenerator)
+  private fun performFreshInstall(candidate: ValidGenerator) {
+    val generatorInstalled = installGeneratorUseCase.invoke(candidate) as GeneratorInstalled
+    printGeneratorInstalledMessage(generatorInstalled, candidate.sha256)
   }
 
-  private fun printFreshInstallMessage(validGenerator: ValidGenerator) {
-    Printer.print { "Digest: sha256:${validGenerator.sha256}" }
-    Printer.print { "Installed generator '${validGenerator.manifest.generator.id}' from '${validGenerator.artifactPath}'" }
+  private fun printGeneratorInstalledMessage(
+    generatorInstalled: GeneratorInstalled,
+    hash: String
+  ) {
+    Printer.println { generatorInstalled.userMessage(hash) }
   }
 
-  private fun printAlreadyInstalledMessage() {
-    Printer.print { "Already installed. No changes were made." }
+  private fun printAlreadyInstalledMessage(
+    alreadyInstalled: AlreadyInstalled,
+    generatorId: String
+  ) {
+    Printer.println { alreadyInstalled.userMessage(generatorId) }
+  }
+
+  private fun printDifferentHashesMessage(
+    differentHashes: DifferentHashes,
+    generatorId: String,
+    version: String
+  ) {
+    Printer.println { differentHashes.userMessage(generatorId, version) }
+  }
+
+  private fun printDifferentVersionsMessage(
+    differentVersions: DifferentVersions,
+    generatorId: String
+  ) {
+    Printer.println { differentVersions.userMessage(generatorId) }
+  }
+
+  private fun confirmWithUser(proceed: () -> Unit, abort: () -> Unit) {
+    val meansYes = listOf("", "y", "yes", "ya", "yeah")
+    val questionMark = Chalk.on("?").green().bold()
+    val defaultYes = Chalk.on("Y").bold()
+    print("$questionMark Do you want to proceed? ($defaultYes/n) ")
+    val scanner = Scanner(BufferedReader(InputStreamReader(System.`in`)))
+    val answer = scanner.nextLine().trim().toLowerCase()
+    if (meansYes.contains(answer)) {
+      proceed()
+    } else {
+      abort()
+    }
   }
 }

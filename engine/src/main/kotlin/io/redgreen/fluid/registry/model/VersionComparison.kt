@@ -1,5 +1,6 @@
 package io.redgreen.fluid.registry.model;
 
+import com.github.zafarkhaja.semver.UnexpectedCharacterException
 import com.github.zafarkhaja.semver.Version
 
 enum class VersionComparison {
@@ -14,7 +15,7 @@ enum class VersionComparison {
         val comparisonResult = Version.valueOf(installed)
           .compareTo(Version.valueOf(candidate))
         return mapComparisionResult(comparisonResult)
-      } catch (e: Exception) {
+      } catch (e: UnexpectedCharacterException) {
         e.printStackTrace()
         NA
       }
