@@ -7,6 +7,10 @@ import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase
 import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.ValidGenerator
 import io.redgreen.fluid.registry.domain.InstallGeneratorUseCase
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase
+import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.AlreadyInstalled
+import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.DifferentHashes
+import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.DifferentVersions
+import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.NotInstalled
 import io.redgreen.fluid.registry.model.Registry
 import picocli.CommandLine.Command
 import picocli.CommandLine.Option
@@ -18,33 +22,40 @@ internal class InstallCommand(
   private val userHomeDir: Path
 ) : Callable<Int> {
   @Option(names = ["-j", "--jar"])
-  internal lateinit var artifactPath: Path
+  internal lateinit var candidatePath: Path
 
-  private val validateGeneratorUseCase by lazy {
-    ValidateGeneratorUseCase()
-  }
-
-  private val installGeneratorUseCase by lazy {
-    InstallGeneratorUseCase(Registry.from(userHomeDir), Moshi.Builder().build())
-  }
-
-  private val lookupGeneratorUseCase by lazy {
-    LookupGeneratorUseCase()
-  }
+  private val registry by lazy { Registry.from(userHomeDir) }
+  private val validateGeneratorUseCase by lazy { ValidateGeneratorUseCase() }
+  private val installGeneratorUseCase by lazy { InstallGeneratorUseCase(registry, Moshi.Builder().build()) }
+  private val lookupGeneratorUseCase by lazy { LookupGeneratorUseCase() }
 
   override fun call(): Int {
-    val result = validateGeneratorUseCase.invoke(artifactPath)
-    return if (result is ValidGenerator) {
-      installGeneratorUseCase.invoke(result)
-      printInstallationNotes(result)
+    val validateGeneratorResult = validateGeneratorUseCase.invoke(candidatePath)
+    return if (validateGeneratorResult is ValidGenerator) {
+      when (val lookupResult = lookupGeneratorUseCase.invoke(registry, validateGeneratorResult)) {
+        NotInstalled -> performFreshInstall(validateGeneratorResult)
+        AlreadyInstalled -> printAlreadyInstalledMessage()
+        is DifferentHashes -> println(lookupResult)
+        is DifferentVersions -> println(lookupResult)
+      }
+
       EXIT_CODE_SUCCESS
     } else {
-      -1
+      TODO("Not a valid generator")
     }
   }
 
-  private fun printInstallationNotes(validGenerator: ValidGenerator) {
+  private fun performFreshInstall(validGenerator: ValidGenerator) {
+    installGeneratorUseCase.invoke(validGenerator)
+    printFreshInstallMessage(validGenerator)
+  }
+
+  private fun printFreshInstallMessage(validGenerator: ValidGenerator) {
     Printer.print { "Digest: sha256:${validGenerator.sha256}" }
     Printer.print { "Installed generator '${validGenerator.manifest.generator.id}' from '${validGenerator.artifactPath}'" }
+  }
+
+  private fun printAlreadyInstalledMessage() {
+    Printer.print { "Already installed. No changes were made." }
   }
 }

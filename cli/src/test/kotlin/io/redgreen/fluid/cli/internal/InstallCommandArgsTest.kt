@@ -17,7 +17,7 @@ class InstallCommandArgsTest {
     CommandLine(installCommand).parseArgs(*args)
 
     // then
-    assertThat(installCommand.artifactPath)
+    assertThat(installCommand.candidatePath)
       .isEqualTo(Paths.get("my-generator.jar"))
   }
 
@@ -30,7 +30,7 @@ class InstallCommandArgsTest {
     CommandLine(installCommand).parseArgs(*args)
 
     // then
-    assertThat(installCommand.artifactPath)
+    assertThat(installCommand.candidatePath)
       .isEqualTo(Paths.get("my-generator.jar"))
   }
 }
