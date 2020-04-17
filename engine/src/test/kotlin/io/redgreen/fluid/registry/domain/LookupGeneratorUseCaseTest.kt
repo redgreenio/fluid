@@ -36,10 +36,10 @@ class LookupGeneratorUseCaseTest {
 
   @Test
   fun `it should return not found for a generator that is not installed`(
-    @TestArtifact(ARTIFACT_VALID_GENERATOR) validGenerator: ValidGenerator
+    @TestArtifact(ARTIFACT_VALID_GENERATOR) candidate: ValidGenerator
   ) {
     // when
-    val result = lookupGeneratorUseCase.invoke(registry, validGenerator)
+    val result = lookupGeneratorUseCase.invoke(registry, candidate)
 
     // then
     assertThat(result)
@@ -48,13 +48,14 @@ class LookupGeneratorUseCaseTest {
 
   @Test
   fun `it should return already installed if the artifact's signature is same as the one that's being installed`(
-    @TestArtifact(ARTIFACT_VALID_GENERATOR) installedGenerator: ValidGenerator
+    @TestArtifact(ARTIFACT_VALID_GENERATOR) installed: ValidGenerator,
+    @TestArtifact(ARTIFACT_VALID_GENERATOR) candidate: ValidGenerator
   ) {
     // given
-    installGeneratorUseCase.invoke(installedGenerator)
+    installGeneratorUseCase.invoke(installed)
 
     // when
-    val result = lookupGeneratorUseCase.invoke(registry, installedGenerator)
+    val result = lookupGeneratorUseCase.invoke(registry, candidate)
 
     // then
     assertThat(result)
@@ -63,36 +64,36 @@ class LookupGeneratorUseCaseTest {
 
   @Test
   fun `it should return different SHA-256 if the already installed generator's hash is different`(
-    @TestArtifact(ARTIFACT_VALID_GENERATOR) installedGenerator: ValidGenerator,
-    @TestArtifact("valid-generator-different-sha256.jar") updatedGenerator: ValidGenerator
+    @TestArtifact(ARTIFACT_VALID_GENERATOR) installed: ValidGenerator,
+    @TestArtifact("valid-generator-different-sha256.jar") candidate: ValidGenerator
   ) {
     // given
-    installGeneratorUseCase.invoke(installedGenerator)
+    installGeneratorUseCase.invoke(installed)
 
     // when
-    val result = lookupGeneratorUseCase.invoke(registry, updatedGenerator)
+    val result = lookupGeneratorUseCase.invoke(registry, candidate)
 
     // then
     assertThat(result)
-      .isEqualTo(DifferentHashes(installedGenerator.sha256, updatedGenerator.sha256))
+      .isEqualTo(DifferentHashes(installed.sha256, candidate.sha256))
   }
 
   @Test
   fun `it should return versions differ if the installed version is different from the generator being installed`(
-    @TestArtifact(ARTIFACT_VALID_GENERATOR) olderGenerator: ValidGenerator,
-    @TestArtifact("valid-generator-newer-version.jar") newerGenerator: ValidGenerator
+    @TestArtifact(ARTIFACT_VALID_GENERATOR) olderInstalled: ValidGenerator,
+    @TestArtifact("valid-generator-newer-version.jar") newerCandidate: ValidGenerator
   ) {
     // given
-    installGeneratorUseCase.invoke(olderGenerator)
+    installGeneratorUseCase.invoke(olderInstalled)
 
     // when
-    val result = lookupGeneratorUseCase.invoke(registry, newerGenerator)
+    val result = lookupGeneratorUseCase.invoke(registry, newerCandidate)
 
     // then
-    val installedGeneratorVersion = getVersion(olderGenerator.manifest)
-    val generatorToInstallVersion = getVersion(newerGenerator.manifest)
+    val installedVersion = getVersion(olderInstalled.manifest)
+    val candidateVersion = getVersion(newerCandidate.manifest)
     assertThat(result)
-      .isEqualTo(DifferentVersions(installedGeneratorVersion, generatorToInstallVersion))
+      .isEqualTo(DifferentVersions(installedVersion, candidateVersion))
   }
 
   private fun getVersion(manifest: Manifest): String =

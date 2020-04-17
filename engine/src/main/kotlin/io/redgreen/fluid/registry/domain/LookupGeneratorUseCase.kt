@@ -12,16 +12,16 @@ import io.redgreen.fluid.registry.model.VersionComparison
 class LookupGeneratorUseCase {
   fun invoke(
     registry: Registry,
-    generatorToInstall: ValidGenerator
+    candidate: ValidGenerator // TODO Can this be lean? Just pass sha256, ID, and version?
   ): Result {
     val registryEntryOptional = registry
-      .getRegistryEntry(generatorToInstall.manifest.generator.id)
+      .getRegistryEntry(candidate.manifest.generator.id)
 
     return if (registryEntryOptional.isPresent) {
       val registryEntry = registryEntryOptional.get()
       val artifactPath = registry.artifactsPath.resolve(registryEntry.artifactName)
-      val installedGenerator = ValidateGeneratorUseCase().invoke(artifactPath) as ValidGenerator
-      lookupGeneratorInRegistry(installedGenerator, generatorToInstall)
+      val installed = ValidateGeneratorUseCase().invoke(artifactPath) as ValidGenerator
+      lookupGeneratorInRegistry(installed, candidate)
     } else {
       NotInstalled
     }
