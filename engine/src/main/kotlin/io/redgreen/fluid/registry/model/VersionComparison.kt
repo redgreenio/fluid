@@ -6,7 +6,7 @@ enum class VersionComparison {
   NEWER, OLDER, EQUAL, NA;
 
   companion object {
-    fun compare(
+    fun compareCandidate(
       installed: String,
       candidate: String
     ): VersionComparison {

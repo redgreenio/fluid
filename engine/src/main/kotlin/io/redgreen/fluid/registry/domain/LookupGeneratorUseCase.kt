@@ -7,7 +7,6 @@ import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.Different
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.DifferentVersions
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.NotInstalled
 import io.redgreen.fluid.registry.model.Registry
-import io.redgreen.fluid.registry.model.VersionComparison
 
 class LookupGeneratorUseCase {
   fun invoke(
@@ -53,9 +52,6 @@ class LookupGeneratorUseCase {
     data class DifferentVersions(
       val installed: String,
       val candidate: String
-    ) : Result() {
-      fun compare(): VersionComparison =
-        VersionComparison.compare(installed, candidate)
-    }
+    ) : Result()
   }
 }
