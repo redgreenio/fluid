@@ -2,10 +2,25 @@
 Fluid is a scaffolding tool inspired by [Yeoman](https://yeoman.io/).
 
 ## Development
+### IntelliJ Run Configurations
+The following run configurations help us test various installation scenarios with the CLI.
+
+#### 1. [cli] install
+
+Installs *valid-generator.jar* in the local registry.
+
+#### 2. [cli] reinstall (different sha256)
+
+This command should be run after **[cli] install**. It helps reproduce the scenario where the installed generator has the same version number but a different hash. 
+
+#### 3. [cli] install (different version)
+
+This command should be run after **[cli] install**. It helps reproduce the scenario where the installed generator has a different version number.
+
 ### Working with Jars
 Depending on the module that you are working in, you may have to work with JARs. Here are some of the commands that can help with the workflow.
 
-**1. List the table of contents of a jar file.**
+#### 1. List the table of contents of a jar file.
 ```bash
 $ jar tf my-jar.jar
 ```
@@ -22,7 +37,7 @@ com/example/generator/LibraryProjectGenerator.class
 strawberry.png
 ```
 
-**2. List the table of contents with additional information.**
+#### 2. List the table of contents with additional information.
 ```bash
 $ jar tfv my-jar.jar
 ```
@@ -39,7 +54,7 @@ $ jar tfv my-jar.jar
  24246 Sat Apr 11 11:08:38 IST 2020 strawberry.png
 ```
 
-**3. Extract one or more file(s) from the jar.**
+#### 3. Extract one or more file(s) from the jar.
 ```bash
 $ jar xf my-jar.jar META-INF/MANIFEST.MF 
 ```

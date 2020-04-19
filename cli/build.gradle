@@ -14,10 +14,6 @@ repositories {
 
 mainClassName = 'io.redgreen.fluid.cli.CliKt'
 
-run {
-  args = ['install', '-j', '/home/rj/Desktop/test-drive/valid-generator.jar']
-}
-
 dependencies {
   signature 'org.codehaus.mojo.signature:java18:1.0@signature'
 
