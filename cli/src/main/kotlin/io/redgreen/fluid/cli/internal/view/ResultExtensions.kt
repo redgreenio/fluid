@@ -1,6 +1,6 @@
 package io.redgreen.fluid.cli.internal.view
 
-import io.redgreen.fluid.registry.domain.InstallGeneratorUseCase.Result.GeneratorInstalled
+import io.redgreen.fluid.registry.domain.InstallGeneratorUseCase.Result.FreshInstallSuccessful
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.AlreadyInstalled
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.DifferentHashes
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.DifferentVersions
@@ -9,7 +9,7 @@ import io.redgreen.fluid.registry.model.VersionComparison.NA
 import io.redgreen.fluid.registry.model.VersionComparison.NEWER
 import io.redgreen.fluid.registry.model.VersionComparison.OLDER
 
-fun GeneratorInstalled.userMessage(
+fun FreshInstallSuccessful.userMessage(
   hash: String
 ): String {
   return """

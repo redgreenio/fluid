@@ -3,7 +3,7 @@ package io.redgreen.fluid.registry.domain
 import com.squareup.moshi.Moshi
 import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.ValidGenerator
 import io.redgreen.fluid.registry.domain.CopyGeneratorUseCase.Result.GeneratorCopied
-import io.redgreen.fluid.registry.domain.InstallGeneratorUseCase.Result.GeneratorInstalled
+import io.redgreen.fluid.registry.domain.InstallGeneratorUseCase.Result.FreshInstallSuccessful
 import io.redgreen.fluid.registry.model.Registry
 import io.redgreen.fluid.registry.model.RegistryEntry
 import java.nio.file.Path
@@ -19,7 +19,7 @@ class InstallGeneratorUseCase(
         val generatorId = result.manifest.generator.id
         val entry = RegistryEntry(generatorId, artifactName)
         AddRegistryEntryUseCase(registry, moshi).invoke(entry)
-        GeneratorInstalled(entry)
+        FreshInstallSuccessful(entry)
       }
     }
   }
@@ -28,7 +28,7 @@ class InstallGeneratorUseCase(
     jarPath.fileName.toString()
 
   sealed class Result {
-    data class GeneratorInstalled(
+    data class FreshInstallSuccessful(
       val registryEntry: RegistryEntry
     ) : Result()
   }

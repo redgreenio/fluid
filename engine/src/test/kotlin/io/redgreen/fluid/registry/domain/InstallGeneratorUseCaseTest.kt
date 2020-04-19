@@ -6,7 +6,7 @@ import io.redgreen.fluid.assist.moshi
 import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.ValidGenerator
 import io.redgreen.fluid.registry.assist.ValidGeneratorParameterResolver
 import io.redgreen.fluid.registry.assist.ValidGeneratorParameterResolver.TestArtifact
-import io.redgreen.fluid.registry.domain.InstallGeneratorUseCase.Result.GeneratorInstalled
+import io.redgreen.fluid.registry.domain.InstallGeneratorUseCase.Result.FreshInstallSuccessful
 import io.redgreen.fluid.registry.model.Registry
 import io.redgreen.fluid.registry.model.RegistryEntry
 import org.junit.jupiter.api.Test
@@ -31,12 +31,12 @@ class InstallGeneratorUseCaseTest {
     val useCase = InstallGeneratorUseCase(registry, moshi)
 
     // when
-    val result = useCase.invoke(validGenerator) as GeneratorInstalled
+    val result = useCase.invoke(validGenerator) as FreshInstallSuccessful
 
     // then
     assertThat(result)
       .isEqualTo(
-        GeneratorInstalled(RegistryEntry("generator-id", ARTIFACT_VALID_GENERATOR))
+        FreshInstallSuccessful(RegistryEntry("generator-id", ARTIFACT_VALID_GENERATOR))
       )
   }
 }

@@ -1,7 +1,7 @@
 package io.redgreen.fluid.cli.internal.view
 
 import com.google.common.truth.Truth.assertThat
-import io.redgreen.fluid.registry.domain.InstallGeneratorUseCase.Result.GeneratorInstalled
+import io.redgreen.fluid.registry.domain.InstallGeneratorUseCase.Result.FreshInstallSuccessful
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.AlreadyInstalled
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.DifferentHashes
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.DifferentVersions
@@ -12,7 +12,7 @@ internal class ResultExtensionsTest {
   @Test
   fun `it should return a message for generator installed`() {
     // given
-    val generatorInstalled = GeneratorInstalled(RegistryEntry("dropwizard", "dropwizard.jar"))
+    val generatorInstalled = FreshInstallSuccessful(RegistryEntry("dropwizard", "dropwizard.jar"))
 
     // when
     val sha256 = "e06d23a21cb227896cf1c5503d04727841920da07279605787726869c043e618"
