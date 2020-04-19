@@ -2,6 +2,7 @@ package io.redgreen.fluid.cli.internal.view
 
 import com.google.common.truth.Truth.assertThat
 import io.redgreen.fluid.registry.domain.InstallGeneratorUseCase.Result.FreshInstallSuccessful
+import io.redgreen.fluid.registry.domain.InstallGeneratorUseCase.Result.OverwriteSuccessful
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.AlreadyInstalled
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.DifferentHashes
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.DifferentVersions
@@ -10,14 +11,14 @@ import org.junit.jupiter.api.Test
 
 internal class ResultExtensionsTest {
   @Test
-  fun `it should return a message for generator installed`() {
+  fun `it should return a message for a fresh install`() {
     // given
-    val generatorInstalled = FreshInstallSuccessful(RegistryEntry("dropwizard", "dropwizard.jar"))
+    val freshInstallSuccessful = FreshInstallSuccessful(RegistryEntry("dropwizard", "dropwizard.jar"))
 
     // when
     val sha256 = "e06d23a21cb227896cf1c5503d04727841920da07279605787726869c043e618"
-    val generatorId = generatorInstalled.registryEntry.id
-    val userMessage = generatorInstalled.userMessage(sha256)
+    val generatorId = freshInstallSuccessful.registryEntry.id
+    val userMessage = freshInstallSuccessful.userMessage(sha256)
 
     // then
     val message = """
@@ -128,6 +129,25 @@ internal class ResultExtensionsTest {
       Generator '$generatorId', version '$installed' is installed.
       The generator you are trying to install will CHANGE it to '$candidate'.
     """.trimIndent()
+    assertThat(userMessage)
+      .isEqualTo(message)
+  }
+
+  @Test
+  fun `it should return a message for an overwrite install`() {
+    // given
+    val overwriteSuccessful = OverwriteSuccessful(RegistryEntry("spring-boot", "spring-boot.jar"))
+
+    // when
+    val sha256 = "e06d23a21cb227896cf1c5503d04727841920da07279605787726869c043e618"
+    val generatorId = overwriteSuccessful.registryEntry.id
+    val userMessage = overwriteSuccessful.userMessage(sha256)
+
+    // then
+    val message = """
+        Digest: sha256:$sha256
+        Generator overwritten: '${generatorId}'
+      """.trimIndent()
     assertThat(userMessage)
       .isEqualTo(message)
   }

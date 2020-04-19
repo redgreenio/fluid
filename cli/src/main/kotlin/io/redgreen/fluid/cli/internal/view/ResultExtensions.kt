@@ -1,6 +1,7 @@
 package io.redgreen.fluid.cli.internal.view
 
 import io.redgreen.fluid.registry.domain.InstallGeneratorUseCase.Result.FreshInstallSuccessful
+import io.redgreen.fluid.registry.domain.InstallGeneratorUseCase.Result.OverwriteSuccessful
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.AlreadyInstalled
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.DifferentHashes
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.DifferentVersions
@@ -40,7 +41,7 @@ fun DifferentHashes.userMessage(
 }
 
 fun DifferentVersions.userMessage(generatorId: String): String {
-  val consequence = when(VersionComparison.compareCandidate(installed, candidate)) {
+  val consequence = when (VersionComparison.compareCandidate(installed, candidate)) {
     NEWER -> "upgrade"
     OLDER -> "downgrade"
     NA -> "change"
@@ -49,5 +50,14 @@ fun DifferentVersions.userMessage(generatorId: String): String {
   return """
       Generator '$generatorId', version '$installed' is installed.
       The generator you are trying to install will $consequence it to '$candidate'.
+    """.trimIndent()
+}
+
+fun OverwriteSuccessful.userMessage(
+  hash: String
+): String {
+  return """
+      Digest: sha256:$hash
+      Generator overwritten: '${this.registryEntry.id}'
     """.trimIndent()
 }

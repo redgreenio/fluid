@@ -9,7 +9,9 @@ import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase
 import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.ValidGenerator
 import io.redgreen.fluid.registry.domain.InstallGeneratorUseCase
 import io.redgreen.fluid.registry.domain.InstallGeneratorUseCase.InstallationType.FRESH
+import io.redgreen.fluid.registry.domain.InstallGeneratorUseCase.InstallationType.OVERWRITE
 import io.redgreen.fluid.registry.domain.InstallGeneratorUseCase.Result.FreshInstallSuccessful
+import io.redgreen.fluid.registry.domain.InstallGeneratorUseCase.Result.OverwriteSuccessful
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.AlreadyInstalled
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.DifferentHashes
@@ -37,42 +39,60 @@ internal class InstallCommand(
   private val lookupGeneratorUseCase by lazy { LookupGeneratorUseCase() }
 
   override fun call(): Int {
-    val validateCandidateResult = validateGeneratorUseCase.invoke(candidatePath)
-    return if (validateCandidateResult is ValidGenerator) {
-      val candidateGeneratorEntry = validateCandidateResult.manifest.generator
+    val candidate = validateGeneratorUseCase.invoke(candidatePath)
+    return if (candidate is ValidGenerator) {
+      val candidateGeneratorEntry = candidate.manifest.generator
 
-      when (val lookupResult = lookupGeneratorUseCase.invoke(registry, validateCandidateResult)) {
-        NotInstalled -> performFreshInstall(validateCandidateResult)
+      when (val lookupResult = lookupGeneratorUseCase.invoke(registry, candidate)) {
+        NotInstalled -> performFreshInstall(candidate)
 
         AlreadyInstalled -> printAlreadyInstalledMessage(lookupResult as AlreadyInstalled, candidateGeneratorEntry.id)
 
         is DifferentHashes -> {
           printDifferentHashesMessage(lookupResult, candidateGeneratorEntry.id, candidateGeneratorEntry.version)
-          confirmWithUser({}, { Printer.println { "Installation aborted." } })
+          confirmWithUser(
+            { performOverwriteInstall(candidate) },
+            this::printInstallationAborted
+          )
         }
 
         is DifferentVersions -> {
           printDifferentVersionsMessage(lookupResult, candidateGeneratorEntry.id)
-          confirmWithUser({}, { Printer.println { "Installation aborted." } })
+          confirmWithUser(
+            { performOverwriteInstall(candidate) },
+            this::printInstallationAborted
+          )
         }
       }
 
       EXIT_CODE_SUCCESS
     } else {
-      TODO("$validateCandidateResult")
+      TODO("$candidate")
     }
   }
 
   private fun performFreshInstall(candidate: ValidGenerator) {
     val freshInstallSuccessful = installGeneratorUseCase.invoke(candidate, FRESH) as FreshInstallSuccessful
-    printFreshInstallSuccessfulMessage(freshInstallSuccessful, candidate.sha256)
+    printInstallSuccessfulMessage(freshInstallSuccessful, candidate.sha256)
   }
 
-  private fun printFreshInstallSuccessfulMessage(
+  private fun printInstallSuccessfulMessage(
     freshInstallSuccessful: FreshInstallSuccessful,
     hash: String
   ) {
     Printer.println { freshInstallSuccessful.userMessage(hash) }
+  }
+
+  private fun performOverwriteInstall(candidate: ValidGenerator) {
+    val overwriteSuccessful = installGeneratorUseCase.invoke(candidate, OVERWRITE) as OverwriteSuccessful
+    printInstallSuccessfulMessage(overwriteSuccessful, candidate.sha256)
+  }
+
+  private fun printInstallSuccessfulMessage(
+    overwriteSuccessful: OverwriteSuccessful,
+    hash: String
+  ) {
+    Printer.println { overwriteSuccessful.userMessage(hash) }
   }
 
   private fun printAlreadyInstalledMessage(
@@ -95,6 +115,10 @@ internal class InstallCommand(
     generatorId: String
   ) {
     Printer.println { differentVersions.userMessage(generatorId) }
+  }
+
+  private fun printInstallationAborted() {
+    Printer.println { "Installation aborted." }
   }
 
   private fun confirmWithUser(proceed: () -> Unit, abort: () -> Unit) {
