@@ -7,6 +7,7 @@ import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.ValidGene
 import io.redgreen.fluid.engine.model.Manifest
 import io.redgreen.fluid.registry.assist.ValidGeneratorParameterResolver
 import io.redgreen.fluid.registry.assist.ValidGeneratorParameterResolver.TestArtifact
+import io.redgreen.fluid.registry.domain.InstallGeneratorUseCase.InstallationType.FRESH
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.AlreadyInstalled
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.DifferentHashes
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.DifferentVersions
@@ -52,7 +53,7 @@ class LookupGeneratorUseCaseTest {
     @TestArtifact(ARTIFACT_VALID_GENERATOR) candidate: ValidGenerator
   ) {
     // given
-    installGeneratorUseCase.invoke(installed)
+    installGeneratorUseCase.invoke(installed, FRESH)
 
     // when
     val result = lookupGeneratorUseCase.invoke(registry, candidate)
@@ -68,7 +69,7 @@ class LookupGeneratorUseCaseTest {
     @TestArtifact("valid-generator-different-sha256.jar") candidate: ValidGenerator
   ) {
     // given
-    installGeneratorUseCase.invoke(installed)
+    installGeneratorUseCase.invoke(installed, FRESH)
 
     // when
     val result = lookupGeneratorUseCase.invoke(registry, candidate)
@@ -84,7 +85,7 @@ class LookupGeneratorUseCaseTest {
     @TestArtifact("valid-generator-newer-version.jar") newerCandidate: ValidGenerator
   ) {
     // given
-    installGeneratorUseCase.invoke(olderInstalled)
+    installGeneratorUseCase.invoke(olderInstalled, FRESH)
 
     // when
     val result = lookupGeneratorUseCase.invoke(registry, newerCandidate)

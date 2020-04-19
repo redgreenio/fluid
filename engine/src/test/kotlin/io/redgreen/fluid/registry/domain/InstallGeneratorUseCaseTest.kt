@@ -6,6 +6,7 @@ import io.redgreen.fluid.assist.moshi
 import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.ValidGenerator
 import io.redgreen.fluid.registry.assist.ValidGeneratorParameterResolver
 import io.redgreen.fluid.registry.assist.ValidGeneratorParameterResolver.TestArtifact
+import io.redgreen.fluid.registry.domain.InstallGeneratorUseCase.InstallationType.FRESH
 import io.redgreen.fluid.registry.domain.InstallGeneratorUseCase.Result.FreshInstallSuccessful
 import io.redgreen.fluid.registry.model.Registry
 import io.redgreen.fluid.registry.model.RegistryEntry
@@ -31,7 +32,7 @@ class InstallGeneratorUseCaseTest {
     val useCase = InstallGeneratorUseCase(registry, moshi)
 
     // when
-    val result = useCase.invoke(validGenerator) as FreshInstallSuccessful
+    val result = useCase.invoke(validGenerator, FRESH) as FreshInstallSuccessful
 
     // then
     assertThat(result)

@@ -8,6 +8,7 @@ import io.redgreen.fluid.cli.ui.Printer
 import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase
 import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.ValidGenerator
 import io.redgreen.fluid.registry.domain.InstallGeneratorUseCase
+import io.redgreen.fluid.registry.domain.InstallGeneratorUseCase.InstallationType.FRESH
 import io.redgreen.fluid.registry.domain.InstallGeneratorUseCase.Result.FreshInstallSuccessful
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.AlreadyInstalled
@@ -63,7 +64,7 @@ internal class InstallCommand(
   }
 
   private fun performFreshInstall(candidate: ValidGenerator) {
-    val freshInstallSuccessful = installGeneratorUseCase.invoke(candidate) as FreshInstallSuccessful
+    val freshInstallSuccessful = installGeneratorUseCase.invoke(candidate, FRESH) as FreshInstallSuccessful
     printFreshInstallSuccessfulMessage(freshInstallSuccessful, candidate.sha256)
   }
 

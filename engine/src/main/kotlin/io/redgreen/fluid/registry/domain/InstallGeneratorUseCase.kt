@@ -12,8 +12,11 @@ class InstallGeneratorUseCase(
   private val registry: Registry,
   private val moshi: Moshi
 ) {
-  fun invoke(validGenerator: ValidGenerator): Result {
-    return when (val result = CopyGeneratorUseCase(registry).invoke(validGenerator)) {
+  fun invoke(
+    candidate: ValidGenerator,
+    installationType: InstallationType
+  ): Result {
+    return when (val result = CopyGeneratorUseCase(registry).invoke(candidate)) {
       is GeneratorCopied -> {
         val artifactName = getArtifactName(result.destinationPath)
         val generatorId = result.manifest.generator.id
@@ -24,12 +27,16 @@ class InstallGeneratorUseCase(
     }
   }
 
-  private fun getArtifactName(jarPath: Path): String =
-    jarPath.fileName.toString()
+  private fun getArtifactName(artifactPath: Path): String =
+    artifactPath.fileName.toString()
 
   sealed class Result {
     data class FreshInstallSuccessful(
       val registryEntry: RegistryEntry
     ) : Result()
+  }
+
+  enum class InstallationType {
+    FRESH
   }
 }
