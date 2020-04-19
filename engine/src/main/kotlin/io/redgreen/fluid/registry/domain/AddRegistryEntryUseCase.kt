@@ -15,7 +15,7 @@ class AddRegistryEntryUseCase(
   private val registry: Registry,
   private val moshi: Moshi
 ) {
-  private val registryManifestAdapter by lazy {
+  private val registryManifestAdapter by lazy { // TODO Move all this logic into Registry?
     moshi.adapter(RegistryManifest::class.java)
   }
 

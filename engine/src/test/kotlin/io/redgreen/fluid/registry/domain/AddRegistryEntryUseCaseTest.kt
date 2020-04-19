@@ -34,7 +34,7 @@ class AddRegistryEntryUseCaseTest {
   }
 
   @Language("JSON")
-  val registryFileContents = """
+  private val registryFileContents = """
     {
       "entries": [
         {
@@ -78,7 +78,7 @@ class AddRegistryEntryUseCaseTest {
     val result = useCase.invoke(registryEntry)
 
     // then
-    @Language("JSON")
+    @Language("JSON") // FIXME "id" is "generator-id" for both entries
     val updatedRegistryFileContents = """
       {
         "entries": [
