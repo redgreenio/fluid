@@ -36,14 +36,14 @@ internal class InstallCommand(
   private val registry by lazy { Registry.from(userHomeDir) }
   private val validateGeneratorUseCase by lazy { ValidateGeneratorUseCase() }
   private val installGeneratorUseCase by lazy { InstallGeneratorUseCase(registry, Moshi.Builder().build()) }
-  private val lookupGeneratorUseCase by lazy { LookupGeneratorUseCase() }
+  private val lookupGeneratorUseCase by lazy { LookupGeneratorUseCase(registry) }
 
   override fun call(): Int {
     val candidate = validateGeneratorUseCase.invoke(candidatePath)
     return if (candidate is ValidGenerator) {
       val candidateGeneratorEntry = candidate.manifest.generator
 
-      when (val lookupResult = lookupGeneratorUseCase.invoke(registry, candidate)) {
+      when (val lookupResult = lookupGeneratorUseCase.invoke(candidate)) {
         NotInstalled -> performFreshInstall(candidate)
 
         AlreadyInstalled -> printAlreadyInstalledMessage(lookupResult as AlreadyInstalled, candidateGeneratorEntry.id)

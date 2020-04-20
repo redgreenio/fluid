@@ -33,7 +33,7 @@ class LookupGeneratorUseCaseTest {
   }
 
   private val lookupGeneratorUseCase by lazy {
-    LookupGeneratorUseCase()
+    LookupGeneratorUseCase(registry)
   }
 
   @Test
@@ -41,7 +41,7 @@ class LookupGeneratorUseCaseTest {
     @TestArtifact(ARTIFACT_VALID_GENERATOR) candidate: ValidGenerator
   ) {
     // when
-    val result = lookupGeneratorUseCase.invoke(registry, candidate)
+    val result = lookupGeneratorUseCase.invoke(candidate)
 
     // then
     assertThat(result)
@@ -57,7 +57,7 @@ class LookupGeneratorUseCaseTest {
     installGeneratorUseCase.invoke(installed, FRESH)
 
     // when
-    val result = lookupGeneratorUseCase.invoke(registry, candidate)
+    val result = lookupGeneratorUseCase.invoke(candidate)
 
     // then
     assertThat(result)
@@ -73,7 +73,7 @@ class LookupGeneratorUseCaseTest {
     installGeneratorUseCase.invoke(installed, FRESH)
 
     // when
-    val result = lookupGeneratorUseCase.invoke(registry, candidate)
+    val result = lookupGeneratorUseCase.invoke(candidate)
 
     // then
     assertThat(result)
@@ -89,7 +89,7 @@ class LookupGeneratorUseCaseTest {
     installGeneratorUseCase.invoke(olderInstalled, FRESH)
 
     // when
-    val result = lookupGeneratorUseCase.invoke(registry, newerCandidate)
+    val result = lookupGeneratorUseCase.invoke(newerCandidate)
 
     // then
     val installedVersion = getVersion(olderInstalled.manifest)

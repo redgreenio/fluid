@@ -8,9 +8,10 @@ import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.Different
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.NotInstalled
 import io.redgreen.fluid.registry.model.Registry
 
-class LookupGeneratorUseCase {
+class LookupGeneratorUseCase(
+  private val registry: Registry
+) {
   fun invoke(
-    registry: Registry,
     candidate: ValidGenerator // TODO Can this be lean? Just pass sha256, ID, and version?
   ): Result {
     val registryEntryOptional = registry
