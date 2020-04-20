@@ -1,30 +1,46 @@
 package io.redgreen.fluid.engine.domain
 
 import com.google.common.truth.Truth.assertThat
-import io.redgreen.fluid.api.Generator
 import io.redgreen.fluid.assist.ARTIFACT_VALID_GENERATOR
-import io.redgreen.fluid.assist.getTestArtifact
+import io.redgreen.fluid.assist.moshi
+import io.redgreen.fluid.engine.domain.InstallGeneratorUseCase.InstallationType.FRESH
+import io.redgreen.fluid.engine.domain.InstallGeneratorUseCase.Result.FreshInstallSuccessful
+import io.redgreen.fluid.engine.domain.RunGeneratorUseCase.Result.GeneratorNotFound
+import io.redgreen.fluid.engine.domain.RunGeneratorUseCase.Result.RunSuccessful
 import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.ValidGenerator
 import io.redgreen.fluid.engine.model.DirectoryCreated
 import io.redgreen.fluid.engine.model.FileCreated
+import io.redgreen.fluid.registry.assist.ValidGeneratorParameterResolver
+import io.redgreen.fluid.registry.assist.ValidGeneratorParameterResolver.TestArtifact
+import io.redgreen.fluid.registry.model.Registry
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.io.TempDir
-import java.io.File
+import java.nio.file.Path
 
+@ExtendWith(ValidGeneratorParameterResolver::class)
 class RunGeneratorUseCaseTest {
   @TempDir
-  lateinit var destinationDir: File
+  lateinit var supposedlyUserHomeDir: Path
+
+  @TempDir
+  lateinit var destinationPath: Path
+
+  private val registry by lazy {
+    Registry.from(supposedlyUserHomeDir)
+  }
 
   @Test
-  fun `it should run a valid generator`() {
+  fun `it should run a valid generator`(
+    @TestArtifact(ARTIFACT_VALID_GENERATOR) candidate: ValidGenerator
+  ) {
     // given
-    val validArtifactPath = getTestArtifact(ARTIFACT_VALID_GENERATOR)
-    val validGenerator = ValidateGeneratorUseCase().invoke(validArtifactPath) as ValidGenerator
-    val generatorClass = validGenerator.generatorClass
-      .asSubclass(Generator::class.java)
+    val installSuccessful = InstallGeneratorUseCase(registry, moshi)
+      .invoke(candidate, FRESH) as FreshInstallSuccessful
 
     // when
-    val result = RunGeneratorUseCase().invoke(generatorClass, destinationDir)
+    val result = RunGeneratorUseCase(registry)
+      .invoke(installSuccessful.registryEntry.id, destinationPath) as RunSuccessful
 
     // then
     assertThat(result.realizations)
@@ -37,5 +53,15 @@ class RunGeneratorUseCaseTest {
         FileCreated("build.gradle"),
         FileCreated("icon.png")
       )
+  }
+
+  @Test
+  fun `it should return not installed if the generator is not installed`() {
+    // when
+    val result = RunGeneratorUseCase(registry).invoke("non-existent-generator-id", destinationPath)
+
+    // then
+    assertThat(result)
+      .isEqualTo(GeneratorNotFound)
   }
 }
