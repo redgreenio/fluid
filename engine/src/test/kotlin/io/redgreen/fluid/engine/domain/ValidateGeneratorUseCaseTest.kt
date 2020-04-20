@@ -35,7 +35,7 @@ class ValidateGeneratorUseCaseTest {
   @Test
   fun `it should return invalid generator jar if the file path points to file that is not a jar`() {
     // given
-    val notJarPath = getTestArtifact("not-a-jar.jar")
+    val notJarPath = getTestArtifact("not-a-jar.png")
 
     // when
     val result = useCase.invoke(notJarPath)
