@@ -11,11 +11,15 @@ Installs *valid-generator.jar* in the local registry.
 
 #### 2. [cli] reinstall (different sha256)
 
-This command should be run after **[cli] install**. It helps reproduce the scenario where the installed generator has the same version number but a different hash. 
+Run this configuration after **[cli] install**. Reproduces the installation scenario where the installed generator has the same version number but a different hash. 
 
 #### 3. [cli] install (different version)
 
-This command should be run after **[cli] install**. It helps reproduce the scenario where the installed generator has a different version number.
+Run this configuration after **[cli] install**. Reproduces the installation scenario where the installed generator has a different version number.
+
+#### 4. [cli] run
+
+Run this configuration after **[cli] install**. Runs the *valid-generator.jar* and generates contents into the **/pokran** directory.
 
 ### Working with Jars
 Depending on the module that you are working in, you may have to work with JARs. Here are some of the commands that can help with the workflow.

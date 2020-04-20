@@ -1,0 +1,5 @@
+This directory is a testing ground for generators during development.
+All other files and directories created within this directory are
+ignored by Git.
+
+See the "[cli] reinstall" IntelliJ run configuration for details.

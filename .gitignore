@@ -1,0 +1,5 @@
+# Ignore everything
+/pokran/*
+
+# But not this file
+!/pokran/.gitkeep
