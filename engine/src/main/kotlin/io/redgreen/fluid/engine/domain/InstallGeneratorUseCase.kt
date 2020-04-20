@@ -1,12 +1,15 @@
-package io.redgreen.fluid.registry.domain
+package io.redgreen.fluid.engine.domain
 
 import com.squareup.moshi.Moshi
+import io.redgreen.fluid.engine.domain.InstallGeneratorUseCase.InstallationType.FRESH
+import io.redgreen.fluid.engine.domain.InstallGeneratorUseCase.InstallationType.OVERWRITE
+import io.redgreen.fluid.engine.domain.InstallGeneratorUseCase.Result.FreshInstallSuccessful
+import io.redgreen.fluid.engine.domain.InstallGeneratorUseCase.Result.OverwriteSuccessful
 import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.ValidGenerator
+import io.redgreen.fluid.registry.domain.AddRegistryEntryUseCase
+import io.redgreen.fluid.registry.domain.CopyGeneratorUseCase
 import io.redgreen.fluid.registry.domain.CopyGeneratorUseCase.Result.GeneratorCopied
-import io.redgreen.fluid.registry.domain.InstallGeneratorUseCase.InstallationType.FRESH
-import io.redgreen.fluid.registry.domain.InstallGeneratorUseCase.InstallationType.OVERWRITE
-import io.redgreen.fluid.registry.domain.InstallGeneratorUseCase.Result.FreshInstallSuccessful
-import io.redgreen.fluid.registry.domain.InstallGeneratorUseCase.Result.OverwriteSuccessful
+import io.redgreen.fluid.registry.domain.UpdateRegistryUseCase
 import io.redgreen.fluid.registry.model.Registry
 import io.redgreen.fluid.registry.model.RegistryEntry
 import java.nio.file.Files

@@ -3,11 +3,12 @@ package io.redgreen.fluid.registry.domain
 import com.google.common.truth.Truth.assertThat
 import io.redgreen.fluid.assist.ARTIFACT_VALID_GENERATOR
 import io.redgreen.fluid.assist.moshi
+import io.redgreen.fluid.engine.domain.InstallGeneratorUseCase
+import io.redgreen.fluid.engine.domain.InstallGeneratorUseCase.InstallationType.FRESH
 import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.ValidGenerator
 import io.redgreen.fluid.engine.model.Manifest
 import io.redgreen.fluid.registry.assist.ValidGeneratorParameterResolver
 import io.redgreen.fluid.registry.assist.ValidGeneratorParameterResolver.TestArtifact
-import io.redgreen.fluid.registry.domain.InstallGeneratorUseCase.InstallationType.FRESH
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.AlreadyInstalled
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.DifferentHashes
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.DifferentVersions

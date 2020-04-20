@@ -1,8 +1,8 @@
 package io.redgreen.fluid.cli.internal.view
 
 import com.google.common.truth.Truth.assertThat
-import io.redgreen.fluid.registry.domain.InstallGeneratorUseCase.Result.FreshInstallSuccessful
-import io.redgreen.fluid.registry.domain.InstallGeneratorUseCase.Result.OverwriteSuccessful
+import io.redgreen.fluid.engine.domain.InstallGeneratorUseCase.Result.FreshInstallSuccessful
+import io.redgreen.fluid.engine.domain.InstallGeneratorUseCase.Result.OverwriteSuccessful
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.AlreadyInstalled
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.DifferentHashes
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.DifferentVersions
