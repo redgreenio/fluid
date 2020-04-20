@@ -9,6 +9,7 @@ import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.ValidGene
 import io.redgreen.fluid.engine.model.Manifest
 import io.redgreen.fluid.registry.assist.ValidGeneratorParameterResolver
 import io.redgreen.fluid.registry.assist.ValidGeneratorParameterResolver.TestArtifact
+import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Lookup.InstallLookup
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.AlreadyInstalled
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.DifferentHashes
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.DifferentVersions
@@ -41,7 +42,7 @@ class LookupGeneratorUseCaseTest {
     @TestArtifact(ARTIFACT_VALID_GENERATOR) candidate: ValidGenerator
   ) {
     // when
-    val result = lookupGeneratorUseCase.invoke(candidate)
+    val result = lookupGeneratorUseCase.invoke(InstallLookup.from(candidate))
 
     // then
     assertThat(result)
@@ -57,7 +58,7 @@ class LookupGeneratorUseCaseTest {
     installGeneratorUseCase.invoke(installed, FRESH)
 
     // when
-    val result = lookupGeneratorUseCase.invoke(candidate)
+    val result = lookupGeneratorUseCase.invoke(InstallLookup.from(candidate))
 
     // then
     assertThat(result)
@@ -73,7 +74,7 @@ class LookupGeneratorUseCaseTest {
     installGeneratorUseCase.invoke(installed, FRESH)
 
     // when
-    val result = lookupGeneratorUseCase.invoke(candidate)
+    val result = lookupGeneratorUseCase.invoke(InstallLookup.from(candidate))
 
     // then
     assertThat(result)
@@ -89,7 +90,7 @@ class LookupGeneratorUseCaseTest {
     installGeneratorUseCase.invoke(olderInstalled, FRESH)
 
     // when
-    val result = lookupGeneratorUseCase.invoke(newerCandidate)
+    val result = lookupGeneratorUseCase.invoke(InstallLookup.from(newerCandidate))
 
     // then
     val installedVersion = getVersion(olderInstalled.manifest)

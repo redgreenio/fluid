@@ -13,6 +13,7 @@ import io.redgreen.fluid.engine.domain.InstallGeneratorUseCase.Result.OverwriteS
 import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase
 import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.ValidGenerator
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase
+import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Lookup.InstallLookup
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.AlreadyInstalled
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.DifferentHashes
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.DifferentVersions
@@ -43,7 +44,7 @@ internal class InstallCommand(
     return if (candidate is ValidGenerator) {
       val candidateGeneratorEntry = candidate.manifest.generator
 
-      when (val lookupResult = lookupGeneratorUseCase.invoke(candidate)) {
+      when (val lookupResult = lookupGeneratorUseCase.invoke(InstallLookup.from(candidate))) {
         NotInstalled -> performFreshInstall(candidate)
 
         AlreadyInstalled -> printAlreadyInstalledMessage(lookupResult as AlreadyInstalled, candidateGeneratorEntry.id)
