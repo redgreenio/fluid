@@ -14,12 +14,12 @@ repositories {
 dependencies {
   signature 'org.codehaus.mojo.signature:java18:1.0@signature'
 
-  implementation project(':fluid:api')
+  implementation project(':api')
   implementation artefacts.kotlin.jdkStdlib
   implementation artefacts.jimfs
   implementation artefacts.freemarker
 
-  testImplementation project(':fluid:testing')
+  testImplementation project(':testing')
   testImplementation artefacts.junit.api
   testRuntimeOnly artefacts.junit.runtime
   testImplementation artefacts.truth

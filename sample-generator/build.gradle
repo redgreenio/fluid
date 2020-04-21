@@ -30,10 +30,10 @@ jar {
 dependencies {
   signature 'org.codehaus.mojo.signature:java18:1.0@signature'
 
-  implementation project(':fluid:api')
+  implementation project(':api')
   implementation artefacts.kotlin.jdkStdlib
 
-  testImplementation project(':fluid:generator-testing')
+  testImplementation project(':generator-testing')
   testImplementation artefacts.junit.api
   testRuntimeOnly artefacts.junit.runtime
   testImplementation artefacts.truth

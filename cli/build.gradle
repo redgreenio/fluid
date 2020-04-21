@@ -18,7 +18,7 @@ mainClassName = 'io.redgreen.fluid.cli.CliKt'
 dependencies {
   signature 'org.codehaus.mojo.signature:java18:1.0@signature'
 
-  implementation project(':fluid:engine')
+  implementation project(':engine')
   implementation artefacts.kotlin.jdkStdlib
   implementation artefacts.picocli.runtime
   kapt artefacts.picocli.compiler

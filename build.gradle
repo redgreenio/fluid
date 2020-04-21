@@ -1,0 +1,30 @@
+/*
+ * This is a general purpose Gradle build.
+ * Learn how to create Gradle builds at https://guides.gradle.org/creating-new-gradle-builds
+ */
+buildscript {
+  apply from: "${rootProject.projectDir}/buildscripts/plugins.gradle"
+  ext.kotlin_version = '1.3.71'
+
+  repositories {
+    mavenCentral()
+    jcenter()
+  }
+
+  dependencies {
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    classpath projectPlugins.'com.github.ben-manes.versions'
+    classpath projectPlugins.'ru.vyarus.animalsniffer'
+  }
+
+  allprojects {
+    apply from: "${rootProject.projectDir}/buildscripts/dependencies.gradle"
+
+    group 'io.redgreen'
+
+    repositories {
+      mavenCentral()
+      jcenter()
+    }
+  }
+}

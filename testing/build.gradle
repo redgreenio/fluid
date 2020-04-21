@@ -14,7 +14,7 @@ repositories {
 dependencies {
   signature 'org.codehaus.mojo.signature:java18:1.0@signature'
 
-  implementation project(':fluid:api')
+  implementation project(':api')
   implementation artefacts.kotlin.jdkStdlib
   implementation artefacts.truth
 

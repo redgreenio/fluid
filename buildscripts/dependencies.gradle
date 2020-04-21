@@ -1,0 +1,32 @@
+buildscript {
+  ext.versions = [
+    jvm: '1.8'
+  ]
+
+  ext.artefacts = [
+    kotlin      : [
+      jdkStdlib: 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    ],
+    logback     : 'ch.qos.logback:logback-classic:1.2.3',
+    jimfs       : 'com.google.jimfs:jimfs:1.1',
+    freemarker  : 'org.freemarker:freemarker:2.3.30',
+    picocli     : [
+      runtime : 'info.picocli:picocli:4.2.0',
+      compiler: 'info.picocli:picocli-codegen:4.2.0'
+    ],
+    moshi       : [
+      runtime : 'com.squareup.moshi:moshi:1.9.2',
+      compiler: 'com.squareup.moshi:moshi-kotlin-codegen:1.9.2'
+    ],
+    'jsonSchema': 'com.github.everit-org.json-schema:org.everit.json.schema:1.12.1',
+    'javaSemver': 'com.github.zafarkhaja:java-semver:0.9.0',
+    'chalk'     : 'com.github.tomas-langer:chalk:1.0.2',
+
+    // Unit tests
+    junit       : [
+      api    : 'org.junit.jupiter:junit-jupiter-api:5.6.0',
+      runtime: 'org.junit.jupiter:junit-jupiter-engine:5.6.0'
+    ],
+    truth       : 'com.google.truth:truth:1.0.1'
+  ]
+}
