@@ -1,3 +1,19 @@
+# Files
+local.properties
+*.iml
+
+# Directories
+/.gradle
+/build
+*/build
+
+# IntelliJ Settings
+/.idea/*
+/.idea/caches
+/.idea/codeStyles
+/.idea/libraries
+!/.idea/runConfigurations
+
 # Ignore everything
 /pokran/*
 
