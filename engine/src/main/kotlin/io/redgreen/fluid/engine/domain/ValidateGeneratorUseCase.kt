@@ -20,7 +20,7 @@ import java.util.zip.ZipFile
 
 class ValidateGeneratorUseCase {
   companion object {
-    private const val MANIFEST_FILE_NAME = "manifest.json"
+    private const val MANIFEST_FILE_NAME = "META-INF/manifest.json"
   }
 
   fun invoke(artifactPath: Path): Result {

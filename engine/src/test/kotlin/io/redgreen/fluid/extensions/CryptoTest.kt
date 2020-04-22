@@ -25,14 +25,14 @@ class CryptoTest {
   @Test
   fun `it should compute a sha256 for a file`() {
     // given
-    val testArtifact = getTestArtifact("missing-generator-attribute.jar")
+    val testArtifact = getTestArtifact("valid-generator.jar")
       .toAbsolutePath()
 
     // when
     val computedSha256 = computeSha256(Files.newInputStream(testArtifact))
 
     // then
-    val hashFromSha256SumLinuxUtility = "4173d434df8b5e2d503920baf07847d8925d3f5e0c300b09072606a1351b9532"
+    val hashFromSha256SumLinuxUtility = "8b3172460d752ee9c89ec9bfae445629c3aa2339a256a51babbd0f4b52a7da7e"
     assertThat(computedSha256)
       .isEqualTo(hashFromSha256SumLinuxUtility)
   }

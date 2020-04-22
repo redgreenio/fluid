@@ -6,7 +6,6 @@
     "id": "generator-id",
     "implementation": "com.example.generator.LibraryProjectGenerator"
   },
-
   "maintainer": {
     "name": "Acme Inc.,",
     "website": "https://example.com",
