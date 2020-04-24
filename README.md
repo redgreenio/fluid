@@ -76,5 +76,5 @@ Working with snapshots during debugging could be tricky. You can make it easier 
 [Strawberry](core/src/test/resources/strawberry.png) by Luis Prado from the Noun Project
 
 ```
-© Copyright 2020 Red Green Engineering
+© Copyright 2020 Red Green, Inc.
 ```

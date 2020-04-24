@@ -15,13 +15,11 @@ buildscript {
     classpath 'ru.vyarus:gradle-animalsniffer-plugin:1.5.0'
     classpath 'com.github.ben-manes:gradle-versions-plugin:0.28.0'
     classpath 'com.github.jengelman.gradle.plugins:shadow:5.2.0'
+    classpath 'com.vanniktech:gradle-maven-publish-plugin:0.9.0'
   }
 }
 
 subprojects {
-  group 'io.redgreen.fluid'
-  version '0.1.0-SNAPSHOT'
-
   apply from: "${rootProject.projectDir}/buildscripts/dependencies.gradle"
 
   apply plugin: 'org.jetbrains.kotlin.jvm'
@@ -35,6 +33,12 @@ subprojects {
 
   plugins.withId('application') {
     project.apply plugin: 'com.github.johnrengelman.shadow'
+  }
+
+  plugins.withId('java-library') {
+    if (project.path != ':sample-generator') {
+      project.apply plugin: 'com.vanniktech.maven.publish'
+    }
   }
 
   dependencies {
