@@ -4,23 +4,6 @@
  * Detailed information about configuring a multi-project build in Gradle can be found
  * in the user manual at https://docs.gradle.org/6.3/userguide/multi_project_builds.html
  */
-pluginManagement {
-  apply from: 'buildscripts/plugins.gradle'
-
-  resolutionStrategy {
-    eachPlugin {
-      def requestedId = requested.id.toString()
-      if (projectPlugins.keySet().contains(requestedId)) {
-        useModule(projectPlugins[requestedId])
-      }
-    }
-  }
-
-  repositories {
-    gradlePluginPortal()
-  }
-}
-
 rootProject.name = 'fluid'
 include 'api'
 include 'core'

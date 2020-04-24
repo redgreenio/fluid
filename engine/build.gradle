@@ -1,42 +1,18 @@
 plugins {
   id 'java-library'
-  id 'org.jetbrains.kotlin.jvm'
-  id 'com.github.ben-manes.versions'
   id 'kotlin-kapt'
-  id 'ru.vyarus.animalsniffer'
 }
-
-version '1.0-SNAPSHOT'
 
 repositories {
   maven { url 'https://jitpack.io' } // for artefacts.jsonSchema
 }
 
 dependencies {
-  signature 'org.codehaus.mojo.signature:java18:1.0@signature'
-
   implementation project(':api')
   implementation project(':core')
-  implementation artefacts.kotlin.jdkStdlib
   implementation artefacts.logback
   implementation artefacts.moshi.runtime
   kapt artefacts.moshi.compiler
   implementation artefacts.jsonSchema
   implementation artefacts.javaSemver
-
-  testImplementation artefacts.junit.api
-  testRuntimeOnly artefacts.junit.runtime
-  testImplementation artefacts.truth
-}
-
-compileKotlin {
-  kotlinOptions.jvmTarget = versions.jvm
-}
-
-compileTestKotlin {
-  kotlinOptions.jvmTarget = versions.jvm
-}
-
-test {
-  useJUnitPlatform()
 }

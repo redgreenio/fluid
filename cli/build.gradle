@@ -1,13 +1,7 @@
 plugins {
   id 'application'
-  id 'org.jetbrains.kotlin.jvm'
   id 'kotlin-kapt'
-  id 'ru.vyarus.animalsniffer'
-  id 'com.github.johnrengelman.shadow'
 }
-
-group 'io.redgreen'
-version '1.0-SNAPSHOT'
 
 repositories {
   maven { url 'https://jitpack.io' } // Because, ':cli' depends on ':engine' therefore transitively depends on artefacts.jsonSchema
@@ -16,34 +10,15 @@ repositories {
 mainClassName = 'io.redgreen.fluid.cli.CliKt'
 
 dependencies {
-  signature 'org.codehaus.mojo.signature:java18:1.0@signature'
-
   implementation project(':engine')
-  implementation artefacts.kotlin.jdkStdlib
   implementation artefacts.picocli.runtime
   kapt artefacts.picocli.compiler
   implementation artefacts.moshi.runtime
   implementation artefacts.chalk
-
-  testImplementation artefacts.junit.api
-  testRuntimeOnly artefacts.junit.runtime
-  testImplementation artefacts.truth
 }
 
 kapt {
   arguments {
     arg("project", "${project.group}/${project.name}")
   }
-}
-
-compileKotlin {
-  kotlinOptions.jvmTarget = versions.jvm
-}
-
-compileTestKotlin {
-  kotlinOptions.jvmTarget = versions.jvm
-}
-
-test {
-  useJUnitPlatform()
 }
