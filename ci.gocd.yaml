@@ -10,9 +10,31 @@ pipelines:
         blacklist:
           - README.md
     stages:
-      - test:
+      - unit-tests:
+          tasks:
+            - exec:
+                command: ./gradlew
+                arguments:
+                  - clean
+                  - test
+
+      - animalsniffer-checks:
           tasks:
             - exec:
                 command: ./gradlew
                 arguments:
                   - check
+
+      - library-artifacts:
+          tasks:
+            - exec:
+                command: ./gradlew
+                arguments:
+                  - jar
+
+      - cli-artifact:
+          tasks:
+            - exec:
+                command: ./gradlew
+                arguments:
+                  - cli:shadowJar
