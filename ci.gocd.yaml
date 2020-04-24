@@ -1,0 +1,18 @@
+format_version: 3
+pipelines:
+  "fluid":
+    group: fluid
+    label_template: "${git[:8]}"
+    locking: off
+    materials:
+      git:
+        git: git@github.com:redgreenio/fluid.git
+        blacklist:
+          - README.md
+    stages:
+      - test:
+          tasks:
+            - exec:
+                command: ./gradlew
+                arguments:
+                  - check
