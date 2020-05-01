@@ -17,7 +17,7 @@ class LookupGeneratorUseCase(
   fun invoke(
     lookup: Lookup
   ): Result {
-    val registryEntryOptional = registry.getRegistryEntry(lookup.id)
+    val registryEntryOptional = registry.getEntryById(lookup.id)
 
     return if (registryEntryOptional.isPresent) {
       val registryEntry = registryEntryOptional.get()

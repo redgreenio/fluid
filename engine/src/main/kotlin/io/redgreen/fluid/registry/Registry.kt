@@ -17,6 +17,7 @@ class Registry private constructor(
     private const val FLUID_REGISTRY_DIR = ".fluid"
     private const val FLUID_GENERATORS_DIR = "libs"
     private const val REGISTRY_MANIFEST_FILE = "registry-manifest.json"
+    private const val JSON_INDENT = "  "
 
     fun from(userHome: Path): Registry =
       Registry(userHome.resolve(FLUID_REGISTRY_DIR))
@@ -30,7 +31,7 @@ class Registry private constructor(
 
   fun add(entry: RegistryEntry) {
     val registryEntryIsCorruptRegistryPair = try {
-      getRegistryEntry(entry.id) to false
+      getEntryById(entry.id) to false
     } catch (exception: JsonEncodingException) {
       Optional.empty<RegistryEntry>() to true
     }
@@ -41,24 +42,18 @@ class Registry private constructor(
     if (entryExists) {
       update(entry)
     } else {
-      val registryManifest = createOrUpdateRegistryManifest(registryManifestPath, entry)
-      writeToFile(root.resolve(REGISTRY_MANIFEST_FILE), registryManifest)
+      val newRegistryManifest = createOrUpdateRegistryManifest(entry)
+      writeManifestFile(newRegistryManifest)
     }
   }
 
-  fun update(entry: RegistryEntry) {
-    val manifestPath = registryManifestPath
-    val updatedRegistryManifest = updateEntryInRegistryManifest(manifestPath, entry)
-    writeToFile(manifestPath, updatedRegistryManifest)
-  }
-
-  fun getRegistryEntry(generatorId: String): Optional<RegistryEntry> {
+  fun getEntryById(generatorId: String): Optional<RegistryEntry> {
     if (!Files.exists(registryManifestPath)) {
       return Optional.empty()
     }
 
     val registryManifestJson = registryManifestPath.toFile().readText()
-    val registryManifest = moshi.adapter(RegistryManifest::class.java).fromJson(registryManifestJson)
+    val registryManifest = registryManifestAdapter.fromJson(registryManifestJson)
     val registryEntry = registryManifest
       ?.entries
       ?.find { it.id == generatorId }
@@ -68,22 +63,24 @@ class Registry private constructor(
       ?: Optional.empty()
   }
 
+  fun update(entry: RegistryEntry) {
+    writeManifestFile(updateEntryInRegistryManifest(entry))
+  }
+
   private fun createOrUpdateRegistryManifest(
-    manifestFilePath: Path,
     entry: RegistryEntry
   ): RegistryManifest {
     val registryFileExists = Files.exists(root)
-      && Files.exists(manifestFilePath)
+      && Files.exists(registryManifestPath)
 
     return if (registryFileExists) {
-      addEntryToRegistryManifest(manifestFilePath, entry)
+      addEntryToRegistryManifest(entry)
     } else {
       createRegistryManifest(entry)
     }
   }
 
   private fun addEntryToRegistryManifest(
-    registryManifestPath: Path,
     entry: RegistryEntry
   ): RegistryManifest {
     val registryJson = registryManifestPath.toFile().readText()
@@ -101,31 +98,27 @@ class Registry private constructor(
   ): RegistryManifest =
     RegistryManifest(listOf(entry))
 
-  private fun writeToFile(
-    registryManifestPath: Path,
+  private fun writeManifestFile(
     registryManifest: RegistryManifest
   ) {
     val buffer = Buffer()
-    val jsonWriter = JsonWriter.of(buffer).apply { indent = "  " }
+    val jsonWriter = JsonWriter.of(buffer).apply { indent = JSON_INDENT }
     registryManifestAdapter.toJson(jsonWriter, registryManifest)
-    val registryJsonContents = buffer.readUtf8()
+    val registryManifestJson = buffer.readUtf8()
 
     if (!Files.exists(registryManifestPath)) {
-      createNewRegistryManifestFile(registryManifestPath)
+      createNewRegistryManifestFile()
     }
 
-    registryManifestPath.toFile().writeText(registryJsonContents)
+    registryManifestPath.toFile().writeText(registryManifestJson)
   }
 
-  private fun createNewRegistryManifestFile(
-    registryManifestPath: Path
-  ) {
+  private fun createNewRegistryManifestFile() {
     Files.createDirectories(registryManifestPath.parent)
     Files.createFile(registryManifestPath)
   }
 
   private fun updateEntryInRegistryManifest(
-    registryManifestPath: Path,
     entry: RegistryEntry
   ): RegistryManifest {
     val registryJson = registryManifestPath.toFile().readText()

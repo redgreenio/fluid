@@ -48,7 +48,7 @@ class InstallGeneratorUseCase(
     artifactPath.fileName.toString()
 
   private fun deleteAlreadyInstalledArtifact(generatorId: String) {
-    val existingEntryForGenerator = registry.getRegistryEntry(generatorId)
+    val existingEntryForGenerator = registry.getEntryById(generatorId)
     if (existingEntryForGenerator.isPresent) {
       val alreadyInstalledArtifactPath = registry.artifactsPath.resolve(existingEntryForGenerator.get().artifactName)
       Files.delete(alreadyInstalledArtifactPath)
