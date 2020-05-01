@@ -29,8 +29,21 @@ class Registry private constructor(
   private val registryManifestAdapter by lazy { moshi.adapter(RegistryManifest::class.java) }
 
   fun add(entry: RegistryEntry) {
-    val registryManifest = createOrUpdateRegistryManifest(registryManifestPath, entry)
-    writeToFile(root.resolve(REGISTRY_MANIFEST_FILE), registryManifest)
+    val registryEntryIsCorruptRegistryPair = try {
+      getRegistryEntry(entry.id) to false
+    } catch (exception: JsonEncodingException) {
+      Optional.empty<RegistryEntry>() to true
+    }
+
+    val (registryEntryOptional, isCorruptRegistry) = registryEntryIsCorruptRegistryPair
+    val entryExists = registryEntryOptional.isPresent && !isCorruptRegistry
+
+    if (entryExists) {
+      update(entry)
+    } else {
+      val registryManifest = createOrUpdateRegistryManifest(registryManifestPath, entry)
+      writeToFile(root.resolve(REGISTRY_MANIFEST_FILE), registryManifest)
+    }
   }
 
   fun update(entry: RegistryEntry) {
@@ -110,7 +123,6 @@ class Registry private constructor(
     Files.createDirectories(registryManifestPath.parent)
     Files.createFile(registryManifestPath)
   }
-
 
   private fun updateEntryInRegistryManifest(
     registryManifestPath: Path,
