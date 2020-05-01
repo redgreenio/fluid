@@ -10,12 +10,8 @@ import java.nio.file.Path
 class CopyGeneratorUseCase(
   private val registry: Registry
 ) {
-  companion object {
-    private const val GENERATORS_DIR = "libs"
-  }
-
   private val registryGeneratorsDirPath by lazy {
-    registry.path.resolve(GENERATORS_DIR).toAbsolutePath()
+    registry.artifactsPath
   }
 
   fun invoke(validGenerator: ValidGenerator): Result {

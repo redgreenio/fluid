@@ -8,35 +8,27 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.util.Optional
 
-class Registry private constructor(val path: Path) { // TODO make `path` private?
+class Registry private constructor(
+  internal val root: Path
+) {
   companion object {
     private const val FLUID_REGISTRY_DIR = ".fluid"
     private const val FLUID_GENERATORS_DIR = "libs"
     private const val REGISTRY_MANIFEST_FILE = "registry-manifest.json"
 
-    fun from(path: Path): Registry =
-      Registry(path.resolve(FLUID_REGISTRY_DIR))
+    fun from(userHome: Path): Registry =
+      Registry(userHome.resolve(FLUID_REGISTRY_DIR))
   }
 
-  private val moshi by lazy {
-    Moshi.Builder().build()
-  }
+  val registryManifestPath: Path by lazy { root.resolve(REGISTRY_MANIFEST_FILE) }
+  val artifactsPath: Path by lazy { root.resolve(FLUID_GENERATORS_DIR) }
 
-  private val registryManifestAdapter by lazy {
-    moshi.adapter(RegistryManifest::class.java)
-  }
-
-  val registryManifestPath: Path by lazy {
-    this.path.resolve(REGISTRY_MANIFEST_FILE)
-  }
-
-  val artifactsPath: Path by lazy {
-    this.path.resolve(FLUID_GENERATORS_DIR)
-  }
+  private val moshi by lazy { Moshi.Builder().build() }
+  private val registryManifestAdapter by lazy { moshi.adapter(RegistryManifest::class.java) }
 
   fun add(entry: RegistryEntry) {
     val registryManifest = createOrUpdateRegistryManifest(registryManifestPath, entry)
-    writeToFile(path.resolve(REGISTRY_MANIFEST_FILE), registryManifest)
+    writeToFile(root.resolve(REGISTRY_MANIFEST_FILE), registryManifest)
   }
 
   fun update(entry: RegistryEntry) {
@@ -65,7 +57,7 @@ class Registry private constructor(val path: Path) { // TODO make `path` private
     manifestFilePath: Path,
     entry: RegistryEntry
   ): RegistryManifest {
-    val registryFileExists = Files.exists(path)
+    val registryFileExists = Files.exists(root)
       && Files.exists(manifestFilePath)
 
     return if (registryFileExists) {
