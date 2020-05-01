@@ -1,7 +1,6 @@
 package io.redgreen.fluid.cli.internal
 
 import com.github.tomaslanger.chalk.Chalk
-import com.squareup.moshi.Moshi
 import io.redgreen.fluid.cli.internal.FluidCommandLine.Companion.EXIT_CODE_SUCCESS
 import io.redgreen.fluid.cli.internal.view.userMessage
 import io.redgreen.fluid.cli.ui.Printer
@@ -36,7 +35,7 @@ internal class InstallCommand(
 
   private val registry by lazy { Registry.from(userHomeDir) }
   private val validateGeneratorUseCase by lazy { ValidateGeneratorUseCase() }
-  private val installGeneratorUseCase by lazy { InstallGeneratorUseCase(registry, Moshi.Builder().build()) }
+  private val installGeneratorUseCase by lazy { InstallGeneratorUseCase(registry) }
   private val lookupGeneratorUseCase by lazy { LookupGeneratorUseCase(registry) }
 
   override fun call(): Int {

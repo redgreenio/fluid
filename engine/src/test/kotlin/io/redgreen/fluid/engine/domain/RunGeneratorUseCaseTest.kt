@@ -2,7 +2,6 @@ package io.redgreen.fluid.engine.domain
 
 import com.google.common.truth.Truth.assertThat
 import io.redgreen.fluid.assist.ARTIFACT_VALID_GENERATOR
-import io.redgreen.fluid.assist.moshi
 import io.redgreen.fluid.engine.domain.InstallGeneratorUseCase.InstallationType.FRESH
 import io.redgreen.fluid.engine.domain.InstallGeneratorUseCase.Result.FreshInstallSuccessful
 import io.redgreen.fluid.engine.domain.RunGeneratorUseCase.Result.GeneratorNotFound
@@ -35,7 +34,7 @@ class RunGeneratorUseCaseTest {
     @TestArtifact(ARTIFACT_VALID_GENERATOR) candidate: ValidGenerator
   ) {
     // given
-    val installSuccessful = InstallGeneratorUseCase(registry, moshi)
+    val installSuccessful = InstallGeneratorUseCase(registry)
       .invoke(candidate, FRESH) as FreshInstallSuccessful
 
     // when

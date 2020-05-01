@@ -2,7 +2,6 @@ package io.redgreen.fluid.registry.domain
 
 import com.google.common.truth.Truth.assertThat
 import io.redgreen.fluid.assist.ARTIFACT_VALID_GENERATOR
-import io.redgreen.fluid.assist.moshi
 import io.redgreen.fluid.engine.domain.InstallGeneratorUseCase
 import io.redgreen.fluid.engine.domain.InstallGeneratorUseCase.InstallationType.FRESH
 import io.redgreen.fluid.engine.domain.InstallGeneratorUseCase.Result.FreshInstallSuccessful
@@ -34,7 +33,7 @@ class LookupGeneratorUseCaseTest {
   }
 
   private val installGeneratorUseCase by lazy {
-    InstallGeneratorUseCase(registry, moshi)
+    InstallGeneratorUseCase(registry)
   }
 
   private val lookupGeneratorUseCase by lazy {

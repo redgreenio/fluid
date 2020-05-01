@@ -39,6 +39,12 @@ class Registry private constructor(val path: Path) { // TODO make `path` private
     writeToFile(path.resolve(REGISTRY_MANIFEST_FILE), registryManifest)
   }
 
+  fun update(entry: RegistryEntry) {
+    val manifestPath = registryManifestPath
+    val updatedRegistryManifest = updateEntryInRegistryManifest(manifestPath, entry)
+    writeToFile(manifestPath, updatedRegistryManifest)
+  }
+
   fun getRegistryEntry(generatorId: String): Optional<RegistryEntry> {
     if (!Files.exists(registryManifestPath)) {
       return Optional.empty()
@@ -109,5 +115,15 @@ class Registry private constructor(val path: Path) { // TODO make `path` private
   ) {
     Files.createDirectories(registryManifestPath.parent)
     Files.createFile(registryManifestPath)
+  }
+
+
+  private fun updateEntryInRegistryManifest(
+    registryManifestPath: Path,
+    entry: RegistryEntry
+  ): RegistryManifest {
+    val registryJson = registryManifestPath.toFile().readText()
+    val registryManifest = registryManifestAdapter.fromJson(registryJson)!!
+    return registryManifest.updateEntry(entry)
   }
 }

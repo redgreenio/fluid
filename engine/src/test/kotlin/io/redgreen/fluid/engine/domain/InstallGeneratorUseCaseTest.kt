@@ -2,7 +2,6 @@ package io.redgreen.fluid.engine.domain
 
 import com.google.common.truth.Truth.assertThat
 import io.redgreen.fluid.assist.ARTIFACT_VALID_GENERATOR
-import io.redgreen.fluid.assist.moshi
 import io.redgreen.fluid.engine.domain.InstallGeneratorUseCase.InstallationType.FRESH
 import io.redgreen.fluid.engine.domain.InstallGeneratorUseCase.InstallationType.OVERWRITE
 import io.redgreen.fluid.engine.domain.InstallGeneratorUseCase.Result.FreshInstallSuccessful
@@ -24,7 +23,7 @@ class InstallGeneratorUseCaseTest {
   internal lateinit var supposedlyUserHomeDir: Path
 
   private val registry by lazy { Registry.from(supposedlyUserHomeDir) }
-  private val installGeneratorUseCase by lazy { InstallGeneratorUseCase(registry, moshi) }
+  private val installGeneratorUseCase by lazy { InstallGeneratorUseCase(registry) }
 
   @Test
   fun `it should add an entry to the registry after installation`( // FIXME This test is not verifying if a registry entry was added.
