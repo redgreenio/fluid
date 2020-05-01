@@ -1,10 +1,7 @@
 package io.redgreen.fluid.registry.domain
 
-import com.google.common.truth.Truth.assertThat
-import io.redgreen.fluid.assist.moshi
 import io.redgreen.fluid.registry.assist.RegistrySubject.Companion.assertThat
 import io.redgreen.fluid.registry.assist.createRegistryFile
-import io.redgreen.fluid.registry.domain.AddRegistryEntryUseCase.Result.EntryAdded
 import io.redgreen.fluid.registry.model.Registry
 import io.redgreen.fluid.registry.model.RegistryEntry
 import org.intellij.lang.annotations.Language
@@ -12,7 +9,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.nio.file.Path
 
-class AddRegistryEntryUseCaseTest {
+class RegistryAddEntryTest {
   companion object {
     // Language injection inlining causes IDE error, however this can be suppressed for our use case.
     @Suppress("JsonStandardCompliance")
@@ -27,10 +24,6 @@ class AddRegistryEntryUseCaseTest {
 
   private val registry by lazy {
     Registry.from(supposedlyUserHomeDir)
-  }
-
-  private val useCase by lazy {
-    AddRegistryEntryUseCase(registry, moshi)
   }
 
   @Language("JSON")
@@ -55,11 +48,9 @@ class AddRegistryEntryUseCaseTest {
     val registryEntry = RegistryEntry("generator-id", ARTIFACT_SOME_GENERATOR_PATH)
 
     // when
-    val result = useCase.invoke(registryEntry)
+    registry.add(registryEntry)
 
     // then
-    assertThat(result)
-      .isEqualTo(EntryAdded)
     assertThat(registry)
       .registryFileContentsEqual(registryFileContents)
   }
@@ -75,7 +66,7 @@ class AddRegistryEntryUseCaseTest {
     val registryEntry = RegistryEntry("generator-id", ARTIFACT_SHINY_NEW_GENERATOR_PATH)
 
     // when
-    val result = useCase.invoke(registryEntry)
+    registry.add(registryEntry)
 
     // then
     @Language("JSON") // FIXME "id" is "generator-id" for both entries
@@ -94,8 +85,6 @@ class AddRegistryEntryUseCaseTest {
       }
     """.trimIndent()
 
-    assertThat(result)
-      .isEqualTo(EntryAdded)
     assertThat(registry)
       .registryFileContentsEqual(updatedRegistryFileContents)
   }
@@ -112,11 +101,9 @@ class AddRegistryEntryUseCaseTest {
     val registryEntry = RegistryEntry("generator-id", ARTIFACT_SOME_GENERATOR_PATH)
 
     // when
-    val result = useCase.invoke(registryEntry)
+    registry.add(registryEntry)
 
     // then
-    assertThat(result)
-      .isEqualTo(EntryAdded)
     assertThat(registry)
       .registryFileContentsEqual(registryFileContents)
   }
