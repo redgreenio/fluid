@@ -2,8 +2,8 @@ package io.redgreen.fluid.registry.domain
 
 import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.ValidGenerator
 import io.redgreen.fluid.engine.model.Manifest
+import io.redgreen.fluid.registry.Registry
 import io.redgreen.fluid.registry.domain.CopyGeneratorUseCase.Result.GeneratorCopied
-import io.redgreen.fluid.registry.model.Registry
 import java.nio.file.Files
 import java.nio.file.Path
 

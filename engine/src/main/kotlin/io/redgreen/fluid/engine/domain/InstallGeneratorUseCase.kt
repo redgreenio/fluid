@@ -5,9 +5,9 @@ import io.redgreen.fluid.engine.domain.InstallGeneratorUseCase.InstallationType.
 import io.redgreen.fluid.engine.domain.InstallGeneratorUseCase.Result.FreshInstallSuccessful
 import io.redgreen.fluid.engine.domain.InstallGeneratorUseCase.Result.OverwriteSuccessful
 import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.ValidGenerator
+import io.redgreen.fluid.registry.Registry
 import io.redgreen.fluid.registry.domain.CopyGeneratorUseCase
 import io.redgreen.fluid.registry.domain.CopyGeneratorUseCase.Result.GeneratorCopied
-import io.redgreen.fluid.registry.model.Registry
 import io.redgreen.fluid.registry.model.RegistryEntry
 import java.nio.file.Files
 import java.nio.file.Path

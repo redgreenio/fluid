@@ -6,11 +6,11 @@ import io.redgreen.fluid.engine.domain.RunGeneratorUseCase.Result.GeneratorNotFo
 import io.redgreen.fluid.engine.domain.RunGeneratorUseCase.Result.RunSuccessful
 import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.ValidGenerator
 import io.redgreen.fluid.engine.model.Realization
+import io.redgreen.fluid.registry.Registry
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Lookup.RunLookup
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.NotInstalled
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.ReadyToRun
-import io.redgreen.fluid.registry.model.Registry
 import io.redgreen.fluid.snapshot.InMemorySnapshotFactory
 import java.nio.file.Path
 

@@ -4,7 +4,7 @@ import io.redgreen.fluid.cli.ui.Printer
 import io.redgreen.fluid.engine.domain.RunGeneratorUseCase
 import io.redgreen.fluid.engine.domain.RunGeneratorUseCase.Result.GeneratorNotFound
 import io.redgreen.fluid.engine.domain.RunGeneratorUseCase.Result.RunSuccessful
-import io.redgreen.fluid.registry.model.Registry
+import io.redgreen.fluid.registry.Registry
 import picocli.CommandLine.Command
 import picocli.CommandLine.Parameters
 import java.nio.file.Path

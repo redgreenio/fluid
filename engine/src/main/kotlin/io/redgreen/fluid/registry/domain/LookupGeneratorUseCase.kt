@@ -2,6 +2,7 @@ package io.redgreen.fluid.registry.domain
 
 import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase
 import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.ValidGenerator
+import io.redgreen.fluid.registry.Registry
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Lookup.InstallLookup
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Lookup.RunLookup
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.AlreadyInstalled
@@ -9,7 +10,6 @@ import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.Different
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.DifferentVersions
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.NotInstalled
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.ReadyToRun
-import io.redgreen.fluid.registry.model.Registry
 
 class LookupGeneratorUseCase(
   private val registry: Registry

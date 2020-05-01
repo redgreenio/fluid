@@ -1,8 +1,10 @@
-package io.redgreen.fluid.registry.model
+package io.redgreen.fluid.registry
 
 import com.squareup.moshi.JsonEncodingException
 import com.squareup.moshi.JsonWriter
 import com.squareup.moshi.Moshi
+import io.redgreen.fluid.registry.model.RegistryEntry
+import io.redgreen.fluid.registry.model.RegistryManifest
 import okio.Buffer
 import java.nio.file.Files
 import java.nio.file.Path

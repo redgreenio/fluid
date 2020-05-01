@@ -7,9 +7,9 @@ import io.redgreen.fluid.engine.domain.InstallGeneratorUseCase.InstallationType.
 import io.redgreen.fluid.engine.domain.InstallGeneratorUseCase.Result.FreshInstallSuccessful
 import io.redgreen.fluid.engine.domain.InstallGeneratorUseCase.Result.OverwriteSuccessful
 import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.ValidGenerator
+import io.redgreen.fluid.registry.Registry
 import io.redgreen.fluid.registry.assist.ValidGeneratorParameterResolver
 import io.redgreen.fluid.registry.assist.ValidGeneratorParameterResolver.TestArtifact
-import io.redgreen.fluid.registry.model.Registry
 import io.redgreen.fluid.registry.model.RegistryEntry
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith

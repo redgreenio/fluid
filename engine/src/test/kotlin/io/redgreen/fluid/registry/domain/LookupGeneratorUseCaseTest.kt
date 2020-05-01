@@ -8,6 +8,7 @@ import io.redgreen.fluid.engine.domain.InstallGeneratorUseCase.Result.FreshInsta
 import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase
 import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.ValidGenerator
 import io.redgreen.fluid.engine.model.Manifest
+import io.redgreen.fluid.registry.Registry
 import io.redgreen.fluid.registry.assist.ValidGeneratorParameterResolver
 import io.redgreen.fluid.registry.assist.ValidGeneratorParameterResolver.TestArtifact
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Lookup.InstallLookup
@@ -17,7 +18,6 @@ import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.Different
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.DifferentVersions
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.NotInstalled
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.ReadyToRun
-import io.redgreen.fluid.registry.model.Registry
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.io.TempDir

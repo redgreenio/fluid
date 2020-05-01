@@ -6,7 +6,7 @@ import com.google.common.truth.Subject
 import com.google.common.truth.Subject.Factory
 import com.google.common.truth.Truth.assertAbout
 import com.google.common.truth.Truth.assertThat
-import io.redgreen.fluid.registry.model.Registry
+import io.redgreen.fluid.registry.Registry
 import java.nio.file.Files
 
 class RegistrySubject(

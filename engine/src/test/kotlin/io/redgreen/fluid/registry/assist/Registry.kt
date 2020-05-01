@@ -1,6 +1,6 @@
 package io.redgreen.fluid.registry.assist
 
-import io.redgreen.fluid.registry.model.Registry
+import io.redgreen.fluid.registry.Registry
 import java.nio.file.Files
 import java.nio.file.Path
 

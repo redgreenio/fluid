@@ -1,8 +1,9 @@
-package io.redgreen.fluid.registry.model
+package io.redgreen.fluid.registry
 
 import com.google.common.truth.Truth.assertThat
 import io.redgreen.fluid.registry.assist.RegistrySubject
 import io.redgreen.fluid.registry.assist.createRegistryFile
+import io.redgreen.fluid.registry.model.RegistryEntry
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir

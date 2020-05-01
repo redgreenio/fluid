@@ -11,13 +11,13 @@ import io.redgreen.fluid.engine.domain.InstallGeneratorUseCase.Result.FreshInsta
 import io.redgreen.fluid.engine.domain.InstallGeneratorUseCase.Result.OverwriteSuccessful
 import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase
 import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.ValidGenerator
+import io.redgreen.fluid.registry.Registry
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Lookup.InstallLookup
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.AlreadyInstalled
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.DifferentHashes
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.DifferentVersions
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.NotInstalled
-import io.redgreen.fluid.registry.model.Registry
 import picocli.CommandLine.Command
 import picocli.CommandLine.Option
 import java.io.BufferedReader
