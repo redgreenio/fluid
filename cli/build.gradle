@@ -40,7 +40,7 @@ artifacts {
 
 // Implements https://github.com/brianm/really-executable-jars-maven-plugin maven plugin behaviour.
 // To check details how it works, see http://skife.org/java/unix/2011/06/20/really_executable_jars.html.
-tasks.register("fluidExecutable", DefaultTask.class) {
+tasks.register("executable", DefaultTask.class) {
   description = "Creates self-executable file, that runs generated shadow jar"
   group = "Distribution"
 

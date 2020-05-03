@@ -28,6 +28,9 @@ Run this configuration after **[cli] install**. Reproduces the installation scen
 
 Run this configuration after **[cli] install**. Runs the *valid-generator.jar* and generates contents into the **/pokran** directory.
 
+### Installing the in-development Fluid binary on your local machine
+Use the [cli-local-install](cli-local-install) convenience Shell script to install the **fluid** binary on your local machine during development.
+
 ### Working with Jars
 Depending on the module that you are working in, you may have to work with JARs. Here are some of the commands that can help with the workflow.
 
