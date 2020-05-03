@@ -1,6 +1,13 @@
 # Fluid
 Fluid is a scaffolding tool inspired by [Yeoman](https://yeoman.io/).
 
+## Installation
+```bash
+$ curl -sSLO https://github.com/redgreenio/fluid/releases/download/[version]/fluid &&
+    chmod a+x fluid &&
+    sudo mv fluid /usr/local/bin/
+```
+
 ## Development
 ### IntelliJ Run Configurations
 The following run configurations help us test various installation scenarios with the CLI.
