@@ -22,3 +22,37 @@ kapt {
     arg("project", "${project.group}/${project.name}")
   }
 }
+
+// Courtesy of ktlint - https://github.com/pinterest/ktlint/blob/master/ktlint/build.gradle
+jar {
+  manifest {
+    attributes 'Main-Class': 'io.redgreen.fluid.cli.CliKt'
+  }
+}
+
+shadowJar {
+  mergeServiceFiles()
+}
+
+artifacts {
+  archives shadowJar
+}
+
+// Implements https://github.com/brianm/really-executable-jars-maven-plugin maven plugin behaviour.
+// To check details how it works, see http://skife.org/java/unix/2011/06/20/really_executable_jars.html.
+tasks.register("fluidExecutable", DefaultTask.class) {
+  description = "Creates self-executable file, that runs generated shadow jar"
+  group = "Distribution"
+
+  inputs.files tasks.named("shadowJar")
+  outputs.file "$buildDir/run/fluid"
+
+  doLast {
+    File execFile = outputs.files.singleFile
+    execFile.withOutputStream {
+      it.write "#!/bin/sh\n\nexec java -Xmx512m -jar \"\$0\" \"\$@\"\n\n".bytes
+      it.write inputs.files.singleFile.bytes
+    }
+    execFile.setExecutable(true, false)
+  }
+}
