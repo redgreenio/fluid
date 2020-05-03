@@ -5,7 +5,8 @@ import picocli.CommandLine.Command
 @Command(
   headerHeading = "Fluid (Pre-Alpha)\n",
   mixinStandardHelpOptions = true,
-  helpCommand = true
+  helpCommand = true,
+  versionProvider = FluidVersionProvider::class
 )
 class FluidCommand {
   companion object {

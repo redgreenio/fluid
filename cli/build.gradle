@@ -1,6 +1,9 @@
+import java.text.SimpleDateFormat
+
 plugins {
   id 'application'
   id 'kotlin-kapt'
+  id 'net.nemerosa.versioning' version '2.6.1'
 }
 
 repositories {
@@ -23,13 +26,17 @@ kapt {
   }
 }
 
-// Courtesy of ktlint - https://github.com/pinterest/ktlint/blob/master/ktlint/build.gradle
 jar {
   manifest {
-    attributes 'Main-Class': 'io.redgreen.fluid.cli.CliKt'
+    attributes(
+      'Main-Class': 'io.redgreen.fluid.cli.CliKt',
+      // The attribute value has the following format - version-name|commit-hash|timestamp
+      "Implementation-Version": "pre-alpha|${versioning.info.commit}|${new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date())}"
+    )
   }
 }
 
+// Courtesy of ktlint - https://github.com/pinterest/ktlint/blob/master/ktlint/build.gradle
 shadowJar {
   mergeServiceFiles()
 }

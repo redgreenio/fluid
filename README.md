@@ -27,6 +27,9 @@ Run this configuration after **[cli] install**. Runs the *valid-generator.jar* a
 #### 5. [cli] help
 Prints help.
 
+#### 6. [cli] version
+Prints version information.
+
 ### Installing the in-development Fluid binary on your local machine
 Use the [cli-local-install](cli-local-install) convenience Shell script to install the **fluid** binary on your local machine during development.
 

@@ -32,11 +32,27 @@ private fun handleSubcommand(
   return when (val subcommand = parseResult.subcommand()?.commandSpec()?.userObject()) {
     is InstallCommand -> subcommand.call()
     is RunCommand -> subcommand.call()
-    else -> printHelp(commandLine)
+    else -> printUsageOrVersion(parseResult, commandLine)
   }
 }
 
-private fun printHelp(commandLine: CommandLine): Int {
-  commandLine.usage(System.out, Ansi.ON)
+private fun printUsageOrVersion(
+  parseResult: ParseResult,
+  commandLine: CommandLine
+): Int {
+  return if (parseResult.isVersionHelpRequested) {
+    printVersion(commandLine)
+  } else {
+    printUsage(commandLine)
+  }
+}
+
+private fun printVersion(commandLine: CommandLine): Int {
+  commandLine.printVersionHelp(System.out, Ansi.AUTO)
+  return EXIT_CODE_SUCCESS
+}
+
+private fun printUsage(commandLine: CommandLine): Int {
+  commandLine.usage(System.out, Ansi.AUTO)
   return EXIT_CODE_SUCCESS
 }
