@@ -75,6 +75,11 @@ $ jar tfv my-jar.jar
 $ jar xf my-jar.jar META-INF/MANIFEST.MF 
 ```
 
+### Test Coverage with Jacoco
+```bash
+$ ./gradlew build jacocoTestReport
+```
+
 ### Debugging
 Working with snapshots during debugging could be tricky. You can make it easier by creating an IntelliJ Java Type Renderer. The screenshots below give you information on how to create and use your type renderer.
 

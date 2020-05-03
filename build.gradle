@@ -25,6 +25,7 @@ subprojects {
   apply plugin: 'org.jetbrains.kotlin.jvm'
   apply plugin: 'ru.vyarus.animalsniffer'
   apply plugin: 'com.github.ben-manes.versions'
+  apply plugin: 'jacoco'
 
   repositories {
     mavenCentral()
