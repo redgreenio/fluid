@@ -13,20 +13,19 @@ $ curl -sSLO https://github.com/redgreenio/fluid/releases/download/[version]/flu
 The following run configurations help us test various installation scenarios with the CLI.
 
 #### 1. [cli] install
-
 Installs *valid-generator.jar* in the local registry.
 
 #### 2. [cli] reinstall (different sha256)
-
 Run this configuration after **[cli] install**. Reproduces the installation scenario where the installed generator has the same version number but a different hash. 
 
 #### 3. [cli] install (different version)
-
 Run this configuration after **[cli] install**. Reproduces the installation scenario where the installed generator has a different version number.
 
 #### 4. [cli] run
-
 Run this configuration after **[cli] install**. Runs the *valid-generator.jar* and generates contents into the **/pokran** directory.
+
+#### 5. [cli] help
+Prints help.
 
 ### Installing the in-development Fluid binary on your local machine
 Use the [cli-local-install](cli-local-install) convenience Shell script to install the **fluid** binary on your local machine during development.
