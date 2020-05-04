@@ -15,4 +15,6 @@ dependencies {
   kapt artefacts.moshi.compiler
   implementation artefacts.jsonSchema
   implementation artefacts.javaSemver
+
+  testImplementation artefacts.mockitoKotlin
 }
