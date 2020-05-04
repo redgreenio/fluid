@@ -205,4 +205,62 @@ class RegistryTest {
         .registryFileContentsEqual(updatedRegistryFileContents)
     }
   }
+
+  @Nested
+  inner class ListEntries {
+    @Test
+    fun `it should return an empty list when there are no entries`() {
+      // when
+      val entries = registry.getEntries()
+
+      // then
+      assertThat(entries)
+        .isEmpty()
+    }
+
+    @Test
+    fun `it should return a list of entries when the registry has installed generators`() {
+      // given
+      @Language("JSON")
+      val registryFileWithGeneratorsAB = """
+          {
+            "entries": [
+              {
+                "id": "$GENERATOR_A_ID",
+                "artifactName": "$GENERATOR_A_PATH"
+              },
+              {
+                "id": "$GENERATOR_B_ID",
+                "artifactName": "$GENERATOR_B_PATH"
+              }
+            ]
+          }
+        """.trimIndent()
+      registry.createRegistryFile(registryFileWithGeneratorsAB)
+
+      // when
+      val entries = registry.getEntries()
+
+      // then
+      assertThat(entries)
+        .containsExactly(
+          RegistryEntry(GENERATOR_A_ID, GENERATOR_A_PATH),
+          RegistryEntry(GENERATOR_B_ID, GENERATOR_B_PATH)
+        )
+        .inOrder()
+    }
+
+    @Test
+    fun `it should return an empty list for a corrupt registry`() {
+      // given
+      registry.createRegistryFile("/* Mimic a corrupt registry! */")
+
+      // when
+      val entries = registry.getEntries()
+
+      // then
+      assertThat(entries)
+        .isEmpty()
+    }
+  }
 }

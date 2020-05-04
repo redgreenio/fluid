@@ -52,19 +52,31 @@ class Registry private constructor(
       return Optional.empty()
     }
 
-    val registryManifestJson = registryManifestPath.toFile().readText()
-    val registryManifest = registryManifestAdapter.fromJson(registryManifestJson)
-    val registryEntry = registryManifest
-      ?.entries
-      ?.find { it.id == generatorId }
+    val registryManifestOptional = getRegistryManifest()
+    if (!registryManifestOptional.isPresent) {
+      return Optional.empty<RegistryEntry>()
+    }
 
-    return registryEntry
+    val maybeRegistryEntry = registryManifestOptional.get()
+      .entries
+      .find { it.id == generatorId }
+
+    return maybeRegistryEntry
       ?.let { Optional.of(it) }
       ?: Optional.empty()
   }
 
   fun update(entry: RegistryEntry) {
     writeManifestFile(updateEntryInRegistryManifest(entry))
+  }
+
+  fun getEntries(): List<RegistryEntry> {
+    val registryManifestOptional = getRegistryManifest()
+    return if (!registryManifestOptional.isPresent) {
+      emptyList()
+    } else {
+      registryManifestOptional.get().entries
+    }
   }
 
   private fun createOrUpdateRegistryManifest(
@@ -83,13 +95,31 @@ class Registry private constructor(
   private fun addEntryToRegistryManifest(
     entry: RegistryEntry
   ): RegistryManifest {
-    val registryJson = registryManifestPath.toFile().readText()
+    val registryManifestOptional = getRegistryManifest()
     return try {
-      val registry = registryManifestAdapter.fromJson(registryJson)!!
-      registry.addEntry(entry)
+      if (!registryManifestOptional.isPresent) {
+        createRegistryManifest(entry)
+      } else {
+        registryManifestOptional.get().addEntry(entry)
+      }
     } catch (exception: JsonEncodingException) {
       // Corrupt registry
       createRegistryManifest(entry)
+    }
+  }
+
+  private fun getRegistryManifest(): Optional<RegistryManifest> {
+    if (!Files.exists(registryManifestPath)) {
+      return Optional.empty()
+    }
+
+    val maybeRegistryManifestJson = registryManifestPath.toFile().readText()
+    return try {
+      val registryManifest = registryManifestAdapter.fromJson(maybeRegistryManifestJson)!!
+      Optional.of(registryManifest)
+    } catch (exception: JsonEncodingException) {
+      // Corrupt registry
+      Optional.empty()
     }
   }
 
@@ -120,9 +150,6 @@ class Registry private constructor(
 
   private fun updateEntryInRegistryManifest(
     entry: RegistryEntry
-  ): RegistryManifest {
-    val registryJson = registryManifestPath.toFile().readText()
-    val registryManifest = registryManifestAdapter.fromJson(registryJson)!!
-    return registryManifest.updateEntry(entry)
-  }
+  ): RegistryManifest =
+    getRegistryManifest().get().updateEntry(entry)
 }
