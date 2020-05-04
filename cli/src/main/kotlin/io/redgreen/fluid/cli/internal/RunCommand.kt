@@ -4,7 +4,7 @@ import io.redgreen.fluid.cli.ui.Printer
 import io.redgreen.fluid.engine.domain.RunGeneratorUseCase
 import io.redgreen.fluid.engine.domain.RunGeneratorUseCase.Result.GeneratorNotFound
 import io.redgreen.fluid.engine.domain.RunGeneratorUseCase.Result.RunSuccessful
-import io.redgreen.fluid.registry.Registry
+import io.redgreen.fluid.registry.DefaultRegistry
 import picocli.CommandLine.Command
 import picocli.CommandLine.Parameters
 import java.nio.file.Path
@@ -20,7 +20,7 @@ class RunCommand(
   @Parameters(index = "1")
   internal lateinit var destination: Path
 
-  private val registry by lazy { Registry.from(userHomeDir) }
+  private val registry by lazy { DefaultRegistry.from(userHomeDir) }
 
   override fun call(): Int {
     when (val result = RunGeneratorUseCase(registry).invoke(generatorId, destination)) {

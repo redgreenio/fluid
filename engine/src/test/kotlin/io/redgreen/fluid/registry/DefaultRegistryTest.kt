@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.nio.file.Path
 
-class RegistryTest {
+class DefaultRegistryTest {
   // Inlining strings in JSON while using IntelliJ language injection causes IDE error.
   // This can be suppressed in our use case.
   @Suppress("JsonStandardCompliance")
@@ -25,12 +25,12 @@ class RegistryTest {
   @TempDir
   internal lateinit var supposedlyUserHome: Path
 
-  private val registry by lazy { Registry.from(supposedlyUserHome) }
+  private val registry by lazy { DefaultRegistry.from(supposedlyUserHome) }
 
   @Test
   fun `it should resolve registry's root directory`() {
     // when
-    val registry = Registry.from(supposedlyUserHome)
+    val registry = DefaultRegistry.from(supposedlyUserHome)
 
     // then
     val expectedPath = supposedlyUserHome.resolve(".fluid")

@@ -7,7 +7,7 @@ import io.redgreen.fluid.engine.domain.InstallGeneratorUseCase.InstallationType.
 import io.redgreen.fluid.engine.domain.InstallGeneratorUseCase.Result.FreshInstallSuccessful
 import io.redgreen.fluid.engine.domain.InstallGeneratorUseCase.Result.OverwriteSuccessful
 import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.ValidGenerator
-import io.redgreen.fluid.registry.Registry
+import io.redgreen.fluid.registry.DefaultRegistry
 import io.redgreen.fluid.registry.assist.ValidGeneratorParameterResolver
 import io.redgreen.fluid.registry.assist.ValidGeneratorParameterResolver.TestArtifact
 import io.redgreen.fluid.registry.model.RegistryEntry
@@ -22,7 +22,7 @@ class InstallGeneratorUseCaseTest {
   @TempDir
   internal lateinit var supposedlyUserHomeDir: Path
 
-  private val registry by lazy { Registry.from(supposedlyUserHomeDir) }
+  private val registry by lazy { DefaultRegistry.from(supposedlyUserHomeDir) }
   private val installGeneratorUseCase by lazy { InstallGeneratorUseCase(registry) }
 
   @Test

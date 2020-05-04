@@ -3,7 +3,7 @@ package io.redgreen.fluid.registry.domain
 import com.google.common.truth.Truth.assertThat
 import io.redgreen.fluid.assist.ARTIFACT_VALID_GENERATOR
 import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.ValidGenerator
-import io.redgreen.fluid.registry.Registry
+import io.redgreen.fluid.registry.DefaultRegistry
 import io.redgreen.fluid.registry.assist.RegistrySubject.Companion.assertThat
 import io.redgreen.fluid.registry.assist.ValidGeneratorParameterResolver
 import io.redgreen.fluid.registry.assist.ValidGeneratorParameterResolver.TestArtifact
@@ -19,9 +19,7 @@ class CopyGeneratorUseCaseTest {
   @TempDir
   internal lateinit var supposedlyUserHomeDir: Path
 
-  private val registry by lazy {
-    Registry.from(supposedlyUserHomeDir)
-  }
+  private val registry by lazy { DefaultRegistry.from(supposedlyUserHomeDir) }
 
   @Test
   fun `it should copy generator jars inside the registry's libs directory`(

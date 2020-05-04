@@ -9,7 +9,7 @@ import io.redgreen.fluid.engine.domain.RunGeneratorUseCase.Result.RunSuccessful
 import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.ValidGenerator
 import io.redgreen.fluid.engine.model.DirectoryCreated
 import io.redgreen.fluid.engine.model.FileCreated
-import io.redgreen.fluid.registry.Registry
+import io.redgreen.fluid.registry.DefaultRegistry
 import io.redgreen.fluid.registry.assist.ValidGeneratorParameterResolver
 import io.redgreen.fluid.registry.assist.ValidGeneratorParameterResolver.TestArtifact
 import org.junit.jupiter.api.Test
@@ -25,9 +25,7 @@ class RunGeneratorUseCaseTest {
   @TempDir
   lateinit var destinationPath: Path
 
-  private val registry by lazy {
-    Registry.from(supposedlyUserHomeDir)
-  }
+  private val registry by lazy { DefaultRegistry.from(supposedlyUserHomeDir) }
 
   @Test
   fun `it should run a valid generator`(
