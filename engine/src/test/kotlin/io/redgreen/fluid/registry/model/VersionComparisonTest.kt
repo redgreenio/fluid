@@ -1,7 +1,6 @@
-package io.redgreen.fluid.registry.domain
+package io.redgreen.fluid.registry.model
 
 import com.google.common.truth.Truth.assertThat
-import io.redgreen.fluid.registry.model.VersionComparison
 import io.redgreen.fluid.registry.model.VersionComparison.EQUAL
 import io.redgreen.fluid.registry.model.VersionComparison.NA
 import io.redgreen.fluid.registry.model.VersionComparison.NEWER

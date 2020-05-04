@@ -1,4 +1,4 @@
-package io.redgreen.fluid.registry.model;
+package io.redgreen.fluid.registry.model
 
 import com.github.zafarkhaja.semver.UnexpectedCharacterException
 import com.github.zafarkhaja.semver.Version
