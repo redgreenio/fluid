@@ -2,6 +2,7 @@ package io.redgreen.fluid.cli
 
 import io.redgreen.fluid.cli.internal.FluidCommand
 import io.redgreen.fluid.cli.internal.FluidCommand.Companion.EXIT_CODE_SUCCESS
+import io.redgreen.fluid.cli.internal.GeneratorsCommand
 import io.redgreen.fluid.cli.internal.InstallCommand
 import io.redgreen.fluid.cli.internal.RunCommand
 import picocli.CommandLine
@@ -16,8 +17,9 @@ fun main(args: Array<String>) {
 
   val fluidCommand = FluidCommand()
   val commandLine = CommandLine(fluidCommand)
-    .addSubcommand(InstallCommand(userHomeDir))
+    .addSubcommand(InstallCommand(userHomeDir)) // TODO(rj) - Pass the registry instead?
     .addSubcommand(RunCommand(userHomeDir))
+    .addSubcommand(GeneratorsCommand(userHomeDir))
 
   val parseResult = commandLine
     .parseArgs(*args)
@@ -32,6 +34,7 @@ private fun handleSubcommand(
   return when (val subcommand = parseResult.subcommand()?.commandSpec()?.userObject()) {
     is InstallCommand -> subcommand.call()
     is RunCommand -> subcommand.call()
+    is GeneratorsCommand -> subcommand.call()
     else -> printUsageOrVersion(parseResult, commandLine)
   }
 }
