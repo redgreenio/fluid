@@ -11,7 +11,7 @@ import io.redgreen.fluid.engine.domain.InstallGeneratorUseCase.Result.FreshInsta
 import io.redgreen.fluid.engine.domain.InstallGeneratorUseCase.Result.OverwriteSuccessful
 import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase
 import io.redgreen.fluid.engine.domain.ValidateGeneratorUseCase.Result.ValidGenerator
-import io.redgreen.fluid.registry.DefaultRegistry
+import io.redgreen.fluid.registry.Registry
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Lookup.InstallLookup
 import io.redgreen.fluid.registry.domain.LookupGeneratorUseCase.Result.AlreadyInstalled
@@ -28,12 +28,11 @@ import java.util.concurrent.Callable
 
 @Command(name = "install")
 internal class InstallCommand(
-  private val userHomeDir: Path
+  private val registry: Registry
 ) : Callable<Int> {
   @Option(names = ["-j", "--jar"])
   internal lateinit var candidatePath: Path
 
-  private val registry by lazy { DefaultRegistry.from(userHomeDir) }
   private val validateGeneratorUseCase by lazy { ValidateGeneratorUseCase() }
   private val installGeneratorUseCase by lazy { InstallGeneratorUseCase(registry) }
   private val lookupGeneratorUseCase by lazy { LookupGeneratorUseCase(registry) }
