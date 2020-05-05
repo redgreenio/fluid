@@ -11,7 +11,10 @@ import io.redgreen.fluid.registry.model.InstalledGenerator
 import picocli.CommandLine.Command
 import java.util.concurrent.Callable
 
-@Command(name = "generators")
+@Command(
+  name = "generators",
+  description = ["View information about installed generators"]
+)
 class GeneratorsCommand(
   private val registry: Registry
 ) : Callable<Int> {

@@ -10,7 +10,10 @@ import picocli.CommandLine.Parameters
 import java.nio.file.Path
 import java.util.concurrent.Callable
 
-@Command(name = "run")
+@Command(
+  name = "run",
+  description = ["Run an installed generator"]
+)
 class RunCommand(
   private val registry: Registry
 ) : Callable<Int> {

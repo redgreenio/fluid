@@ -26,7 +26,10 @@ import java.nio.file.Path
 import java.util.Scanner
 import java.util.concurrent.Callable
 
-@Command(name = "install")
+@Command(
+  name = "install",
+  description = ["Install a generator from a local or remote source"]
+)
 internal class InstallCommand(
   private val registry: Registry
 ) : Callable<Int> {
