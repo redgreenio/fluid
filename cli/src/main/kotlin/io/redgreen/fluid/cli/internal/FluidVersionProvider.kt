@@ -28,8 +28,7 @@ class FluidVersionProvider : IVersionProvider {
     "Version: $name"
 
   private fun buildHash(commitHash: String): String {
-    val shortHash = commitHash.take(10)
-    return "Build: $shortHash"
+    return "Build: $commitHash"
   }
 
   private fun buildTimestamp(timestamp: String): String {

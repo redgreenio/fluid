@@ -27,11 +27,18 @@ kapt {
 }
 
 jar {
+  def versionName = 'pre-alpha'
+  def timestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date())
+
+  def commitHash = "${versioning.info.commit}".substring(0, 10)
+  if (versioning.info.dirty) {
+    commitHash = "${commitHash}${versioning.dirtySuffix}"
+  }
+
   manifest {
     attributes(
       'Main-Class': 'io.redgreen.fluid.cli.CliKt',
-      // The attribute value has the following format - version-name|commit-hash|timestamp
-      "Implementation-Version": "pre-alpha|${versioning.info.commit}|${new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date())}"
+      "Implementation-Version": "$versionName|$commitHash|$timestamp"
     )
   }
 }
