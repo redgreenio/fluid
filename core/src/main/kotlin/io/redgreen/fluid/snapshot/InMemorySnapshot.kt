@@ -66,7 +66,7 @@ class InMemorySnapshot private constructor(
   }
 
   override fun <T : Any> execute(command: TemplateCommand<T>) {
-    copyTemplate(command.fileName, command.model, command.resource)
+    copyTemplate(command.template, command.model, command.resource)
   }
 
   override fun getEntries(): List<FileSystemEntry> {
@@ -138,15 +138,15 @@ class InMemorySnapshot private constructor(
   }
 
   private fun <T : Any> copyTemplate(
-    destination: String,
+    file: String,
     model: T,
     resource: Resource
   ) {
-    val templatePath = if (resource.isSameAsDestination()) destination else resource.filePath
-    val processedTemplate = templateEngine.processTemplate(templatePath, model)
-    createMissingDirectoriesInPath(destination)
+    val sourceFilePath = if (resource.isSameAsDestination()) file else resource.filePath
+    val processedTemplate = templateEngine.processTemplate(sourceFilePath, model)
+    createMissingDirectoriesInPath(file)
     ByteArrayInputStream(processedTemplate.toByteArray()).use { inputStream ->
-      Files.copy(inputStream, this.snapshotRoot.resolve(destination))
+      Files.copy(inputStream, this.snapshotRoot.resolve(file))
     }
   }
 
