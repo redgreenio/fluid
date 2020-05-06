@@ -10,7 +10,7 @@ data class DirectoryCommand(
 ) : Command()
 
 data class FileCommand(
-  val destinationPath: String,
+  val file: String,
   val resource: Resource = SAME_AS_DESTINATION
 ) : Command()
 

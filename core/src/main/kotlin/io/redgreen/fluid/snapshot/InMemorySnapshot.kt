@@ -62,7 +62,7 @@ class InMemorySnapshot private constructor(
   }
 
   override fun execute(command: FileCommand) {
-    copyFile(command.destinationPath, command.resource)
+    copyFile(command.file, command.resource)
   }
 
   override fun <T : Any> execute(command: TemplateCommand<T>) {
@@ -124,14 +124,17 @@ class InMemorySnapshot private constructor(
     }
   }
 
-  private fun copyFile(destination: String, resource: Resource) {
-    val source = if (resource.isSameAsDestination()) destination else resource.filePath
-    createMissingDirectoriesInPath(destination)
-    classLoader.getResourceAsStream(source)?.use { inputStream ->
-      if (!Files.exists(snapshotRoot.resolve(destination))) {
-        Files.copy(inputStream, snapshotRoot.resolve(destination))
+  private fun copyFile(
+    file: String,
+    resource: Resource
+  ) {
+    val sourceFilePath = if (resource.isSameAsDestination()) file else resource.filePath
+    createMissingDirectoriesInPath(file)
+    classLoader.getResourceAsStream(sourceFilePath)?.use { inputStream ->
+      if (!Files.exists(snapshotRoot.resolve(file))) {
+        Files.copy(inputStream, snapshotRoot.resolve(file))
       }
-    } ?: throw IllegalStateException("Unable to find source file: '$source'") // TODO: Add tests for missing files and templates
+    } ?: throw IllegalStateException("Unable to find source file: '$sourceFilePath'") // TODO: Add tests for missing files and templates
   }
 
   private fun <T : Any> copyTemplate(
