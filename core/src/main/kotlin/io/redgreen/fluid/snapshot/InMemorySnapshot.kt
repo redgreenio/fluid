@@ -53,11 +53,11 @@ class InMemorySnapshot private constructor(
   )
 
   override fun execute(command: DirectoryCommand) {
-    val resourceDirectoryPath = classLoader.getResource(command.path)?.path
-    if (resourceDirectoryPath == null) {
-      createDirectory(command.path)
+    val sourceDirectory = classLoader.getResource(command.directory)?.path
+    if (sourceDirectory != null) {
+      copyDirectory(command.directory, sourceDirectory)
     } else {
-      copyDirectory(command, resourceDirectoryPath)
+      createDirectory(command.directory)
     }
   }
 
@@ -95,17 +95,17 @@ class InMemorySnapshot private constructor(
   }
 
   private fun copyDirectory(
-    command: DirectoryCommand,
-    resourceDirectoryPath: String
+    directory: String,
+    sourceDirectoryPath: String
   ) {
-    val sourceDirectory = File(resourceDirectoryPath)
+    val sourceDirectory = File(sourceDirectoryPath)
     val filesInSourceDirectory = mutableListOf<File>()
     findFilesInDirectory(sourceDirectory, filesInSourceDirectory)
 
     filesInSourceDirectory.onEach { sourceFile ->
       val sourceFilePath = sourceFile.path
-      val destination = sourceFilePath.substring(sourceFilePath.indexOf(command.path), sourceFilePath.length)
-      copyFile(destination, Resource(destination))
+      val fileRelativePath = sourceFilePath.substring(sourceFilePath.indexOf(directory), sourceFilePath.length)
+      copyFile(fileRelativePath, Resource(fileRelativePath))
     }
   }
 

@@ -6,7 +6,7 @@ import io.redgreen.fluid.dsl.Resource.Companion.SAME_AS_DESTINATION
 sealed class Command
 
 data class DirectoryCommand(
-  val path: String
+  val directory: String
 ) : Command()
 
 data class FileCommand(

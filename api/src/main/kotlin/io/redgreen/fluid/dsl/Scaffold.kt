@@ -13,6 +13,7 @@ class Scaffold(
 ) {
   companion object {
     private const val ROOT = ""
+    private const val UNIX_PATH_SEPARATOR = "/"
   }
 
   private var currentPath = ROOT
@@ -23,7 +24,7 @@ class Scaffold(
     block: Directory.() -> Unit = { /* empty */ }
   ) {
     val previousPath = currentPath
-    currentPath += if (currentPath.isEmpty()) path else "/$path"
+    currentPath += if (currentPath.isEmpty()) path else "$UNIX_PATH_SEPARATOR$path"
     commands.add(DirectoryCommand(currentPath))
     block(Directory(currentPath, commands))
     currentPath = previousPath
