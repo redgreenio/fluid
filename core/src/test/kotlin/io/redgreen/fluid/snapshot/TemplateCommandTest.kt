@@ -2,7 +2,7 @@ package io.redgreen.fluid.snapshot
 
 import io.redgreen.fluid.api.FileEntry
 import io.redgreen.fluid.api.TemplateCommand
-import io.redgreen.fluid.dsl.Resource
+import io.redgreen.fluid.dsl.Source
 import io.redgreen.fluid.snapshot.assist.buildSnapshot
 import io.redgreen.fluid.testing.SnapshotSubject.Companion.assertThat
 import org.junit.jupiter.api.Test
@@ -32,14 +32,14 @@ class TemplateCommandTest {
   }
 
   @Test
-  fun `it should copy a template from an explicitly specified resource path`() {
+  fun `it should copy a template from an explicitly specified source path`() {
     // given
     val fileName = "greeting.txt"
     val model = "Ajay"
-    val resource = Resource("messages/greeting.txt")
+    val source = Source("messages/greeting.txt")
 
     // when
-    val snapshot = TemplateCommand(fileName, model, resource)
+    val snapshot = TemplateCommand(fileName, model, source)
       .buildSnapshot()
 
     // then

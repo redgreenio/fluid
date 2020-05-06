@@ -1,8 +1,8 @@
 package com.example.generator
 
 import io.redgreen.fluid.api.Generator
-import io.redgreen.fluid.dsl.Resource
 import io.redgreen.fluid.dsl.Scaffold
+import io.redgreen.fluid.dsl.Source
 import io.redgreen.fluid.dsl.scaffold
 
 class LibraryProjectGenerator : Generator {
@@ -20,8 +20,8 @@ class LibraryProjectGenerator : Generator {
         }
       }
 
-      file("icon.png", Resource("strawberry.png"))
-      file(".gitignore", Resource("gitignore"))
+      file("icon.png", Source("strawberry.png"))
+      file(".gitignore", Source("gitignore"))
       template("build.gradle", config)
     }
   }

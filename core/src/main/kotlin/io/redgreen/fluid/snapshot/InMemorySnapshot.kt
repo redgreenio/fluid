@@ -11,7 +11,7 @@ import io.redgreen.fluid.api.FileSystemEntry
 import io.redgreen.fluid.api.Generator
 import io.redgreen.fluid.api.Snapshot
 import io.redgreen.fluid.api.TemplateCommand
-import io.redgreen.fluid.dsl.Resource
+import io.redgreen.fluid.dsl.Source
 import io.redgreen.fluid.template.FreemarkerTemplateEngine
 import io.redgreen.fluid.template.TemplateEngine
 import java.io.ByteArrayInputStream
@@ -62,11 +62,11 @@ class InMemorySnapshot private constructor(
   }
 
   override fun execute(command: FileCommand) {
-    copyFile(command.file, command.resource)
+    copyFile(command.file, command.source)
   }
 
   override fun <T : Any> execute(command: TemplateCommand<T>) {
-    copyTemplate(command.template, command.model, command.resource)
+    copyTemplate(command.template, command.model, command.source)
   }
 
   override fun getEntries(): List<FileSystemEntry> {
@@ -104,8 +104,8 @@ class InMemorySnapshot private constructor(
 
     filesInSourceDirectory.onEach { sourceFile ->
       val sourceFilePath = sourceFile.path
-      val fileRelativePath = sourceFilePath.substring(sourceFilePath.indexOf(directory), sourceFilePath.length)
-      copyFile(fileRelativePath, Resource(fileRelativePath))
+      val relativeFilePath = sourceFilePath.substring(sourceFilePath.indexOf(directory), sourceFilePath.length)
+      copyFile(relativeFilePath, Source(relativeFilePath))
     }
   }
 
@@ -126,9 +126,9 @@ class InMemorySnapshot private constructor(
 
   private fun copyFile(
     file: String,
-    resource: Resource
+    source: Source
   ) {
-    val sourceFilePath = if (resource.isSameAsDestination()) file else resource.filePath
+    val sourceFilePath = if (source.mirrorsDestination) file else source.path
     createMissingDirectoriesInPath(file)
     classLoader.getResourceAsStream(sourceFilePath)?.use { inputStream ->
       if (!Files.exists(snapshotRoot.resolve(file))) {
@@ -140,9 +140,9 @@ class InMemorySnapshot private constructor(
   private fun <T : Any> copyTemplate(
     file: String,
     model: T,
-    resource: Resource
+    source: Source
   ) {
-    val sourceFilePath = if (resource.isSameAsDestination()) file else resource.filePath
+    val sourceFilePath = if (source.mirrorsDestination) file else source.path
     val processedTemplate = templateEngine.processTemplate(sourceFilePath, model)
     createMissingDirectoriesInPath(file)
     ByteArrayInputStream(processedTemplate.toByteArray()).use { inputStream ->

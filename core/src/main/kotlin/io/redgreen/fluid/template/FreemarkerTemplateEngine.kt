@@ -15,7 +15,10 @@ class FreemarkerTemplateEngine(
 
   private val classLoader = classLoaderClass.classLoader
 
-  override fun <T : Any> processTemplate(templatePath: String, model: T): String {
+  override fun <M : Any> processTemplate(
+    templatePath: String,
+    model: M
+  ): String {
     val configuration = getConfiguration()
 
     val dataModel = mapOf(KEY_MODEL to model)

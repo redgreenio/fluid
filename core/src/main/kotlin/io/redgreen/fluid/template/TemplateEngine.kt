@@ -1,5 +1,8 @@
 package io.redgreen.fluid.template
 
 interface TemplateEngine {
-  fun <T : Any> processTemplate(templatePath: String, model: T): String
+  fun <M : Any> processTemplate(
+    templatePath: String,
+    model: M
+  ): String
 }

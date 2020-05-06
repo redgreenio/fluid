@@ -5,6 +5,6 @@ import io.redgreen.fluid.api.Snapshot
 import io.redgreen.fluid.api.SnapshotFactory
 
 class InMemorySnapshotFactory : SnapshotFactory<Class<out Generator>> {
-  override fun newInstance(param: Class<out Generator>): Snapshot =
-    InMemorySnapshot.forGenerator(param)
+  override fun newInstance(params: Class<out Generator>): Snapshot =
+    InMemorySnapshot.forGenerator(params)
 }

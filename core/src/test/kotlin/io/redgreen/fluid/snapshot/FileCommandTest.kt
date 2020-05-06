@@ -2,7 +2,7 @@ package io.redgreen.fluid.snapshot
 
 import io.redgreen.fluid.api.FileCommand
 import io.redgreen.fluid.api.FileEntry
-import io.redgreen.fluid.dsl.Resource
+import io.redgreen.fluid.dsl.Source
 import io.redgreen.fluid.snapshot.assist.buildSnapshot
 import io.redgreen.fluid.testing.SnapshotSubject.Companion.assertThat
 import org.junit.jupiter.api.Test
@@ -21,9 +21,9 @@ class FileCommandTest {
   }
 
   @Test
-  fun `it should copy file from an explicitly specified resource path`() {
+  fun `it should copy file from an explicitly specified source path`() {
     // when
-    val snapshot = FileCommand(".gitignore", Resource("gitignore"))
+    val snapshot = FileCommand(".gitignore", Source("gitignore"))
       .buildSnapshot()
 
     // then
@@ -54,7 +54,7 @@ class FileCommandTest {
   @Test
   fun `it should copy files from a directory path`() {
     // when
-    val snapshot = FileCommand("docs/doc1.txt", Resource("docs/doc1.txt"))
+    val snapshot = FileCommand("docs/doc1.txt", Source("docs/doc1.txt"))
       .buildSnapshot()
 
     // then

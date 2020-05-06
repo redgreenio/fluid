@@ -4,7 +4,7 @@ import com.google.common.truth.Truth.assertThat
 import io.redgreen.fluid.api.DirectoryCommand
 import io.redgreen.fluid.api.FileCommand
 import io.redgreen.fluid.api.TemplateCommand
-import io.redgreen.fluid.dsl.Resource
+import io.redgreen.fluid.dsl.Source
 import io.redgreen.fluid.dsl.scaffold
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -155,12 +155,12 @@ class DslTest {
   }
 
   @Nested
-  inner class ExplicitResourceInFile {
+  inner class ExplicitSourceInFile {
     @Test
-    fun `it should allow specifying resource path while copying files`() {
+    fun `it should allow specifying source path while copying files`() {
       // given
       val scaffold = scaffold {
-        file(".gitignore", Resource("gitignore"))
+        file(".gitignore", Source("gitignore"))
       }
 
       // when
@@ -169,16 +169,16 @@ class DslTest {
       // then
       assertThat(commands)
         .containsExactly(
-          FileCommand(".gitignore", Resource("gitignore"))
+          FileCommand(".gitignore", Source("gitignore"))
         )
     }
 
     @Test
-    fun `it should allow specifying resource path while copying files into directories`() {
+    fun `it should allow specifying source path while copying files into directories`() {
       // given
       val scaffold = scaffold {
         dir("core") {
-          file(".gitignore", Resource("gitignore"))
+          file(".gitignore", Source("gitignore"))
         }
       }
 
@@ -189,20 +189,20 @@ class DslTest {
       assertThat(commands)
         .containsExactly(
           DirectoryCommand("core"),
-          FileCommand("core/.gitignore", Resource("gitignore"))
+          FileCommand("core/.gitignore", Source("gitignore"))
         )
         .inOrder()
     }
   }
 
   @Nested
-  inner class ExplicitResourceInTemplate {
+  inner class ExplicitSourceInTemplate {
     @Test
-    fun `it should create template commands (root) with resource`() {
+    fun `it should create template commands (root) with source`() {
       // given
       val model = MultiModuleProject("bamboo-tools", "fluid")
       val scaffold = scaffold {
-        template("build.gradle", model, Resource("templates/build.gradle"))
+        template("build.gradle", model, Source("templates/build.gradle"))
       }
 
       // when
@@ -211,17 +211,17 @@ class DslTest {
       // then
       assertThat(commands)
         .containsExactly(
-          TemplateCommand("build.gradle", model, Resource("templates/build.gradle"))
+          TemplateCommand("build.gradle", model, Source("templates/build.gradle"))
         )
     }
 
     @Test
-    fun `it should create template commands (nested directory) with resource`() {
+    fun `it should create template commands (nested directory) with source`() {
       // given
       val model = MultiModuleProject("bamboo-tools", "fluid")
       val scaffold = scaffold {
         dir("fluid") {
-          template("build.gradle", model, Resource("templates/build.gradle"))
+          template("build.gradle", model, Source("templates/build.gradle"))
         }
       }
 
@@ -232,7 +232,7 @@ class DslTest {
       assertThat(commands)
         .containsExactly(
           DirectoryCommand("fluid"),
-          TemplateCommand("fluid/build.gradle", model, Resource("templates/build.gradle"))
+          TemplateCommand("fluid/build.gradle", model, Source("templates/build.gradle"))
         )
     }
   }

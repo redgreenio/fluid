@@ -6,7 +6,7 @@ import io.redgreen.fluid.api.FileCommand
 import io.redgreen.fluid.api.Snapshot
 import io.redgreen.fluid.api.SnapshotFactory
 import io.redgreen.fluid.api.TemplateCommand
-import io.redgreen.fluid.dsl.Resource.Companion.SAME_AS_DESTINATION
+import io.redgreen.fluid.dsl.Source.Companion.MIRROR_DESTINATION
 
 class Scaffold(
   private val block: Scaffold.() -> Unit
@@ -20,26 +20,36 @@ class Scaffold(
   private val commands = mutableListOf<Command>()
 
   fun dir(
-    path: String,
+    segment: String,
     block: Directory.() -> Unit = { /* empty */ }
   ) {
     val previousPath = currentPath
-    currentPath += if (currentPath.isEmpty()) path else "$UNIX_PATH_SEPARATOR$path"
+    currentPath += if (currentPath.isEmpty()) segment else "$UNIX_PATH_SEPARATOR$segment"
     commands.add(DirectoryCommand(currentPath))
     block(Directory(currentPath, commands))
     currentPath = previousPath
   }
 
-  fun file(fileName: String, resource: Resource = SAME_AS_DESTINATION) {
-    commands.add(FileCommand(fileName, resource))
+  fun file(
+    name: String,
+    source: Source = MIRROR_DESTINATION
+  ) {
+    commands.add(FileCommand(name, source))
   }
 
-  fun <T : Any> template(fileName: String, model: T, resource: Resource = SAME_AS_DESTINATION) {
-    commands.add(TemplateCommand(fileName, model, resource))
+  fun <M : Any> template(
+    name: String,
+    model: M,
+    source: Source = MIRROR_DESTINATION
+  ) {
+    commands.add(TemplateCommand(name, model, source))
   }
 
-  fun <T : Any> buildSnapshot(factory: SnapshotFactory<T>, param: T): Snapshot {
-    val snapshot = factory.newInstance(param)
+  fun <S : Any> buildSnapshot(
+    snapshotFactory: SnapshotFactory<S>,
+    snapshotParams: S
+  ): Snapshot {
+    val snapshot = snapshotFactory.newInstance(snapshotParams)
     transformDslToCommands().onEach { command -> dispatchCommandsToSnapshot(snapshot, command) }
     return snapshot
   }

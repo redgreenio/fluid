@@ -6,7 +6,7 @@ import io.redgreen.fluid.api.DirectoryCommand
 import io.redgreen.fluid.api.DirectoryEntry
 import io.redgreen.fluid.api.FileCommand
 import io.redgreen.fluid.api.FileEntry
-import io.redgreen.fluid.dsl.Resource
+import io.redgreen.fluid.dsl.Source
 import io.redgreen.fluid.snapshot.assist.buildSnapshot
 import org.junit.jupiter.api.Test
 
@@ -43,7 +43,7 @@ class GetEntriesTest {
   @Test
   fun `it should return a file entry for a file path`() {
     // given
-    val snapshotWithFile = FileCommand(".gitignore", Resource("gitignore"))
+    val snapshotWithFile = FileCommand(".gitignore", Source("gitignore"))
       .buildSnapshot()
 
     // when

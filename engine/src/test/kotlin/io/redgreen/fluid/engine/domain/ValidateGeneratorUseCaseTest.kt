@@ -128,7 +128,7 @@ class ValidateGeneratorUseCaseTest {
     return ValidGenerator(
       Manifest(generator, maintainer),
       generatorClass,
-      "8b3172460d752ee9c89ec9bfae445629c3aa2339a256a51babbd0f4b52a7da7e",
+      "8386ed46db1f8a273a348d0863b905d4238e17d3a123b030125fd336706f457c",
       Paths.get("src/test/resources/jar-test-artifacts/valid-generator.jar")
     )
   }

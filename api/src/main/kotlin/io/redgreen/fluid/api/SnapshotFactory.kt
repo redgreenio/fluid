@@ -1,5 +1,5 @@
 package io.redgreen.fluid.api
 
-interface SnapshotFactory<T : Any> {
-  fun newInstance(param: T): Snapshot
+interface SnapshotFactory<S : Any> {
+  fun newInstance(params: S): Snapshot
 }
