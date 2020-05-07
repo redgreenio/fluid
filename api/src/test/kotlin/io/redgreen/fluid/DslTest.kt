@@ -4,6 +4,7 @@ import com.google.common.truth.Truth.assertThat
 import io.redgreen.fluid.api.DirectoryCommand
 import io.redgreen.fluid.api.FileCommand
 import io.redgreen.fluid.api.TemplateCommand
+import io.redgreen.fluid.assist.ScaffoldSubject.Companion.assertThat
 import io.redgreen.fluid.dsl.Permission.EXECUTE
 import io.redgreen.fluid.dsl.Source
 import io.redgreen.fluid.dsl.Source.Companion.MIRROR_DESTINATION
@@ -338,6 +339,39 @@ class DslTest {
       assertThat(commands)
         .containsExactly(
           TemplateCommand("start-server", 8080, Source("scripts/gradlew"), EXECUTE)
+        )
+    }
+  }
+
+  @Nested
+  inner class NestedExecutePermission {
+    @Test
+    fun `it should allow a nested file to have execute permission`() {
+      val scaffold = scaffold {
+        dir("scripts") {
+          file("gradlew", EXECUTE)
+        }
+      }
+
+      assertThat(scaffold)
+        .hasCommands(
+          DirectoryCommand("scripts"),
+          FileCommand("scripts/gradlew", MIRROR_DESTINATION, EXECUTE)
+        )
+    }
+
+    @Test
+    fun `it should allow nested file with source to have execute permission`() {
+      val scaffold = scaffold {
+        dir("scripts") {
+          file("gradlew", Source("build-scripts/gradlew"), EXECUTE)
+        }
+      }
+
+      assertThat(scaffold)
+        .hasCommands(
+          DirectoryCommand("scripts"),
+          FileCommand("scripts/gradlew", Source("build-scripts/gradlew"), EXECUTE)
         )
     }
   }

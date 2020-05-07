@@ -3,6 +3,7 @@ package io.redgreen.fluid.dsl
 import io.redgreen.fluid.api.Command
 import io.redgreen.fluid.api.FileCommand
 import io.redgreen.fluid.api.TemplateCommand
+import io.redgreen.fluid.dsl.Permission.READ_WRITE
 import io.redgreen.fluid.dsl.Source.Companion.MIRROR_DESTINATION
 
 class Directory(
@@ -13,7 +14,7 @@ class Directory(
     name: String,
     source: Source = MIRROR_DESTINATION
   ) {
-    commands.add(FileCommand("$currentPath/$name", source))
+    file(name, source, READ_WRITE)
   }
 
   fun <M : Any> template(
@@ -22,5 +23,20 @@ class Directory(
     source: Source = MIRROR_DESTINATION
   ) {
     commands.add(TemplateCommand("$currentPath/$name", model, source))
+  }
+
+  fun file(
+    name: String,
+    permissions: Int
+  ) {
+    file(name, MIRROR_DESTINATION, permissions)
+  }
+
+  fun file(
+    name: String,
+    source: Source,
+    permissions: Int
+  ) {
+    commands.add(FileCommand("$currentPath/$name", source, permissions))
   }
 }
