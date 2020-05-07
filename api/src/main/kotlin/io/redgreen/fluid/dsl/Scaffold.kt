@@ -54,6 +54,21 @@ class Scaffold(
     return snapshot
   }
 
+  fun file(
+    name: String,
+    permissions: Int
+  ) {
+    commands.add(FileCommand(name, MIRROR_DESTINATION, permissions))
+  }
+
+  fun file(
+    name: String,
+    source: Source,
+    permissions: Int
+  ) {
+    commands.add(FileCommand(name, source, permissions))
+  }
+
   internal fun transformDslToCommands(): List<Command> {
     commands.clear()
     block()

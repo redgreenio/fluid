@@ -4,7 +4,9 @@ import com.google.common.truth.Truth.assertThat
 import io.redgreen.fluid.api.DirectoryCommand
 import io.redgreen.fluid.api.FileCommand
 import io.redgreen.fluid.api.TemplateCommand
+import io.redgreen.fluid.dsl.Permission.EXECUTE
 import io.redgreen.fluid.dsl.Source
+import io.redgreen.fluid.dsl.Source.Companion.MIRROR_DESTINATION
 import io.redgreen.fluid.dsl.scaffold
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -267,6 +269,39 @@ class DslTest {
         TemplateCommand("directory/templates/rocker.html", "Fluid")
       )
       .inOrder()
+  }
+
+  @Nested
+  inner class ExecutablePermission {
+    @Test
+    fun `it should allow a file to have executable permission`() {
+      // given
+      val scaffold = scaffold {
+        file("gradlew", EXECUTE)
+      }
+
+      // when
+      val commands = scaffold.transformDslToCommands()
+
+      // then
+      assertThat(commands)
+        .containsExactly(FileCommand("gradlew", MIRROR_DESTINATION, EXECUTE))
+    }
+
+    @Test
+    fun `it should allow a file with source to have executable permission`() {
+      // given
+      val scaffold = scaffold {
+        file("gradlew", Source("scripts/gradlew"), EXECUTE)
+      }
+
+      // when
+      val commands = scaffold.transformDslToCommands()
+
+      // then
+      assertThat(commands)
+        .containsExactly(FileCommand("gradlew", Source("scripts/gradlew"), EXECUTE))
+    }
   }
 
   data class MultiModuleProject(

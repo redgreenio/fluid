@@ -1,5 +1,6 @@
 package io.redgreen.fluid.api
 
+import io.redgreen.fluid.dsl.Permission.READ_WRITE
 import io.redgreen.fluid.dsl.Source
 import io.redgreen.fluid.dsl.Source.Companion.MIRROR_DESTINATION
 
@@ -11,7 +12,8 @@ data class DirectoryCommand(
 
 data class FileCommand(
   val file: String,
-  val source: Source = MIRROR_DESTINATION
+  val source: Source = MIRROR_DESTINATION,
+  val permissions: Int = READ_WRITE
 ) : Command()
 
 data class TemplateCommand<T : Any>(
