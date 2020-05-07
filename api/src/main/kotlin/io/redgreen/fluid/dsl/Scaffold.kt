@@ -6,6 +6,7 @@ import io.redgreen.fluid.api.FileCommand
 import io.redgreen.fluid.api.Snapshot
 import io.redgreen.fluid.api.SnapshotFactory
 import io.redgreen.fluid.api.TemplateCommand
+import io.redgreen.fluid.dsl.Permission.READ_WRITE
 import io.redgreen.fluid.dsl.Source.Companion.MIRROR_DESTINATION
 
 class Scaffold(
@@ -34,7 +35,7 @@ class Scaffold(
     name: String,
     source: Source = MIRROR_DESTINATION
   ) {
-    commands.add(FileCommand(name, source))
+    file(name, source, READ_WRITE)
   }
 
   fun <M : Any> template(
@@ -42,7 +43,7 @@ class Scaffold(
     model: M,
     source: Source = MIRROR_DESTINATION
   ) {
-    commands.add(TemplateCommand(name, model, source))
+    template(name, model, source, READ_WRITE)
   }
 
   fun <S : Any> buildSnapshot(
@@ -58,7 +59,7 @@ class Scaffold(
     name: String,
     permissions: Int
   ) {
-    commands.add(FileCommand(name, MIRROR_DESTINATION, permissions))
+    file(name, MIRROR_DESTINATION, permissions)
   }
 
   fun file(
@@ -74,7 +75,7 @@ class Scaffold(
     model: M,
     permissions: Int
   ) {
-    commands.add(TemplateCommand(name, model, MIRROR_DESTINATION, permissions))
+    template(name, model, MIRROR_DESTINATION, permissions)
   }
 
   fun <M : Any> template(
