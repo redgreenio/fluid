@@ -374,6 +374,36 @@ class DslTest {
           FileCommand("scripts/gradlew", Source("build-scripts/gradlew"), EXECUTE)
         )
     }
+
+    @Test
+    fun `it should allow a nested template to have execute permission`() {
+      val scaffold = scaffold {
+        dir("scripts") {
+          template("start-server", 8080, EXECUTE)
+        }
+      }
+
+      assertThat(scaffold)
+        .hasCommands(
+          DirectoryCommand("scripts"),
+          TemplateCommand("scripts/start-server", 8080, MIRROR_DESTINATION, EXECUTE)
+        )
+    }
+
+    @Test
+    fun `it should allow a nested template with source to have execute permission`() {
+      val scaffold = scaffold {
+        dir("scripts") {
+          template("start-server", 8080, Source("build-scripts/gradlew"), EXECUTE)
+        }
+      }
+
+      assertThat(scaffold)
+        .hasCommands(
+          DirectoryCommand("scripts"),
+          TemplateCommand("scripts/start-server", 8080, Source("build-scripts/gradlew"), EXECUTE)
+        )
+    }
   }
 
   data class MultiModuleProject(

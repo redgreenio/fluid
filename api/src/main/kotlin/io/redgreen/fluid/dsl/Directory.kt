@@ -22,7 +22,7 @@ class Directory(
     model: M,
     source: Source = MIRROR_DESTINATION
   ) {
-    commands.add(TemplateCommand("$currentPath/$name", model, source))
+    template(name, model, source, READ_WRITE)
   }
 
   fun file(
@@ -38,5 +38,22 @@ class Directory(
     permissions: Int
   ) {
     commands.add(FileCommand("$currentPath/$name", source, permissions))
+  }
+
+  fun <M : Any> template(
+    name: String,
+    model: M,
+    permissions: Int
+  ) {
+    template(name, model, MIRROR_DESTINATION, permissions)
+  }
+
+  fun <M : Any> template(
+    name: String,
+    model: M,
+    source: Source,
+    permissions: Int
+  ) {
+    commands.add(TemplateCommand("$currentPath/$name", model, source, permissions))
   }
 }
