@@ -37,7 +37,7 @@ class DslTest {
     @Test
     fun `it should return a directory command for a directory call`() {
       // given
-      val scaffold = scaffold {
+      val scaffold = scaffold { // TODO Create a Scaffold subject to eliminate redundancy in all the tests.
         dir("src")
       }
 
@@ -272,7 +272,7 @@ class DslTest {
   }
 
   @Nested
-  inner class ExecutablePermission {
+  inner class TopLevelExecutablePermission {
     @Test
     fun `it should allow a file to have executable permission`() {
       // given
@@ -285,7 +285,9 @@ class DslTest {
 
       // then
       assertThat(commands)
-        .containsExactly(FileCommand("gradlew", MIRROR_DESTINATION, EXECUTE))
+        .containsExactly(
+          FileCommand("gradlew", MIRROR_DESTINATION, EXECUTE)
+        )
     }
 
     @Test
@@ -300,7 +302,43 @@ class DslTest {
 
       // then
       assertThat(commands)
-        .containsExactly(FileCommand("gradlew", Source("scripts/gradlew"), EXECUTE))
+        .containsExactly(
+          FileCommand("gradlew", Source("scripts/gradlew"), EXECUTE)
+        )
+    }
+
+    @Test
+    fun `it should allow a template to have executable permission`() {
+      // given
+      val scaffold = scaffold {
+        template("start-server", 8080, EXECUTE)
+      }
+
+      // when
+      val commands = scaffold.transformDslToCommands()
+
+      // then
+      assertThat(commands)
+        .containsExactly(
+          TemplateCommand("start-server", 8080, MIRROR_DESTINATION, EXECUTE)
+        )
+    }
+
+    @Test
+    fun `it should allow a template with source to have executable permission`() {
+      // given
+      val scaffold = scaffold {
+        template("start-server", 8080, Source("scripts/gradlew"), EXECUTE)
+      }
+
+      // when
+      val commands = scaffold.transformDslToCommands()
+
+      // then
+      assertThat(commands)
+        .containsExactly(
+          TemplateCommand("start-server", 8080, Source("scripts/gradlew"), EXECUTE)
+        )
     }
   }
 

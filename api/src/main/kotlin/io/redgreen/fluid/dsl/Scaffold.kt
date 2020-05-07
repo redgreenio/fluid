@@ -69,6 +69,23 @@ class Scaffold(
     commands.add(FileCommand(name, source, permissions))
   }
 
+  fun <M : Any> template(
+    name: String,
+    model: M,
+    permissions: Int
+  ) {
+    commands.add(TemplateCommand(name, model, MIRROR_DESTINATION, permissions))
+  }
+
+  fun <M : Any> template(
+    name: String,
+    model: M,
+    source: Source,
+    permissions: Int
+  ) {
+    commands.add(TemplateCommand(name, model, source, permissions))
+  }
+
   internal fun transformDslToCommands(): List<Command> {
     commands.clear()
     block()

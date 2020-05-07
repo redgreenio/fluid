@@ -16,8 +16,9 @@ data class FileCommand(
   val permissions: Int = READ_WRITE
 ) : Command()
 
-data class TemplateCommand<T : Any>(
+data class TemplateCommand<M : Any>(
   val template: String,
-  val model: T,
-  val source: Source = MIRROR_DESTINATION
+  val model: M,
+  val source: Source = MIRROR_DESTINATION,
+  val permissions: Int = READ_WRITE
 ) : Command()
