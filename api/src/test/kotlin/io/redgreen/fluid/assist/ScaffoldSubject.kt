@@ -20,7 +20,7 @@ class ScaffoldSubject(
       assertAbout(scaffoldSubjects).that(scaffold)
   }
 
-  fun hasCommands(
+  fun produces(
     command: Command,
     vararg commands: Command
   ) {

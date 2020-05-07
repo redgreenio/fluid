@@ -37,40 +37,29 @@ class DslTest {
   inner class Directory {
     @Test
     fun `it should return a directory command for a directory call`() {
-      // given
-      val scaffold = scaffold { // TODO Create a Scaffold subject to eliminate redundancy in all the tests.
+      val scaffold = scaffold {
         dir("src")
       }
 
-      // when
-      val commands = scaffold.transformDslToCommands()
-
-      // then
-      assertThat(commands)
-        .containsExactly(
+      assertThat(scaffold)
+        .produces(
           DirectoryCommand("src")
         )
     }
 
     @Test
     fun `it should return directory commands for nested directories`() {
-      // given
       val scaffold = scaffold {
         dir("src") {
           dir("main")
         }
       }
 
-      // when
-      val commands = scaffold.transformDslToCommands()
-
-      // then
-      assertThat(commands)
-        .containsExactly(
+      assertThat(scaffold)
+        .produces(
           DirectoryCommand("src"),
           DirectoryCommand("src/main")
         )
-        .inOrder()
     }
   }
 
@@ -78,40 +67,29 @@ class DslTest {
   inner class File {
     @Test
     fun `it should return a file copy command for a file copy call`() {
-      // given
       val scaffold = scaffold {
         file(".gitignore")
       }
 
-      // when
-      val commands = scaffold.transformDslToCommands()
-
-      // then
-      assertThat(commands)
-        .containsExactly(
+      assertThat(scaffold)
+        .produces(
           FileCommand(".gitignore")
         )
     }
 
     @Test
     fun `it should return a file copy command for files nested inside directories`() {
-      // given
       val scaffold = scaffold {
         dir("src/test") {
           file("CanaryTest.kt")
         }
       }
 
-      // when
-      val commands = scaffold.transformDslToCommands()
-
-      // then
-      assertThat(commands)
-        .containsExactly(
+      assertThat(scaffold)
+        .produces(
           DirectoryCommand("src/test"),
           FileCommand("src/test/CanaryTest.kt")
         )
-        .inOrder()
     }
   }
 
@@ -119,25 +97,19 @@ class DslTest {
   inner class Template {
     @Test
     fun `it should create a template command`() {
-      // given
       val model = MultiModuleProject("bamboo-tools", "fluid")
       val scaffold = scaffold {
         template("settings.gradle", model)
       }
 
-      // when
-      val commands = scaffold.transformDslToCommands()
-
-      // then
-      assertThat(commands)
-        .containsExactly(
+      assertThat(scaffold)
+        .produces(
           TemplateCommand("settings.gradle", model)
         )
     }
 
     @Test
     fun `it should create template commands inside nested directories`() {
-      // given
       val model = MultiModuleProject("bamboo-tools", "fluid")
       val scaffold = scaffold {
         dir("fluid") {
@@ -145,15 +117,11 @@ class DslTest {
         }
       }
 
-      // when
-      val commands = scaffold.transformDslToCommands()
-
-      // then
-      assertThat(commands)
-        .containsExactly(
+      assertThat(scaffold)
+        .produces(
           DirectoryCommand("fluid"),
           TemplateCommand("fluid/fluid.iml", model)
-        ).inOrder()
+        )
     }
   }
 
@@ -161,40 +129,29 @@ class DslTest {
   inner class ExplicitSourceInFile {
     @Test
     fun `it should allow specifying source path while copying files`() {
-      // given
       val scaffold = scaffold {
         file(".gitignore", Source("gitignore"))
       }
 
-      // when
-      val commands = scaffold.transformDslToCommands()
-
-      // then
-      assertThat(commands)
-        .containsExactly(
+      assertThat(scaffold)
+        .produces(
           FileCommand(".gitignore", Source("gitignore"))
         )
     }
 
     @Test
     fun `it should allow specifying source path while copying files into directories`() {
-      // given
       val scaffold = scaffold {
         dir("core") {
           file(".gitignore", Source("gitignore"))
         }
       }
 
-      // when
-      val commands = scaffold.transformDslToCommands()
-
-      // then
-      assertThat(commands)
-        .containsExactly(
+      assertThat(scaffold)
+        .produces(
           DirectoryCommand("core"),
           FileCommand("core/.gitignore", Source("gitignore"))
         )
-        .inOrder()
     }
   }
 
@@ -202,25 +159,19 @@ class DslTest {
   inner class ExplicitSourceInTemplate {
     @Test
     fun `it should create template commands (root) with source`() {
-      // given
       val model = MultiModuleProject("bamboo-tools", "fluid")
       val scaffold = scaffold {
         template("build.gradle", model, Source("templates/build.gradle"))
       }
 
-      // when
-      val commands = scaffold.transformDslToCommands()
-
-      // then
-      assertThat(commands)
-        .containsExactly(
+      assertThat(scaffold)
+        .produces(
           TemplateCommand("build.gradle", model, Source("templates/build.gradle"))
         )
     }
 
     @Test
     fun `it should create template commands (nested directory) with source`() {
-      // given
       val model = MultiModuleProject("bamboo-tools", "fluid")
       val scaffold = scaffold {
         dir("fluid") {
@@ -228,12 +179,8 @@ class DslTest {
         }
       }
 
-      // when
-      val commands = scaffold.transformDslToCommands()
-
-      // then
-      assertThat(commands)
-        .containsExactly(
+      assertThat(scaffold)
+        .produces(
           DirectoryCommand("fluid"),
           TemplateCommand("fluid/build.gradle", model, Source("templates/build.gradle"))
         )
@@ -242,7 +189,6 @@ class DslTest {
 
   @Test
   fun `it should work with all kinds of elements`() {
-    // given
     val scaffold = scaffold {
       dir("one-directory")
 
@@ -256,12 +202,8 @@ class DslTest {
       }
     }
 
-    // when
-    val commands = scaffold.transformDslToCommands()
-
-    // then
-    assertThat(commands)
-      .containsExactly(
+    assertThat(scaffold)
+      .produces(
         DirectoryCommand("one-directory"),
         DirectoryCommand("directory"),
         DirectoryCommand("directory/directory"),
@@ -269,75 +211,54 @@ class DslTest {
         DirectoryCommand("directory/templates"),
         TemplateCommand("directory/templates/rocker.html", "Fluid")
       )
-      .inOrder()
   }
 
   @Nested
   inner class TopLevelExecutePermission {
     @Test
     fun `it should allow a file to have execute permission`() {
-      // given
       val scaffold = scaffold {
         file("gradlew", EXECUTE)
       }
 
-      // when
-      val commands = scaffold.transformDslToCommands()
-
-      // then
-      assertThat(commands)
-        .containsExactly(
+      assertThat(scaffold)
+        .produces(
           FileCommand("gradlew", MIRROR_DESTINATION, EXECUTE)
         )
     }
 
     @Test
     fun `it should allow a file with source to have execute permission`() {
-      // given
       val scaffold = scaffold {
         file("gradlew", Source("scripts/gradlew"), EXECUTE)
       }
 
-      // when
-      val commands = scaffold.transformDslToCommands()
-
-      // then
-      assertThat(commands)
-        .containsExactly(
+      assertThat(scaffold)
+        .produces(
           FileCommand("gradlew", Source("scripts/gradlew"), EXECUTE)
         )
     }
 
     @Test
     fun `it should allow a template to have execute permission`() {
-      // given
       val scaffold = scaffold {
         template("start-server", 8080, EXECUTE)
       }
 
-      // when
-      val commands = scaffold.transformDslToCommands()
-
-      // then
-      assertThat(commands)
-        .containsExactly(
+      assertThat(scaffold)
+        .produces(
           TemplateCommand("start-server", 8080, MIRROR_DESTINATION, EXECUTE)
         )
     }
 
     @Test
     fun `it should allow a template with source to have execute permission`() {
-      // given
       val scaffold = scaffold {
         template("start-server", 8080, Source("scripts/gradlew"), EXECUTE)
       }
 
-      // when
-      val commands = scaffold.transformDslToCommands()
-
-      // then
-      assertThat(commands)
-        .containsExactly(
+      assertThat(scaffold)
+        .produces(
           TemplateCommand("start-server", 8080, Source("scripts/gradlew"), EXECUTE)
         )
     }
@@ -354,7 +275,7 @@ class DslTest {
       }
 
       assertThat(scaffold)
-        .hasCommands(
+        .produces(
           DirectoryCommand("scripts"),
           FileCommand("scripts/gradlew", MIRROR_DESTINATION, EXECUTE)
         )
@@ -369,7 +290,7 @@ class DslTest {
       }
 
       assertThat(scaffold)
-        .hasCommands(
+        .produces(
           DirectoryCommand("scripts"),
           FileCommand("scripts/gradlew", Source("build-scripts/gradlew"), EXECUTE)
         )
@@ -384,7 +305,7 @@ class DslTest {
       }
 
       assertThat(scaffold)
-        .hasCommands(
+        .produces(
           DirectoryCommand("scripts"),
           TemplateCommand("scripts/start-server", 8080, MIRROR_DESTINATION, EXECUTE)
         )
@@ -399,7 +320,7 @@ class DslTest {
       }
 
       assertThat(scaffold)
-        .hasCommands(
+        .produces(
           DirectoryCommand("scripts"),
           TemplateCommand("scripts/start-server", 8080, Source("build-scripts/gradlew"), EXECUTE)
         )
