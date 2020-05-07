@@ -13,8 +13,8 @@ internal class PermissionTest {
   }
 
   @Test
-  fun `execute equals 1`() {
+  fun `execute equals 7`() {
     assertThat(EXECUTE)
-      .isEqualTo(1)
+      .isEqualTo(7)
   }
 }

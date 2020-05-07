@@ -21,9 +21,11 @@ package io.redgreen.fluid.dsl
  * ╚═════════════╧══════╧═══════╧═════════╝
  */
 object Permission {
-  const val EXECUTE = 1
+  private const val R = 4
+  private const val W = 2
+  private const val X = 1
 
-  private const val READ = 4
-  private const val WRITE = 2
-  internal const val READ_WRITE = READ or WRITE
+  internal const val READ_WRITE = R or W
+
+  const val EXECUTE = R or W or X
 }
