@@ -272,9 +272,9 @@ class DslTest {
   }
 
   @Nested
-  inner class TopLevelExecutablePermission {
+  inner class TopLevelExecutePermission {
     @Test
-    fun `it should allow a file to have executable permission`() {
+    fun `it should allow a file to have execute permission`() {
       // given
       val scaffold = scaffold {
         file("gradlew", EXECUTE)
@@ -291,7 +291,7 @@ class DslTest {
     }
 
     @Test
-    fun `it should allow a file with source to have executable permission`() {
+    fun `it should allow a file with source to have execute permission`() {
       // given
       val scaffold = scaffold {
         file("gradlew", Source("scripts/gradlew"), EXECUTE)
@@ -308,7 +308,7 @@ class DslTest {
     }
 
     @Test
-    fun `it should allow a template to have executable permission`() {
+    fun `it should allow a template to have execute permission`() {
       // given
       val scaffold = scaffold {
         template("start-server", 8080, EXECUTE)
@@ -325,7 +325,7 @@ class DslTest {
     }
 
     @Test
-    fun `it should allow a template with source to have executable permission`() {
+    fun `it should allow a template with source to have execute permission`() {
       // given
       val scaffold = scaffold {
         template("start-server", 8080, Source("scripts/gradlew"), EXECUTE)
