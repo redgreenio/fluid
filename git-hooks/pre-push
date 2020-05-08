@@ -1,0 +1,17 @@
+#!/bin/sh
+# Gist - https://gist.github.com/fwielstra/d3619eef4b23176c3db6a157179d3918
+
+set -e
+
+# stash any unstaged changes
+git stash push -m "pre-push-save"
+
+# unstash the unstashed changes (if any) on exit or interrupt
+unstash() {
+    git stash pop -q || true
+}
+
+trap unstash EXIT
+
+# run the tests + checks with the gradle wrapper
+./gradlew clean check

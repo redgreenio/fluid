@@ -68,3 +68,7 @@ subprojects {
     }
   }
 }
+
+task installGitHooks(type: Exec) {
+  commandLine 'ln', '-s', "${project.projectDir}/git-hooks/pre-push", '.git/hooks/pre-push'
+}
