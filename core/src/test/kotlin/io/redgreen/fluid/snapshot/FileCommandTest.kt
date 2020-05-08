@@ -2,6 +2,7 @@ package io.redgreen.fluid.snapshot
 
 import io.redgreen.fluid.api.FileCommand
 import io.redgreen.fluid.api.FileEntry
+import io.redgreen.fluid.api.TemplateCommand
 import io.redgreen.fluid.dsl.Permission.EXECUTE
 import io.redgreen.fluid.dsl.Source
 import io.redgreen.fluid.dsl.Source.Companion.MIRROR_DESTINATION
@@ -68,6 +69,17 @@ class FileCommandTest {
   fun `it should create a file with execute permission`() {
     // when
     val snapshot = FileCommand("say-hello.sh", MIRROR_DESTINATION, EXECUTE)
+      .buildSnapshot()
+
+    // then
+    assertThat(snapshot)
+      .has(FileEntry("say-hello.sh", EXECUTE))
+  }
+
+  @Test
+  fun `it should create a template with execute permission`() {
+    // when
+    val snapshot = TemplateCommand("say-hello.sh", Unit, MIRROR_DESTINATION, EXECUTE)
       .buildSnapshot()
 
     // then
