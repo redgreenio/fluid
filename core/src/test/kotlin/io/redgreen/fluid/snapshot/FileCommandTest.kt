@@ -2,7 +2,9 @@ package io.redgreen.fluid.snapshot
 
 import io.redgreen.fluid.api.FileCommand
 import io.redgreen.fluid.api.FileEntry
+import io.redgreen.fluid.dsl.Permission.EXECUTE
 import io.redgreen.fluid.dsl.Source
+import io.redgreen.fluid.dsl.Source.Companion.MIRROR_DESTINATION
 import io.redgreen.fluid.snapshot.assist.buildSnapshot
 import io.redgreen.fluid.testing.SnapshotSubject.Companion.assertThat
 import org.junit.jupiter.api.Test
@@ -60,5 +62,16 @@ class FileCommandTest {
     // then
     assertThat(snapshot)
       .has(FileEntry("docs/doc1.txt"))
+  }
+
+  @Test
+  fun `it should create a file with execute permission`() {
+    // when
+    val snapshot = FileCommand("say-hello.sh", MIRROR_DESTINATION, EXECUTE)
+      .buildSnapshot()
+
+    // then
+    assertThat(snapshot)
+      .has(FileEntry("say-hello.sh", EXECUTE))
   }
 }

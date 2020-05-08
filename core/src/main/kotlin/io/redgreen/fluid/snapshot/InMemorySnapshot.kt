@@ -11,6 +11,8 @@ import io.redgreen.fluid.api.FileSystemEntry
 import io.redgreen.fluid.api.Generator
 import io.redgreen.fluid.api.Snapshot
 import io.redgreen.fluid.api.TemplateCommand
+import io.redgreen.fluid.dsl.Permission.EXECUTE
+import io.redgreen.fluid.dsl.Permission.READ_WRITE
 import io.redgreen.fluid.dsl.Source
 import io.redgreen.fluid.template.FreemarkerTemplateEngine
 import io.redgreen.fluid.template.TemplateEngine
@@ -21,6 +23,7 @@ import java.nio.file.FileSystem
 import java.nio.file.FileVisitOption
 import java.nio.file.Files
 import java.nio.file.Path
+import java.nio.file.attribute.PosixFilePermission.OTHERS_EXECUTE
 import java.util.Optional
 import kotlin.streams.toList
 
@@ -36,7 +39,7 @@ class InMemorySnapshot private constructor(
       .builder(PathType.unix())
       .setRoots(ROOT)
       .setWorkingDirectory(ROOT)
-      .setAttributeViews("basic")
+      .setAttributeViews("posix")
       .build()
 
     internal fun forGenerator(generatorClass: Class<out Generator>): Snapshot =
@@ -62,7 +65,7 @@ class InMemorySnapshot private constructor(
   }
 
   override fun execute(command: FileCommand) {
-    copyFile(command.file, command.source)
+    with(command) { copyFile(file, source, permissions) }
   }
 
   override fun <T : Any> execute(command: TemplateCommand<T>) {
@@ -105,7 +108,7 @@ class InMemorySnapshot private constructor(
     filesInSourceDirectory.onEach { sourceFile ->
       val sourceFilePath = sourceFile.path
       val relativeFilePath = sourceFilePath.substring(sourceFilePath.indexOf(directory), sourceFilePath.length)
-      copyFile(relativeFilePath, Source(relativeFilePath))
+      copyFile(relativeFilePath, Source(relativeFilePath), READ_WRITE)
     }
   }
 
@@ -126,13 +129,18 @@ class InMemorySnapshot private constructor(
 
   private fun copyFile(
     file: String,
-    source: Source
+    source: Source,
+    permissions: Int
   ) {
     val sourceFilePath = if (source.mirrorsDestination) file else source.path
     createMissingDirectoriesInPath(file)
     classLoader.getResourceAsStream(sourceFilePath)?.use { inputStream ->
-      if (!Files.exists(snapshotRoot.resolve(file))) {
-        Files.copy(inputStream, snapshotRoot.resolve(file))
+      val targetFilePath = snapshotRoot.resolve(file)
+      if (!Files.exists(targetFilePath)) {
+        Files.copy(inputStream, targetFilePath)
+        if (permissions == EXECUTE) {
+          Files.setPosixFilePermissions(targetFilePath, mutableSetOf(OTHERS_EXECUTE))
+        }
       }
     } ?: throw IllegalStateException("Unable to find source file: '$sourceFilePath'") // TODO: Add tests for missing files and templates
   }
@@ -161,7 +169,12 @@ class InMemorySnapshot private constructor(
     return if (Files.isDirectory(path)) {
       DirectoryEntry(pathWithoutLeadingSlash)
     } else {
-      FileEntry(pathWithoutLeadingSlash)
+      val hasExecutePermission = Files.getPosixFilePermissions(path).contains(OTHERS_EXECUTE)
+      if (hasExecutePermission) {
+        FileEntry(pathWithoutLeadingSlash, EXECUTE)
+      } else {
+        FileEntry(pathWithoutLeadingSlash)
+      }
     }
   }
 

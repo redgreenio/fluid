@@ -25,7 +25,6 @@ object Permission {
   private const val W = 2
   private const val X = 1
 
-  internal const val READ_WRITE = R or W
-
+  const val READ_WRITE = R or W
   const val EXECUTE = R or W or X
 }
