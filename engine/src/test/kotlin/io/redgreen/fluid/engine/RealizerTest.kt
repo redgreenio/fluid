@@ -3,7 +3,9 @@ package io.redgreen.fluid.engine
 import com.google.common.truth.Truth.assertThat
 import io.redgreen.fluid.api.Generator
 import io.redgreen.fluid.api.Snapshot
+import io.redgreen.fluid.dsl.Permission.EXECUTE
 import io.redgreen.fluid.dsl.Scaffold
+import io.redgreen.fluid.dsl.Source.Companion.MIRROR_DESTINATION
 import io.redgreen.fluid.dsl.scaffold
 import io.redgreen.fluid.engine.assist.ShellScaffoldGenerator
 import io.redgreen.fluid.engine.model.DirectoryCreated
@@ -73,6 +75,28 @@ class RealizerTest {
         DirectoryCreated("images")
       )
       .inOrder()
+  }
+
+  @Test
+  fun `it should realize file with executable permission on the file system`() {
+    // given
+    val snapshot = scaffold {
+      template("greet", "Kumar", MIRROR_DESTINATION, EXECUTE)
+    }.snapshot()
+
+    // when
+    realizer.realize(destinationRoot, snapshot)
+
+    // then
+    val greetFilePath = destinationRoot.resolve("greet")
+    assertThat(greetFilePath.readText())
+      .isEqualTo(
+        """
+          echo "Hello, Kumar"
+        """.trimIndent()
+      )
+    assertThat(greetFilePath.canExecute())
+      .isTrue()
   }
 
   private fun Scaffold.snapshot(): Snapshot {

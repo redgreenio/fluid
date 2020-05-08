@@ -4,6 +4,7 @@ import io.redgreen.fluid.api.DirectoryEntry
 import io.redgreen.fluid.api.FileEntry
 import io.redgreen.fluid.api.FileSystemEntry
 import io.redgreen.fluid.api.Snapshot
+import io.redgreen.fluid.dsl.Permission.EXECUTE
 import io.redgreen.fluid.engine.model.DirectoryCreated
 import io.redgreen.fluid.engine.model.FileCreated
 import io.redgreen.fluid.engine.model.Realization
@@ -51,10 +52,11 @@ internal class Realizer {
     snapshot: Snapshot,
     entry: FileEntry
   ) {
-    val target = destinationRoot.resolve(entry.path)
-    with(target) {
-      parentFile.mkdirs()
+    val targetFile = destinationRoot.resolve(entry.path)
+    targetFile.parentFile.mkdirs()
+    Files.copy(snapshot.inputStream(entry.path).get(), targetFile.toPath())
+    if (entry.permissions == EXECUTE) {
+      targetFile.setExecutable(true)
     }
-    Files.copy(snapshot.inputStream(entry.path).get(), target.toPath())
   }
 }
