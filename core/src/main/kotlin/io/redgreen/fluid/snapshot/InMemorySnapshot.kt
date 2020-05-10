@@ -28,7 +28,7 @@ import java.util.Optional
 import kotlin.streams.toList
 
 class InMemorySnapshot private constructor(
-  generatorClass: Class<out Generator>,
+  generatorClass: Class<out Generator<*>>,
   fileSystem: FileSystem,
   private val templateEngine: TemplateEngine
 ) : Snapshot {
@@ -42,14 +42,14 @@ class InMemorySnapshot private constructor(
       .setAttributeViews("posix")
       .build()
 
-    internal fun forGenerator(generatorClass: Class<out Generator>): Snapshot =
+    internal fun forGenerator(generatorClass: Class<out Generator<*>>): Snapshot =
       InMemorySnapshot(generatorClass)
   }
 
   private val classLoader = generatorClass.classLoader
   private val snapshotRoot = fileSystem.getPath(ROOT)
 
-  private constructor(generatorClass: Class<out Generator>) : this(
+  private constructor(generatorClass: Class<out Generator<*>>) : this(
     generatorClass,
     Jimfs.newFileSystem(UNIX_CONFIGURATION),
     FreemarkerTemplateEngine(generatorClass)

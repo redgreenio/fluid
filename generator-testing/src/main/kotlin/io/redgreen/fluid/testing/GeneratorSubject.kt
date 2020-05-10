@@ -11,13 +11,13 @@ import io.redgreen.fluid.testing.SnapshotSubject.Companion.assertThat
 
 class GeneratorSubject(
   metadata: FailureMetadata,
-  private val actual: Generator
+  private val actual: Generator<*>
 ) : Subject(metadata, actual) {
   companion object {
     private val generatorSubjects = Factory(::GeneratorSubject)
 
     @JvmStatic
-    fun assertThat(generator: Generator): GeneratorSubject {
+    fun assertThat(generator: Generator<*>): GeneratorSubject {
       return assertAbout(generatorSubjects).that(generator)
     }
   }

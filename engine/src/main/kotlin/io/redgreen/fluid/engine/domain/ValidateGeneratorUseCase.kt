@@ -84,7 +84,7 @@ class ValidateGeneratorUseCase {
 
   private fun validateClassImplementingGeneratorType(
     artifactPath: Path,
-    loadedClass: Class<out Generator>,
+    loadedClass: Class<out Generator<*>>,
     manifest: Manifest
   ): Result {
     return try {
@@ -143,7 +143,7 @@ class ValidateGeneratorUseCase {
      */
     data class ValidGenerator internal constructor(
       val manifest: Manifest,
-      val generatorClass: Class<out Generator>,
+      val generatorClass: Class<out Generator<*>>,
       val sha256: String,
       override val artifactPath: Path
     ) : Result(artifactPath)
