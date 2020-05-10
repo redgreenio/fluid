@@ -70,5 +70,11 @@ subprojects {
 }
 
 task installGitHooks(type: Exec) {
-  commandLine 'ln', '-s', "${project.projectDir}/git-hooks/pre-push", '.git/hooks/pre-push'
+  def prePushDestination = '.git/hooks/pre-push'
+  if (!file(prePushDestination).exists()) {
+    commandLine 'ln', '-s', "${project.projectDir}/git-hooks/pre-push", prePushDestination
+    commandLine 'echo', 'Git pre-push hook installed!'
+  } else {
+    commandLine 'echo', 'Git pre-push hook already exists.'
+  }
 }
