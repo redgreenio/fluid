@@ -5,12 +5,12 @@ import io.redgreen.fluid.dsl.Scaffold
 import io.redgreen.fluid.dsl.Source
 import io.redgreen.fluid.dsl.scaffold
 
-class LibraryProjectGenerator : Generator<Unit> {
-  override fun configure() {
-    /* This DslConfig is a `Unit` */
-  }
+class LibraryProjectGenerator : Generator<LibraryProjectConfig> {
+  override fun configure(): LibraryProjectConfig =
+    LibraryProjectConfig("com.mobsandgeeks", "0.1.0-SNAPSHOT")
 
-  override fun scaffold(): Scaffold {
+  override fun scaffold(): Scaffold<LibraryProjectConfig> {
+    // FIXME, replace with a function parameter returned by the `configure` function
     val config = LibraryProjectConfig("com.mobsandgeeks", "0.1.0-SNAPSHOT")
 
     return scaffold {

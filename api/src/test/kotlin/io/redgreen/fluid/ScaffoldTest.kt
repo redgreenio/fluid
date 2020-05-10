@@ -11,7 +11,7 @@ class ScaffoldTest {
   @Test
   fun `it should ensure prepare call is idempotent`() {
     // given
-    val scaffold = scaffold {
+    val scaffold = scaffold<Unit> {
       dir("src")
     }
 
@@ -31,7 +31,7 @@ class ScaffoldTest {
   @Test
   fun `it should dispatch all commands on the snapshot`() {
     // given
-    val scaffold = scaffold {
+    val scaffold = scaffold<Unit> {
       dir("src")
       file("README.md")
       template("build.gradle", "io.redgreen")

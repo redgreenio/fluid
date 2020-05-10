@@ -8,7 +8,7 @@ class NoOpGenerator : Generator<Unit> {
     /* This DslConfig is a `Unit` */
   }
 
-  override fun scaffold(): Scaffold {
+  override fun scaffold(): Scaffold<Unit> {
     val message = "This generator class is used only to test fetching resources " +
       "using the the class loader. This piece of code shouldn't be executed."
     throw IllegalStateException(message)

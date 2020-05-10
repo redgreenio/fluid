@@ -9,8 +9,8 @@ import io.redgreen.fluid.api.TemplateCommand
 import io.redgreen.fluid.dsl.Permission.READ_WRITE
 import io.redgreen.fluid.dsl.Source.Companion.MIRROR_DESTINATION
 
-class Scaffold(
-  private val block: Scaffold.() -> Unit
+class Scaffold<C : Any>(
+  private val block: Scaffold<C>.() -> Unit
 ) {
   companion object {
     private const val ROOT = ""

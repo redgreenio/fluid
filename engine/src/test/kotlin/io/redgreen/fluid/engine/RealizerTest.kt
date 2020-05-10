@@ -25,7 +25,7 @@ class RealizerTest {
   fun `it should realize directories on the file system`() {
     // given
     val directoryName = "hello-world"
-    val snapshot = scaffold {
+    val snapshot = scaffold<Unit> {
       dir(directoryName)
     }.snapshot()
 
@@ -46,7 +46,7 @@ class RealizerTest {
   @Test
   fun `it should realize files on the file system`() {
     // given
-    val snapshot = scaffold {
+    val snapshot = scaffold<Unit> {
       dir("images") {
         file("strawberry.png")
       }
@@ -80,7 +80,7 @@ class RealizerTest {
   @Test
   fun `it should realize file with executable permission on the file system`() {
     // given
-    val snapshot = scaffold {
+    val snapshot = scaffold<Unit> {
       template("greet", "Kumar", MIRROR_DESTINATION, EXECUTE)
     }.snapshot()
 
@@ -99,7 +99,7 @@ class RealizerTest {
       .isTrue()
   }
 
-  private fun Scaffold.snapshot(): Snapshot {
+  private fun Scaffold<Unit>.snapshot(): Snapshot {
     val generator = ShellScaffoldGenerator(this)
     return generator
       .scaffold()

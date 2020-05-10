@@ -17,7 +17,7 @@ class DslTest {
   @Test
   fun `it throws an exception for an empty scaffold`() {
     // given
-    val scaffold = scaffold {
+    val scaffold = scaffold<Unit> {
       /* empty */
     }
 
@@ -37,7 +37,7 @@ class DslTest {
   inner class Directory {
     @Test
     fun `it should return a directory command for a directory call`() {
-      val scaffold = scaffold {
+      val scaffold = scaffold<Unit> {
         dir("src")
       }
 
@@ -49,7 +49,7 @@ class DslTest {
 
     @Test
     fun `it should return directory commands for nested directories`() {
-      val scaffold = scaffold {
+      val scaffold = scaffold<Unit> {
         dir("src") {
           dir("main")
         }
@@ -67,7 +67,7 @@ class DslTest {
   inner class File {
     @Test
     fun `it should return a file copy command for a file copy call`() {
-      val scaffold = scaffold {
+      val scaffold = scaffold<Unit> {
         file(".gitignore")
       }
 
@@ -79,7 +79,7 @@ class DslTest {
 
     @Test
     fun `it should return a file copy command for files nested inside directories`() {
-      val scaffold = scaffold {
+      val scaffold = scaffold<Unit> {
         dir("src/test") {
           file("CanaryTest.kt")
         }
@@ -98,7 +98,7 @@ class DslTest {
     @Test
     fun `it should create a template command`() {
       val model = MultiModuleProject("bamboo-tools", "fluid")
-      val scaffold = scaffold {
+      val scaffold = scaffold<Unit> {
         template("settings.gradle", model)
       }
 
@@ -111,7 +111,7 @@ class DslTest {
     @Test
     fun `it should create template commands inside nested directories`() {
       val model = MultiModuleProject("bamboo-tools", "fluid")
-      val scaffold = scaffold {
+      val scaffold = scaffold<Unit> {
         dir("fluid") {
           template("fluid.iml", model)
         }
@@ -129,7 +129,7 @@ class DslTest {
   inner class ExplicitSourceInFile {
     @Test
     fun `it should allow specifying source path while copying files`() {
-      val scaffold = scaffold {
+      val scaffold = scaffold<Unit> {
         file(".gitignore", Source("gitignore"))
       }
 
@@ -141,7 +141,7 @@ class DslTest {
 
     @Test
     fun `it should allow specifying source path while copying files into directories`() {
-      val scaffold = scaffold {
+      val scaffold = scaffold<Unit> {
         dir("core") {
           file(".gitignore", Source("gitignore"))
         }
@@ -160,7 +160,7 @@ class DslTest {
     @Test
     fun `it should create template commands (root) with source`() {
       val model = MultiModuleProject("bamboo-tools", "fluid")
-      val scaffold = scaffold {
+      val scaffold = scaffold<Unit> {
         template("build.gradle", model, Source("templates/build.gradle"))
       }
 
@@ -173,7 +173,7 @@ class DslTest {
     @Test
     fun `it should create template commands (nested directory) with source`() {
       val model = MultiModuleProject("bamboo-tools", "fluid")
-      val scaffold = scaffold {
+      val scaffold = scaffold<Unit> {
         dir("fluid") {
           template("build.gradle", model, Source("templates/build.gradle"))
         }
@@ -189,7 +189,7 @@ class DslTest {
 
   @Test
   fun `it should work with all kinds of elements`() {
-    val scaffold = scaffold {
+    val scaffold = scaffold<Unit> {
       dir("one-directory")
 
       dir("directory") {
@@ -217,7 +217,7 @@ class DslTest {
   inner class TopLevelExecutePermission {
     @Test
     fun `it should allow a file to have execute permission`() {
-      val scaffold = scaffold {
+      val scaffold = scaffold<Unit> {
         file("gradlew", EXECUTE)
       }
 
@@ -229,7 +229,7 @@ class DslTest {
 
     @Test
     fun `it should allow a file with source to have execute permission`() {
-      val scaffold = scaffold {
+      val scaffold = scaffold<Unit> {
         file("gradlew", Source("scripts/gradlew"), EXECUTE)
       }
 
@@ -241,7 +241,7 @@ class DslTest {
 
     @Test
     fun `it should allow a template to have execute permission`() {
-      val scaffold = scaffold {
+      val scaffold = scaffold<Unit> {
         template("start-server", 8080, EXECUTE)
       }
 
@@ -253,7 +253,7 @@ class DslTest {
 
     @Test
     fun `it should allow a template with source to have execute permission`() {
-      val scaffold = scaffold {
+      val scaffold = scaffold<Unit> {
         template("start-server", 8080, Source("scripts/gradlew"), EXECUTE)
       }
 
@@ -268,7 +268,7 @@ class DslTest {
   inner class NestedExecutePermission {
     @Test
     fun `it should allow a nested file to have execute permission`() {
-      val scaffold = scaffold {
+      val scaffold = scaffold<Unit> {
         dir("scripts") {
           file("gradlew", EXECUTE)
         }
@@ -283,7 +283,7 @@ class DslTest {
 
     @Test
     fun `it should allow nested file with source to have execute permission`() {
-      val scaffold = scaffold {
+      val scaffold = scaffold<Unit> {
         dir("scripts") {
           file("gradlew", Source("build-scripts/gradlew"), EXECUTE)
         }
@@ -298,7 +298,7 @@ class DslTest {
 
     @Test
     fun `it should allow a nested template to have execute permission`() {
-      val scaffold = scaffold {
+      val scaffold = scaffold<Unit> {
         dir("scripts") {
           template("start-server", 8080, EXECUTE)
         }
@@ -313,7 +313,7 @@ class DslTest {
 
     @Test
     fun `it should allow a nested template with source to have execute permission`() {
-      val scaffold = scaffold {
+      val scaffold = scaffold<Unit> {
         dir("scripts") {
           template("start-server", 8080, Source("build-scripts/gradlew"), EXECUTE)
         }

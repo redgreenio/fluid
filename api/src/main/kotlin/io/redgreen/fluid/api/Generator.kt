@@ -4,5 +4,5 @@ import io.redgreen.fluid.dsl.Scaffold
 
 interface Generator<C : Any> {
   fun configure(): C
-  fun scaffold(): Scaffold
+  fun scaffold(): Scaffold<C>
 }

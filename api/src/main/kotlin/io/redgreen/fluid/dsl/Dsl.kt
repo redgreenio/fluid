@@ -1,4 +1,6 @@
 package io.redgreen.fluid.dsl
 
-fun scaffold(block: Scaffold.() -> Unit): Scaffold =
+fun <C : Any> scaffold(
+  block: Scaffold<C>.() -> Unit
+): Scaffold<C> =
   Scaffold(block)
