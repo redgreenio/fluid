@@ -36,7 +36,7 @@ class RunGeneratorUseCase(
     val validGenerator = ValidateGeneratorUseCase().invoke(result.installed.artifactPath) as ValidGenerator
     val generatorClass = validGenerator.generatorClass
     val generator = generatorClass.getDeclaredConstructor().newInstance() as Generator<*>
-    val snapshot = generator.scaffold().buildSnapshot(InMemorySnapshotFactory(), generatorClass)
+    val snapshot = generator.scaffold().buildSnapshot(InMemorySnapshotFactory(), generatorClass, generator.configure())
     val realizations = Realizer().realize(destination.toFile(), snapshot)
     return RunSuccessful(realizations)
   }

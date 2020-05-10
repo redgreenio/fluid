@@ -101,8 +101,10 @@ class RealizerTest {
 
   private fun Scaffold<Unit>.snapshot(): Snapshot {
     val generator = ShellScaffoldGenerator(this)
+    val snapshotParams = generator::class.java.asSubclass(Generator::class.java)
+    val dslConfig = generator.configure()
     return generator
       .scaffold()
-      .buildSnapshot(InMemorySnapshotFactory(), generator::class.java.asSubclass(Generator::class.java))
+      .buildSnapshot(InMemorySnapshotFactory(), snapshotParams, dslConfig)
   }
 }

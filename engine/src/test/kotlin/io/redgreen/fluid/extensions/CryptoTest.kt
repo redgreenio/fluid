@@ -32,7 +32,7 @@ class CryptoTest {
     val computedSha256 = computeSha256(Files.newInputStream(testArtifact))
 
     // then
-    val hashFromSha256SumLinuxUtility = "8386ed46db1f8a273a348d0863b905d4238e17d3a123b030125fd336706f457c"
+    val hashFromSha256SumLinuxUtility = "dabad44048b16a77052664af4736695eea6ba89bc51b371a6d8f29b562a3d0ad"
     assertThat(computedSha256)
       .isEqualTo(hashFromSha256SumLinuxUtility)
   }

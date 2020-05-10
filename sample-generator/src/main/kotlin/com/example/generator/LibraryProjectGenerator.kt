@@ -10,10 +10,7 @@ class LibraryProjectGenerator : Generator<LibraryProjectConfig> {
     LibraryProjectConfig("com.mobsandgeeks", "0.1.0-SNAPSHOT")
 
   override fun scaffold(): Scaffold<LibraryProjectConfig> {
-    // FIXME, replace with a function parameter returned by the `configure` function
-    val config = LibraryProjectConfig("com.mobsandgeeks", "0.1.0-SNAPSHOT")
-
-    return scaffold {
+    return scaffold { dslConfig ->
       dir("src") {
         val sourceSets = listOf("main", "test")
         sourceSets.onEach { sourceSet ->
@@ -26,7 +23,7 @@ class LibraryProjectGenerator : Generator<LibraryProjectConfig> {
 
       file("icon.png", Source("strawberry.png"))
       file(".gitignore", Source("gitignore"))
-      template("build.gradle", config)
+      template("build.gradle", dslConfig)
     }
   }
 }

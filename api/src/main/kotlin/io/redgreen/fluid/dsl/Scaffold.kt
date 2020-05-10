@@ -9,8 +9,8 @@ import io.redgreen.fluid.api.TemplateCommand
 import io.redgreen.fluid.dsl.Permission.READ_WRITE
 import io.redgreen.fluid.dsl.Source.Companion.MIRROR_DESTINATION
 
-class Scaffold<C : Any>(
-  private val block: Scaffold<C>.() -> Unit
+class Scaffold<in C : Any>(
+  private val block: Scaffold<C>.(C) -> Unit
 ) {
   companion object {
     private const val ROOT = ""
@@ -48,10 +48,13 @@ class Scaffold<C : Any>(
 
   fun <S : Any> buildSnapshot(
     snapshotFactory: SnapshotFactory<S>,
-    snapshotParams: S
+    snapshotParams: S,
+    dslConfig: Any
   ): Snapshot {
     val snapshot = snapshotFactory.newInstance(snapshotParams)
-    transformDslToCommands().onEach { command -> dispatchCommandsToSnapshot(snapshot, command) }
+    transformDslToCommands(dslConfig as C).onEach { command ->
+      dispatchCommandsToSnapshot(snapshot, command)
+    }
     return snapshot
   }
 
@@ -87,9 +90,11 @@ class Scaffold<C : Any>(
     commands.add(TemplateCommand(name, model, source, permissions))
   }
 
-  internal fun transformDslToCommands(): List<Command> {
+  internal fun transformDslToCommands(
+    dslConfig: Any
+  ): List<Command> {
     commands.clear()
-    block()
+    block(dslConfig as C)
     commands.ifEmpty {
       val message = "The scaffold is empty. You can make it useful by " +
         "creating directories, copying files, or templates."

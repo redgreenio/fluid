@@ -26,7 +26,7 @@ class ScaffoldSubject<C : Any>(
     command: Command,
     vararg commands: Command
   ) {
-    val actualCommands = actual.transformDslToCommands()
+    val actualCommands = actual.transformDslToCommands(Unit)
     assertThat(actualCommands)
       .containsExactly(command, *commands)
       .inOrder()

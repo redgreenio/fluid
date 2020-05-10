@@ -23,8 +23,12 @@ class GeneratorSubject(
   }
 
   private val snapshot by lazy {
-    actual.scaffold()
-      .buildSnapshot(InMemorySnapshotFactory(), actual::class.java.asSubclass(Generator::class.java))
+    val snapshotFactory = InMemorySnapshotFactory()
+    val snapshotParams = actual::class.java.asSubclass(Generator::class.java)
+    val dslConfig = actual.configure()
+    actual
+      .scaffold()
+      .buildSnapshot(snapshotFactory, snapshotParams, dslConfig)
   }
 
   fun generatesExactly(

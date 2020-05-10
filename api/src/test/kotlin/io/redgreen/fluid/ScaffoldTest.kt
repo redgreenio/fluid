@@ -17,10 +17,10 @@ class ScaffoldTest {
 
     // when
     val commands = with(scaffold) {
-      transformDslToCommands()
-      transformDslToCommands()
-      transformDslToCommands()
-      transformDslToCommands()
+      transformDslToCommands(Unit)
+      transformDslToCommands(Unit)
+      transformDslToCommands(Unit)
+      transformDslToCommands(Unit)
     }
 
     // then
@@ -36,11 +36,11 @@ class ScaffoldTest {
       file("README.md")
       template("build.gradle", "io.redgreen")
     }
-    val commands = scaffold.transformDslToCommands()
+    val commands = scaffold.transformDslToCommands(Unit)
 
     // when
     val snapshot = scaffold
-      .buildSnapshot(CommandCapturingSnapshotFactory(), Unit) as CommandCapturingSnapshot
+      .buildSnapshot(CommandCapturingSnapshotFactory(), Unit, Unit) as CommandCapturingSnapshot
 
     // then
     assertThat(snapshot.capturedCommands)

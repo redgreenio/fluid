@@ -23,7 +23,7 @@ class DslTest {
 
     // when
     val exception = assertThrows<IllegalStateException> {
-      scaffold.transformDslToCommands()
+      scaffold.transformDslToCommands(Unit)
     }
 
     // then
