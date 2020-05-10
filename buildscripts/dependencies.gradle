@@ -12,7 +12,8 @@ buildscript {
     freemarker   : 'org.freemarker:freemarker:2.3.30',
     picocli      : [
       runtime : 'info.picocli:picocli:4.2.0',
-      compiler: 'info.picocli:picocli-codegen:4.2.0'
+      compiler: 'info.picocli:picocli-codegen:4.2.0',
+      jline3  : 'info.picocli:picocli-shell-jline3:4.2.0'
     ],
     moshi        : [
       runtime : 'com.squareup.moshi:moshi:1.9.2',
@@ -21,6 +22,7 @@ buildscript {
     'jsonSchema' : 'com.github.everit-org.json-schema:org.everit.json.schema:1.12.1',
     'javaSemver' : 'com.github.zafarkhaja:java-semver:0.9.0',
     'chalk'      : 'com.github.tomas-langer:chalk:1.0.2',
+    'invitrode'  : 'com.maximeroussy.invitrode:invitrode:2.0.1',
 
     // Unit tests
     junit        : [

@@ -1,0 +1,12 @@
+plugins {
+  id 'java-library'
+}
+
+repositories {
+  jcenter() // invitrode
+}
+
+dependencies {
+  implementation artefacts.picocli.jline3
+  implementation artefacts.invitrode
+}
