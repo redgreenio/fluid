@@ -8,6 +8,9 @@ $ curl -sSLO https://github.com/redgreenio/fluid/releases/download/[version]/flu
     sudo mv fluid /usr/local/bin/
 ```
 
+## Guides
+- [Fluid DSL Guide](docs/fluid-dsl-guide.md)
+
 ## Development
 ### IntelliJ Run Configurations
 The following run configurations help us test various installation scenarios with the CLI.
