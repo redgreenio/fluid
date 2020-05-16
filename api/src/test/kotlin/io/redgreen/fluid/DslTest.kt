@@ -1,6 +1,7 @@
 package io.redgreen.fluid
 
 import com.google.common.truth.Truth.assertThat
+import io.redgreen.fluid.api.CopyDirectoryCommand
 import io.redgreen.fluid.api.DirectoryCommand
 import io.redgreen.fluid.api.FileCommand
 import io.redgreen.fluid.api.TemplateCommand
@@ -323,6 +324,33 @@ class DslTest {
         .produces(
           DirectoryCommand("scripts"),
           TemplateCommand("scripts/start-server", 8080, Source("build-scripts/gradlew"), EXECUTE)
+        )
+    }
+  }
+
+  @Nested
+  inner class CopyDirectory {
+    @Test
+    fun `it should return directory command with copy mode for copy directory call`() {
+      val scaffold = scaffold<Unit> {
+        copyDir("gradle")
+      }
+
+      assertThat(scaffold)
+        .produces(
+          CopyDirectoryCommand("gradle")
+        )
+    }
+
+    @Test
+    fun `it should return directory command with an explicit source`() {
+      val scaffold = scaffold<Unit> {
+        copyDir("gradle", Source("build-system/gradle"))
+      }
+
+      assertThat(scaffold)
+        .produces(
+          CopyDirectoryCommand("gradle", Source("build-system/gradle"))
         )
     }
   }

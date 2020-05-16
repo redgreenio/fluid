@@ -1,6 +1,7 @@
 package io.redgreen.fluid.dsl
 
 import io.redgreen.fluid.api.Command
+import io.redgreen.fluid.api.CopyDirectoryCommand
 import io.redgreen.fluid.api.DirectoryCommand
 import io.redgreen.fluid.api.FileCommand
 import io.redgreen.fluid.api.Snapshot
@@ -88,6 +89,13 @@ class Scaffold<in C : Any>(
     permissions: Int
   ) {
     commands.add(TemplateCommand(name, model, source, permissions))
+  }
+
+  fun copyDir(
+    name: String,
+    source: Source = MIRROR_DESTINATION
+  ) {
+    commands.add(CopyDirectoryCommand(name, source))
   }
 
   internal fun transformDslToCommands(

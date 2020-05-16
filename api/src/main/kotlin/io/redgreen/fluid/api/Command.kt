@@ -22,3 +22,8 @@ data class TemplateCommand<M : Any>(
   val source: Source = MIRROR_DESTINATION,
   val permissions: Int = READ_WRITE
 ) : Command()
+
+data class CopyDirectoryCommand(
+  val directory: String,
+  val source: Source = MIRROR_DESTINATION
+) : Command()
