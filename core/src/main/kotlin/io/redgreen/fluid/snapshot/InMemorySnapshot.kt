@@ -75,7 +75,8 @@ class InMemorySnapshot private constructor(
 
   override fun execute(command: CopyDirectoryCommand) {
     val sourceDirectory = classLoader.getResource(command.directory)?.path
-    copyDirectory(command.directory, sourceDirectory!!) // FIXME What happens when the source directory is missing?
+      ?: throw IllegalStateException("Unable to find '${command.directory}' in the generator's 'resources' directory.")
+    copyDirectory(command.directory, sourceDirectory)
   }
 
   override fun getEntries(): List<FileSystemEntry> {
