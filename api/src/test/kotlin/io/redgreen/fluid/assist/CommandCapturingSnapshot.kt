@@ -1,6 +1,7 @@
 package io.redgreen.fluid.assist
 
 import io.redgreen.fluid.api.Command
+import io.redgreen.fluid.api.CopyDirectoryCommand
 import io.redgreen.fluid.api.DirectoryCommand
 import io.redgreen.fluid.api.FileCommand
 import io.redgreen.fluid.api.FileSystemEntry
@@ -21,6 +22,10 @@ class CommandCapturingSnapshot : Snapshot {
   }
 
   override fun <T : Any> execute(command: TemplateCommand<T>) {
+    capturedCommands.add(command)
+  }
+
+  override fun execute(command: CopyDirectoryCommand) {
     capturedCommands.add(command)
   }
 
