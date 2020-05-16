@@ -1,9 +1,11 @@
 package io.redgreen.fluid.dsl
 
 import io.redgreen.fluid.api.Command
+import io.redgreen.fluid.api.CopyDirectoryCommand
 import io.redgreen.fluid.api.FileCommand
 import io.redgreen.fluid.api.TemplateCommand
 import io.redgreen.fluid.dsl.Permission.READ_WRITE
+import io.redgreen.fluid.dsl.Scaffold.Companion.UNIX_PATH_SEPARATOR
 import io.redgreen.fluid.dsl.Source.Companion.MIRROR_DESTINATION
 
 class Directory(
@@ -37,7 +39,7 @@ class Directory(
     source: Source,
     permissions: Int
   ) {
-    commands.add(FileCommand("$currentPath/$name", source, permissions))
+    commands.add(FileCommand("$currentPath$UNIX_PATH_SEPARATOR$name", source, permissions))
   }
 
   fun <M : Any> template(
@@ -54,6 +56,13 @@ class Directory(
     source: Source,
     permissions: Int
   ) {
-    commands.add(TemplateCommand("$currentPath/$name", model, source, permissions))
+    commands.add(TemplateCommand("$currentPath$UNIX_PATH_SEPARATOR$name", model, source, permissions))
+  }
+
+  fun copyDir(
+    path: String,
+    source: Source = MIRROR_DESTINATION
+  ) {
+    commands.add(CopyDirectoryCommand("$currentPath$UNIX_PATH_SEPARATOR$path", source))
   }
 }

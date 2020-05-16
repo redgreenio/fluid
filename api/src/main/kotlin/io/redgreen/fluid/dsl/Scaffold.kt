@@ -14,8 +14,8 @@ class Scaffold<in C : Any>(
   private val block: Scaffold<C>.(C) -> Unit
 ) {
   companion object {
+    internal const val UNIX_PATH_SEPARATOR = "/"
     private const val ROOT = ""
-    private const val UNIX_PATH_SEPARATOR = "/"
   }
 
   private var currentPath = ROOT
@@ -92,10 +92,10 @@ class Scaffold<in C : Any>(
   }
 
   fun copyDir(
-    name: String,
+    path: String,
     source: Source = MIRROR_DESTINATION
   ) {
-    commands.add(CopyDirectoryCommand(name, source))
+    commands.add(CopyDirectoryCommand(path, source))
   }
 
   internal fun transformDslToCommands(
@@ -120,6 +120,7 @@ class Scaffold<in C : Any>(
       is DirectoryCommand -> snapshot.execute(command)
       is FileCommand -> snapshot.execute(command)
       is TemplateCommand<*> -> snapshot.execute(command)
+      is CopyDirectoryCommand -> TODO()
     }
   }
 }

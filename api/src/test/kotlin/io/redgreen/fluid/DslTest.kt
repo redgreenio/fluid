@@ -353,6 +353,36 @@ class DslTest {
           CopyDirectoryCommand("gradle", Source("build-system/gradle"))
         )
     }
+
+    @Test
+    fun `it should copy directories into nested directories`() {
+      val scaffold = scaffold<Unit> {
+        dir("legal") {
+          copyDir("allowed-licenses")
+        }
+      }
+
+      assertThat(scaffold)
+        .produces(
+          DirectoryCommand("legal"),
+          CopyDirectoryCommand("legal/allowed-licenses")
+        )
+    }
+
+    @Test
+    fun `it should copy directories into nested directories with an explicit source`() {
+      val scaffold = scaffold<Unit> {
+        dir("legal") {
+          copyDir("licences", Source("approved-licenses"))
+        }
+      }
+
+      assertThat(scaffold)
+        .produces(
+          DirectoryCommand("legal"),
+          CopyDirectoryCommand("legal/licences", Source("approved-licenses"))
+        )
+    }
   }
 
   data class MultiModuleProject(
