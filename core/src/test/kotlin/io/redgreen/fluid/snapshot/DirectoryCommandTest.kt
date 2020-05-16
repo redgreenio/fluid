@@ -2,7 +2,6 @@ package io.redgreen.fluid.snapshot
 
 import io.redgreen.fluid.api.DirectoryCommand
 import io.redgreen.fluid.api.DirectoryEntry
-import io.redgreen.fluid.api.FileEntry
 import io.redgreen.fluid.snapshot.assist.buildSnapshot
 import io.redgreen.fluid.testing.SnapshotSubject.Companion.assertThat
 import org.junit.jupiter.api.Test
@@ -86,31 +85,5 @@ class DirectoryCommandTest {
     // then
     assertThat(snapshot)
       .hasExactly(DirectoryEntry("hello world"))
-  }
-
-  @Test
-  fun `it should create and copy contents of existing directories`() {
-    // when
-    val snapshot = DirectoryCommand("docs")
-      .buildSnapshot()
-
-    // then
-    assertThat(snapshot)
-      .has(FileEntry("docs/doc1.txt"))
-    assertThat(snapshot)
-      .has(FileEntry("docs/doc2.txt"))
-  }
-
-  @Test
-  fun `it should create and copy contents of nested directories`() {
-    // when
-    val snapshot = DirectoryCommand("directories")
-      .buildSnapshot()
-
-    // then
-    assertThat(snapshot)
-      .has(FileEntry("directories/file1.txt"))
-    assertThat(snapshot)
-      .has(FileEntry("directories/nested/another-file.txt"))
   }
 }

@@ -57,12 +57,7 @@ class InMemorySnapshot private constructor(
   )
 
   override fun execute(command: DirectoryCommand) {
-    val sourceDirectory = classLoader.getResource(command.directory)?.path
-    if (sourceDirectory != null) {
-      copyDirectory(command.directory, sourceDirectory)
-    } else {
-      createDirectory(command.directory)
-    }
+    createDirectory(command.directory)
   }
 
   override fun execute(command: FileCommand) {
