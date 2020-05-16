@@ -7,6 +7,7 @@ interface Snapshot {
   fun execute(command: DirectoryCommand)
   fun execute(command: FileCommand)
   fun <T : Any> execute(command: TemplateCommand<T>)
+  fun execute(command: CopyDirectoryCommand)
   fun getEntries(): List<FileSystemEntry>
   fun inputStream(path: String): Optional<InputStream>
 }

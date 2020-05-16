@@ -3,6 +3,7 @@ package io.redgreen.fluid.snapshot
 import com.google.common.jimfs.Configuration
 import com.google.common.jimfs.Jimfs
 import com.google.common.jimfs.PathType
+import io.redgreen.fluid.api.CopyDirectoryCommand
 import io.redgreen.fluid.api.DirectoryCommand
 import io.redgreen.fluid.api.DirectoryEntry
 import io.redgreen.fluid.api.FileCommand
@@ -72,6 +73,11 @@ class InMemorySnapshot private constructor(
     copyTemplate(command.template, command.model, command.source, command.permissions)
   }
 
+  override fun execute(command: CopyDirectoryCommand) {
+    val sourceDirectory = classLoader.getResource(command.directory)?.path
+    copyDirectory(command.directory, sourceDirectory!!) // FIXME What happens when the source directory is missing?
+  }
+
   override fun getEntries(): List<FileSystemEntry> {
     val allPaths = Files
       .walk(snapshotRoot, FileVisitOption.FOLLOW_LINKS)
@@ -105,10 +111,14 @@ class InMemorySnapshot private constructor(
     val filesInSourceDirectory = mutableListOf<File>()
     findFilesInDirectory(sourceDirectory, filesInSourceDirectory)
 
-    filesInSourceDirectory.onEach { sourceFile ->
-      val sourceFilePath = sourceFile.path
-      val relativeFilePath = sourceFilePath.substring(sourceFilePath.indexOf(directory), sourceFilePath.length)
-      copyFile(relativeFilePath, Source(relativeFilePath), READ_WRITE)
+    if (filesInSourceDirectory.isEmpty()) {
+      createDirectory(directory)
+    } else {
+      filesInSourceDirectory.onEach { sourceFile ->
+        val sourceFilePath = sourceFile.path
+        val relativeFilePath = sourceFilePath.substring(sourceFilePath.indexOf(directory), sourceFilePath.length)
+        copyFile(relativeFilePath, Source(relativeFilePath), READ_WRITE)
+      }
     }
   }
 

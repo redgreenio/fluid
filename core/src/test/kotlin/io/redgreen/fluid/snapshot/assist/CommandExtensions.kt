@@ -1,6 +1,7 @@
 package io.redgreen.fluid.snapshot.assist
 
 import io.redgreen.fluid.api.Command
+import io.redgreen.fluid.api.CopyDirectoryCommand
 import io.redgreen.fluid.api.DirectoryCommand
 import io.redgreen.fluid.api.FileCommand
 import io.redgreen.fluid.api.Generator
@@ -17,6 +18,7 @@ fun List<Command>.buildSnapshot(): Snapshot {
         is DirectoryCommand -> snapshot.execute(command)
         is FileCommand -> snapshot.execute(command)
         is TemplateCommand<*> -> snapshot.execute(command)
+        is CopyDirectoryCommand -> snapshot.execute(command)
       }
     }
   }

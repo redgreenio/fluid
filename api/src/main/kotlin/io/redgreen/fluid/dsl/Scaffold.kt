@@ -120,7 +120,7 @@ class Scaffold<in C : Any>(
       is DirectoryCommand -> snapshot.execute(command)
       is FileCommand -> snapshot.execute(command)
       is TemplateCommand<*> -> snapshot.execute(command)
-      is CopyDirectoryCommand -> TODO()
+      is CopyDirectoryCommand -> snapshot.execute(command)
     }
   }
 }
