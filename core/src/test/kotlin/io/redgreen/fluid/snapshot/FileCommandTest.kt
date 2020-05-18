@@ -1,5 +1,6 @@
 package io.redgreen.fluid.snapshot
 
+import com.google.common.truth.Truth.assertThat
 import io.redgreen.fluid.api.FileCommand
 import io.redgreen.fluid.api.FileEntry
 import io.redgreen.fluid.api.TemplateCommand
@@ -9,6 +10,8 @@ import io.redgreen.fluid.dsl.Source.Companion.MIRROR_DESTINATION
 import io.redgreen.fluid.snapshot.assist.buildSnapshot
 import io.redgreen.fluid.testing.SnapshotSubject.Companion.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
+import java.io.FileNotFoundException
 
 class FileCommandTest {
   @Test
@@ -85,5 +88,18 @@ class FileCommandTest {
     // then
     assertThat(snapshot)
       .has(FileEntry("say-hello.sh", EXECUTE))
+  }
+
+  @Test
+  fun `it should throw an exception if the specified file is missing`() {
+    // when
+    val exception = assertThrows<FileNotFoundException> {
+      FileCommand("missing-file.txt")
+        .buildSnapshot()
+    }
+
+    // then
+    assertThat(exception.message)
+      .isEqualTo("Unable to find file 'missing-file.txt' in the generator's 'resources' directory.")
   }
 }

@@ -73,8 +73,8 @@ class InMemorySnapshot private constructor(
   override fun execute(command: CopyDirectoryCommand) {
     val sourcePath = if (command.source.mirrorsDestination) command.directory else command.source.path
     val sourceDirectory = classLoader.getResource(sourcePath)?.path
-      ?: throw FileNotFoundException("Unable to find '$sourcePath' in the generator's 'resources' directory.")
-    copyDirectory(sourceDirectory, command.directory) // TODO Inline and then extract again?
+      ?: throw FileNotFoundException("Unable to find directory '$sourcePath' in the generator's 'resources' directory.")
+    copyDirectory(sourceDirectory, command.directory)
   }
 
   override fun getEntries(): List<FileSystemEntry> {
@@ -157,7 +157,7 @@ class InMemorySnapshot private constructor(
           Files.setPosixFilePermissions(targetFilePath, mutableSetOf(OTHERS_EXECUTE))
         }
       }
-    } ?: throw FileNotFoundException("Unable to find source file: '$sourceFilePath'") // TODO: Add tests for missing files and templates
+    } ?: throw FileNotFoundException("Unable to find file '$sourceFilePath' in the generator's 'resources' directory.")
   }
 
   private fun <T : Any> copyTemplate(
@@ -167,7 +167,11 @@ class InMemorySnapshot private constructor(
     permissions: Int
   ) {
     val sourceFilePath = if (source.mirrorsDestination) file else source.path
-    val processedTemplate = templateEngine.processTemplate(sourceFilePath, model)
+    val processedTemplate = try {
+      templateEngine.processTemplate(sourceFilePath, model)
+    } catch (exception: FileNotFoundException) {
+      throw FileNotFoundException("Unable to find template '$sourceFilePath' in the generator's 'resources' directory.")
+    }
     createMissingDirectoriesInPath(file)
     ByteArrayInputStream(processedTemplate.toByteArray()).use { inputStream ->
       val targetFilePath = snapshotRoot.resolve(file)

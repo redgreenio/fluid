@@ -35,7 +35,7 @@ class CopyDirectoryCommandTest {
 
     // then
     assertThat(exception.message)
-      .isEqualTo("Unable to find 'non-existent-directory' in the generator's 'resources' directory.")
+      .isEqualTo("Unable to find directory 'non-existent-directory' in the generator's 'resources' directory.")
   }
 
   @Test
