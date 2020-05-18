@@ -115,7 +115,12 @@ class InMemorySnapshot private constructor(
       filesInSourceDirectory.onEach { sourceFile ->
         val destinationRelativePath = "$destinationPath${sourceFile.path.substring(sourcePath.length)}"
         val relativeSourcePath = sourceFile.path.substring(Paths.get(sourcePath).parent.toString().length + 1)
-        copyFile(destinationRelativePath, Source(relativeSourcePath), READ_WRITE)
+
+        if (sourceFile.isDirectory) {
+          createDirectory(destinationRelativePath)
+        } else {
+          copyFile(destinationRelativePath, Source(relativeSourcePath), READ_WRITE)
+        }
       }
     }
   }
@@ -129,6 +134,8 @@ class InMemorySnapshot private constructor(
     for (file in filesFound) {
       if (file.isFile) {
         filesCollector.add(file)
+      } else if (file.isDirectory && file.listFiles()?.isEmpty() == true) {
+        filesCollector.add(file) // Empty directory
       } else {
         findFilesInDirectory(file, filesCollector)
       }

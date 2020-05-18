@@ -95,4 +95,30 @@ class CopyDirectoryCommandTest {
         DirectoryEntry("black-hole")
       )
   }
+
+  @Test
+  fun `it should copy empty directories within directories`() {
+    // when
+    val snapshot = CopyDirectoryCommand("directory-with-empty-directory")
+      .buildSnapshot()
+
+    // then
+    assertThat(snapshot)
+      .hasExactly(
+        DirectoryEntry("directory-with-empty-directory/empty-directory")
+      )
+  }
+
+  @Test
+  fun `it should copy empty directories within directories with explicit source`() {
+    // when
+    val snapshot = CopyDirectoryCommand("black-hole", Source("directory-with-empty-directory"))
+      .buildSnapshot()
+
+    // then
+    assertThat(snapshot)
+      .hasExactly(
+        DirectoryEntry("black-hole/empty-directory")
+      )
+  }
 }

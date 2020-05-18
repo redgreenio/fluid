@@ -12,9 +12,17 @@ dependencies {
 
 task createEmptyDirsForTests {
   description "Creates empty directories required by tests."
-  def emptyDirectory = file("${rootProject.projectDir}/core/src/test/resources/empty-directory")
-  if (!emptyDirectory.exists()) {
-    emptyDirectory.mkdirs()
-    println "Required directory '$emptyDirectory' created."
+  def destination = "${rootProject.projectDir}/core/src/test/resources"
+  def requiredDirectories = [
+    "$destination/empty-directory",
+    "$destination/directory-with-empty-directory/empty-directory"
+  ]
+
+  requiredDirectories.each { directory ->
+    def emptyDirectory = file(directory)
+    if (!emptyDirectory.exists()) {
+      emptyDirectory.mkdirs()
+      println "Required directory '$emptyDirectory' created."
+    }
   }
 }
