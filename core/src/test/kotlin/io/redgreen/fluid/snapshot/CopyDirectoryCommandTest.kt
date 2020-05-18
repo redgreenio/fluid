@@ -6,6 +6,7 @@ import io.redgreen.fluid.api.DirectoryEntry
 import io.redgreen.fluid.api.FileEntry
 import io.redgreen.fluid.dsl.Source
 import io.redgreen.fluid.snapshot.assist.buildSnapshot
+import io.redgreen.fluid.testing.SnapshotSubject
 import io.redgreen.fluid.testing.SnapshotSubject.Companion.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -80,6 +81,19 @@ class CopyDirectoryCommandTest {
         DirectoryEntry("documentation"),
         FileEntry("documentation/doc1.txt"),
         FileEntry("documentation/doc2.txt")
+      )
+  }
+
+  @Test
+  fun `it should copy empty directories with explicit source`() {
+    // when
+    val snapshot = CopyDirectoryCommand("black-hole", Source("empty-directory"))
+      .buildSnapshot()
+
+    // then
+    assertThat(snapshot)
+      .hasExactly(
+        DirectoryEntry("black-hole")
       )
   }
 }
