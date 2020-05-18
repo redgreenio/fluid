@@ -88,7 +88,7 @@ class InMemorySnapshot private constructor(
       .normalize()
   }
 
-  override fun inputStream(path: String): Optional<InputStream> {
+  override fun inputStream(path: String): Optional<InputStream> { // TODO Add tests for invalid paths, directories
     val inputStream = try {
       snapshotRoot.resolve(path).toUri().toURL().openStream()
     } catch (exception: Exception) {

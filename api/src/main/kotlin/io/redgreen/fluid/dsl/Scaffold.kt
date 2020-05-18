@@ -4,12 +4,17 @@ import io.redgreen.fluid.api.Command
 import io.redgreen.fluid.api.CopyDirectoryCommand
 import io.redgreen.fluid.api.DirectoryCommand
 import io.redgreen.fluid.api.FileCommand
+import io.redgreen.fluid.api.Generator
 import io.redgreen.fluid.api.Snapshot
 import io.redgreen.fluid.api.SnapshotFactory
 import io.redgreen.fluid.api.TemplateCommand
 import io.redgreen.fluid.dsl.Permission.READ_WRITE
 import io.redgreen.fluid.dsl.Source.Companion.MIRROR_DESTINATION
 
+/**
+ * Scaffold enables developers to express intent for the file and directory structure that fits their use case.
+ * An instance of the object can be created using the [scaffold] function.
+ */
 class Scaffold<in C : Any> internal constructor(
   private val block: Scaffold<C>.(C) -> Unit
 ) {
@@ -21,6 +26,12 @@ class Scaffold<in C : Any> internal constructor(
   private var currentPath = ROOT
   private val commands = mutableListOf<Command>()
 
+  /**
+   * Create a directory.
+   *
+   * @param segment directory name or path segment.
+   * @param block lambda block used to nest files, templates, and other directories.
+   */
   fun dir(
     segment: String,
     block: Directory.() -> Unit = { /* empty */ }
@@ -32,6 +43,12 @@ class Scaffold<in C : Any> internal constructor(
     currentPath = previousPath
   }
 
+  /**
+   * Copy a file.
+   *
+   * @param name name of the file.
+   * @param source an explicit source, if required.
+   */
   fun file(
     name: String,
     source: Source = MIRROR_DESTINATION
@@ -39,6 +56,14 @@ class Scaffold<in C : Any> internal constructor(
     file(name, source, READ_WRITE)
   }
 
+  /**
+   * Copy a rendered template.
+   *
+   * @param M the template model.
+   * @param name name of the template.
+   * @param model the model object for rendering the template.
+   * @param source an explicit source, if required.
+   */
   fun <M : Any> template(
     name: String,
     model: M,
@@ -47,6 +72,13 @@ class Scaffold<in C : Any> internal constructor(
     template(name, model, source, READ_WRITE)
   }
 
+  /**
+   * Builds a [Snapshot] from the [Scaffold].
+   *
+   * @param S information required to construct a [Snapshot] object.
+   * @param snapshotFactory a [SnapshotFactory] instance.
+   * @param dslConfig configuration object received from [Generator.configure].
+   */
   fun <S : Any> buildSnapshot(
     snapshotFactory: SnapshotFactory<S>,
     snapshotParams: S,
@@ -59,6 +91,12 @@ class Scaffold<in C : Any> internal constructor(
     return snapshot
   }
 
+  /**
+   * Copy a file.
+   *
+   * @param name name of the file.
+   * @param permissions permissions for the file, from the [Permission] class.
+   */
   fun file(
     name: String,
     permissions: Int
@@ -66,6 +104,13 @@ class Scaffold<in C : Any> internal constructor(
     file(name, MIRROR_DESTINATION, permissions)
   }
 
+  /**
+   * Copy a file.
+   *
+   * @param name name of the file.
+   * @param source an explicit source.
+   * @param permissions permissions for the file, from the [Permission] class.
+   */
   fun file(
     name: String,
     source: Source,
@@ -74,6 +119,14 @@ class Scaffold<in C : Any> internal constructor(
     commands.add(FileCommand(name, source, permissions))
   }
 
+  /**
+   * Copy a rendered template.
+   *
+   * @param M the template model.
+   * @param name name of the template.
+   * @param model the model object for rendering the template.
+   * @param permissions permissions for the file, from the [Permission] class.
+   */
   fun <M : Any> template(
     name: String,
     model: M,
@@ -82,6 +135,15 @@ class Scaffold<in C : Any> internal constructor(
     template(name, model, MIRROR_DESTINATION, permissions)
   }
 
+  /**
+   * Copy a rendered template.
+   *
+   * @param M the template model.
+   * @param name name of the template.
+   * @param model the model object for rendering the template.
+   * @param source an explicit source.
+   * @param permissions permissions for the file, from the [Permission] class.
+   */
   fun <M : Any> template(
     name: String,
     model: M,
@@ -91,6 +153,12 @@ class Scaffold<in C : Any> internal constructor(
     commands.add(TemplateCommand(name, model, source, permissions))
   }
 
+  /**
+   * Copy a directory.
+   *
+   * @param path the directory path.
+   * @param source an explicit source, if required.
+   */
   fun copyDir(
     path: String,
     source: Source = MIRROR_DESTINATION
