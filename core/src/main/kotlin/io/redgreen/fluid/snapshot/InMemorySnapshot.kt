@@ -19,11 +19,13 @@ import io.redgreen.fluid.template.FreemarkerTemplateEngine
 import io.redgreen.fluid.template.TemplateEngine
 import java.io.ByteArrayInputStream
 import java.io.File
+import java.io.FileNotFoundException
 import java.io.InputStream
 import java.nio.file.FileSystem
 import java.nio.file.FileVisitOption
 import java.nio.file.Files
 import java.nio.file.Path
+import java.nio.file.Paths
 import java.nio.file.attribute.PosixFilePermission.OTHERS_EXECUTE
 import java.util.Optional
 import kotlin.streams.toList
@@ -69,9 +71,10 @@ class InMemorySnapshot private constructor(
   }
 
   override fun execute(command: CopyDirectoryCommand) {
-    val sourceDirectory = classLoader.getResource(command.directory)?.path
-      ?: throw IllegalStateException("Unable to find '${command.directory}' in the generator's 'resources' directory.")
-    copyDirectory(command.directory, sourceDirectory)
+    val sourcePath = if (command.source.mirrorsDestination) command.directory else command.source.path
+    val sourceDirectory = classLoader.getResource(sourcePath)?.path
+      ?: throw FileNotFoundException("Unable to find '$sourcePath' in the generator's 'resources' directory.")
+    copyDirectory(sourceDirectory, command.directory) // TODO Inline and then extract again?
   }
 
   override fun getEntries(): List<FileSystemEntry> {
@@ -100,20 +103,19 @@ class InMemorySnapshot private constructor(
   }
 
   private fun copyDirectory(
-    directory: String,
-    sourceDirectoryPath: String
+    sourcePath: String,
+    destinationPath: String
   ) {
-    val sourceDirectory = File(sourceDirectoryPath)
     val filesInSourceDirectory = mutableListOf<File>()
-    findFilesInDirectory(sourceDirectory, filesInSourceDirectory)
+    findFilesInDirectory(File(sourcePath), filesInSourceDirectory)
 
     if (filesInSourceDirectory.isEmpty()) {
-      createDirectory(directory)
+      createDirectory(destinationPath)
     } else {
       filesInSourceDirectory.onEach { sourceFile ->
-        val sourceFilePath = sourceFile.path
-        val relativeFilePath = sourceFilePath.substring(sourceFilePath.indexOf(directory), sourceFilePath.length)
-        copyFile(relativeFilePath, Source(relativeFilePath), READ_WRITE)
+        val destinationRelativePath = "$destinationPath${sourceFile.path.substring(sourcePath.length)}"
+        val relativeSourcePath = sourceFile.path.substring(Paths.get(sourcePath).parent.toString().length + 1)
+        copyFile(destinationRelativePath, Source(relativeSourcePath), READ_WRITE)
       }
     }
   }
@@ -148,7 +150,7 @@ class InMemorySnapshot private constructor(
           Files.setPosixFilePermissions(targetFilePath, mutableSetOf(OTHERS_EXECUTE))
         }
       }
-    } ?: throw IllegalStateException("Unable to find source file: '$sourceFilePath'") // TODO: Add tests for missing files and templates
+    } ?: throw FileNotFoundException("Unable to find source file: '$sourceFilePath'") // TODO: Add tests for missing files and templates
   }
 
   private fun <T : Any> copyTemplate(

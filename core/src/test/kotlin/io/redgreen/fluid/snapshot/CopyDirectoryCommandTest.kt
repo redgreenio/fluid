@@ -4,10 +4,12 @@ import com.google.common.truth.Truth.assertThat
 import io.redgreen.fluid.api.CopyDirectoryCommand
 import io.redgreen.fluid.api.DirectoryEntry
 import io.redgreen.fluid.api.FileEntry
+import io.redgreen.fluid.dsl.Source
 import io.redgreen.fluid.snapshot.assist.buildSnapshot
 import io.redgreen.fluid.testing.SnapshotSubject.Companion.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import java.io.FileNotFoundException
 
 class CopyDirectoryCommandTest {
   @Test
@@ -26,7 +28,7 @@ class CopyDirectoryCommandTest {
   @Test
   fun `it should throw an exception if the specified directory is missing`() {
     // when
-    val exception = assertThrows<IllegalStateException> {
+    val exception = assertThrows<FileNotFoundException> {
       CopyDirectoryCommand("non-existent-directory")
         .buildSnapshot()
     }
@@ -63,6 +65,21 @@ class CopyDirectoryCommandTest {
         FileEntry("directories/file1.txt"),
         DirectoryEntry("directories/nested"),
         FileEntry("directories/nested/another-file.txt")
+      )
+  }
+
+  @Test
+  fun `is should copy existing directories and files with explicit source`() {
+    // when
+    val snapshot = CopyDirectoryCommand("documentation", Source("docs"))
+      .buildSnapshot()
+
+    // then
+    assertThat(snapshot)
+      .hasExactly(
+        DirectoryEntry("documentation"),
+        FileEntry("documentation/doc1.txt"),
+        FileEntry("documentation/doc2.txt")
       )
   }
 }
