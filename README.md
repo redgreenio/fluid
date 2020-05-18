@@ -12,6 +12,13 @@ $ curl -sSLO https://github.com/redgreenio/fluid/releases/download/[version]/flu
 - [Fluid DSL Guide](docs/fluid-dsl-guide.md)
 
 ## Development
+### Setting Up
+The project requires empty directories for a few tests. Please run the following Gradle task to create these directories before development.
+
+```bash
+$ ./gradlew core:createEmptyDirsForTests
+```
+
 ### IntelliJ Run Configurations
 The following run configurations help us test various installation scenarios with the CLI.
 
