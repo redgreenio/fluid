@@ -6,7 +6,6 @@ import io.redgreen.fluid.api.DirectoryEntry
 import io.redgreen.fluid.api.FileEntry
 import io.redgreen.fluid.dsl.Source
 import io.redgreen.fluid.snapshot.assist.buildSnapshot
-import io.redgreen.fluid.testing.SnapshotSubject
 import io.redgreen.fluid.testing.SnapshotSubject.Companion.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
