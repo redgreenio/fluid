@@ -8,7 +8,7 @@ import io.redgreen.fluid.dsl.Permission.READ_WRITE
 import io.redgreen.fluid.dsl.Scaffold.Companion.UNIX_PATH_SEPARATOR
 import io.redgreen.fluid.dsl.Source.Companion.MIRROR_DESTINATION
 
-class Directory(
+class Directory internal constructor(
   private val currentPath: String,
   private val commands: MutableList<Command>
 ) {

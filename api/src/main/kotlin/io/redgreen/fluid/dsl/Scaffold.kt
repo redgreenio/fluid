@@ -10,7 +10,7 @@ import io.redgreen.fluid.api.TemplateCommand
 import io.redgreen.fluid.dsl.Permission.READ_WRITE
 import io.redgreen.fluid.dsl.Source.Companion.MIRROR_DESTINATION
 
-class Scaffold<in C : Any>(
+class Scaffold<in C : Any> internal constructor(
   private val block: Scaffold<C>.(C) -> Unit
 ) {
   companion object {
