@@ -15,6 +15,7 @@ pipelines:
             - exec:
                 command: ./gradlew
                 arguments:
+                  - core:createEmptyDirsForTests
                   - clean
                   - test
 
