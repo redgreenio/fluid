@@ -1,2 +1,2 @@
 #!/bin/bash
-./gradlew cli:executable && sudo cp ./cli/build/run/fluid /usr/bin
+./gradlew cli:executable && sudo cp ./cli/build/run/fluid /usr/local/bin
