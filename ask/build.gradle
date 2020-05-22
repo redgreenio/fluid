@@ -9,4 +9,6 @@ repositories {
 dependencies {
   implementation artefacts.picocli.jline3
   implementation artefacts.invitrode
+
+  testImplementation artefacts.junit.params
 }

@@ -28,7 +28,8 @@ buildscript {
     // Unit tests
     junit        : [
       api    : 'org.junit.jupiter:junit-jupiter-api:5.6.0',
-      runtime: 'org.junit.jupiter:junit-jupiter-engine:5.6.0'
+      runtime: 'org.junit.jupiter:junit-jupiter-engine:5.6.0',
+      params : 'org.junit.jupiter:junit-jupiter-params:5.6.0'
     ],
     truth        : 'com.google.truth:truth:1.0.1',
     mockitoKotlin: 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0'

@@ -5,6 +5,8 @@ import io.redgreen.ask.Answer.UserText
 import io.redgreen.ask.Answer.ValidationFailure
 import io.redgreen.ask.ValidationResult.Failure
 
+typealias Validator = (String) -> ValidationResult
+
 fun ask(
   question: TextQuestion,
   getInput: (TextQuestion) -> String
