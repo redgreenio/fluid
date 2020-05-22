@@ -10,6 +10,7 @@ import org.jline.utils.AttributedStyle.GREEN
 import org.jline.utils.Colors
 
 private const val questionMark = "? "
+private const val colon = ": "
 private val defaultValueTextColor = Colors.roundRgbColor(128, 128, 128, 255)
 private val terminal: Terminal = TerminalBuilder.builder().jansi(true).build()
 
@@ -27,19 +28,19 @@ private fun lineReader(): LineReader =
 private fun buildAnsiText(
   question: TextQuestion
 ): String {
-  return buildPromptText(question)
+  return buildPrompt(question.text)
     .apply { addDefaultValueToPromptIfPresent(question) }
     .toAnsi()
 }
 
-private fun buildPromptText(
-  question: TextQuestion
+private fun buildPrompt(
+  text: String
 ): AttributedStringBuilder {
   return AttributedStringBuilder()
     .style(DEFAULT.foreground(GREEN))
     .append(questionMark)
     .style(DEFAULT)
-    .append("${question.text} ")
+    .append(text)
 }
 
 private fun AttributedStringBuilder.addDefaultValueToPromptIfPresent(
@@ -47,6 +48,8 @@ private fun AttributedStringBuilder.addDefaultValueToPromptIfPresent(
 ) {
   if (question.default?.isBlank() == false) {
     style(DEFAULT.foreground(defaultValueTextColor))
-    append("(${question.default}) ")
+    append(" (${question.default}) ")
+  } else {
+    append(colon)
   }
 }
