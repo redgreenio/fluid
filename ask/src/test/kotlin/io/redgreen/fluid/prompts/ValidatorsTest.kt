@@ -10,9 +10,6 @@ import org.junit.jupiter.params.provider.ValueSource
 class ValidatorsTest {
   @Nested
   inner class KebabCase {
-    private val validationFailedMessage =
-      "Should start with an alphabet and can contain alphabets (lowercase), numbers, and hyphens (-)."
-
     @ParameterizedTest
     @ValueSource(strings = [
       "",
@@ -28,6 +25,8 @@ class ValidatorsTest {
     fun `it should return validation failure for invalid text`(text: String) {
       val validationResult = KEBAB_CASE(text)
 
+      val validationFailedMessage =
+        "Should start with an alphabet and can contain alphabets (lowercase), numbers, and hyphens (-)."
       assertThat(validationResult)
         .isEqualTo(Failure(text, validationFailedMessage))
     }
@@ -45,6 +44,46 @@ class ValidatorsTest {
 
       assertThat(validationResult)
         .isEqualTo(Success(text))
+    }
+  }
+
+  @Nested
+  inner class PackageName {
+    @ParameterizedTest
+    @ValueSource(strings = [
+      "io",
+      "io.redgreen",
+      "io.redgreen.fluid",
+      "com.mobs_geeks.saripaar",
+      "io.cloud9.what",
+      "org.example.hyphenated_name",
+      "com.example._123name"
+    ])
+    fun `it should return validation success for valid package names`(packageName: String) {
+      val validationResult = PACKAGE_NAME(packageName)
+
+      assertThat(validationResult)
+        .isEqualTo(Success(packageName))
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = [
+      "org.example.hyphenated-name",
+      "org.example.million$",
+      "123.example.com",
+      "com.99times.hello",
+      "com.example.123name",
+      "org..example",
+      "org.example.",
+      "..."
+    ])
+    fun `it should return validation failure for invalid package names`(packageName: String) {
+      val validationResult = PACKAGE_NAME(packageName)
+
+      val message = "Can contain alphabets, numbers (preceded by an alphabet or underscore)," +
+        " underscores (_) and dots."
+      assertThat(validationResult)
+        .isEqualTo(Failure(packageName, message))
     }
   }
 }
