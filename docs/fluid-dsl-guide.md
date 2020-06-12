@@ -160,7 +160,7 @@ In this example, the generator will copy the contents of the **gradle** director
 
 The `copyDir` function is useful; however, it cannot deal with templates or file permissions. Use the `template` and `permissions` functions to handle these cases appropriately.
 
-### 2.5 Permissions
+### 2.5 Permissions (Proposed API)
 The `file` and `template` functions allow you to specify file permissions, in situations where you can't use either, use the `permissions` function.
 
 ```kotlin
