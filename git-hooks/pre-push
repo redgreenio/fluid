@@ -1,17 +1,11 @@
 #!/bin/sh
-# Gist - https://gist.github.com/fwielstra/d3619eef4b23176c3db6a157179d3918
+# Inspired from https://stackoverflow.com/a/40535565
 
-set -e
-
-# stash any unstaged changes
-git stash push -m "pre-push-save"
-
-# unstash the unstashed changes (if any) on exit or interrupt
-unstash() {
-    git stash pop -q || true
-}
-
-trap unstash EXIT
-
-# run the unit tests, animal sniffer checks and detekt checks
-./gradlew check detektTest
+if $(git status -s -uall)
+then
+  # run the unit tests, animal sniffer checks and detekt checks
+  ./gradlew check detektTest
+else
+  echo "Repo is dirty, please commit or stash changes before pushing to remote."
+  exit 1
+fi
