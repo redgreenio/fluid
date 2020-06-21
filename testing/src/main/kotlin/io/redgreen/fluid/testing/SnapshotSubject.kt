@@ -52,6 +52,7 @@ class SnapshotSubject(
     entry: FileSystemEntry,
     vararg entries: FileSystemEntry
   ) {
+    @Suppress("SpreadOperator")
     assertThat(actual.getEntries())
       .containsExactly(entry, *entries)
   }
