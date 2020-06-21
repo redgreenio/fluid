@@ -25,7 +25,8 @@ class SnapshotSubject(
   }
 
   fun has(entry: FileSystemEntry) {
-    if (!actual.getEntries().contains(entry)) {
+    val hasEntry = actual.getEntries().map { it.path }.contains(entry.path)
+    if (!hasEntry) {
       val entryName = getReadableEntryName(entry)
       failWithoutActual(
         simpleFact("expected: a $entryName at '${entry.path}'"),
