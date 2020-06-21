@@ -54,7 +54,7 @@ class DefaultRegistry private constructor(
 
     val registryManifestOptional = getRegistryManifest()
     if (!registryManifestOptional.isPresent) {
-      return Optional.empty<RegistryEntry>()
+      return Optional.empty()
     }
 
     val maybeRegistryEntry = registryManifestOptional.get()
@@ -115,6 +115,7 @@ class DefaultRegistry private constructor(
 
     val maybeRegistryManifestJson = registryManifestPath.toFile().readText()
     return try {
+      @Suppress("UnsafeCallOnNullableType")
       val registryManifest = registryManifestAdapter.fromJson(maybeRegistryManifestJson)!!
       Optional.of(registryManifest)
     } catch (exception: JsonEncodingException) {

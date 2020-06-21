@@ -26,9 +26,9 @@ class InstallGeneratorUseCaseTest {
   private val installGeneratorUseCase by lazy { InstallGeneratorUseCase(registry) }
 
   @Test
-  fun `it should add an entry to the registry after installation`( // FIXME This test is not verifying if a registry entry was added.
+  fun `it should add an entry to the registry after installation`(
     @TestArtifact(ARTIFACT_VALID_GENERATOR) candidate: ValidGenerator
-  ) {
+  ) { // FIXME This test is not verifying if a registry entry was added.
     // when
     val result = installGeneratorUseCase.invoke(candidate, FRESH) as FreshInstallSuccessful
 

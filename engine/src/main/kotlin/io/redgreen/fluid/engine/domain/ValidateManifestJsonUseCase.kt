@@ -30,6 +30,7 @@ class ValidateManifestJsonUseCase {
     val violations = schemaValidator.validate(manifestJsonObject)
     return if (violations.isEmpty()) {
       val manifestAdapter = Moshi.Builder().build().adapter(Manifest::class.java)
+      @Suppress("UnsafeCallOnNullableType")
       Valid(manifestAdapter.fromJson(manifestJson)!!)
     } else {
       InvalidManifest(violations)

@@ -32,11 +32,12 @@ class RunGeneratorUseCase(
     result: ReadyToRun,
     destination: Path
   ): RunSuccessful {
-    // FIXME This is too cumbersome to work with. We should make this more intuitive to use by providing more information.
+    // FIXME Too cumbersome to work with. We should make this more intuitive to use by providing more information.
     val validGenerator = ValidateGeneratorUseCase().invoke(result.installed.artifactPath) as ValidGenerator
     val generatorClass = validGenerator.generatorClass
     val generator = generatorClass.getDeclaredConstructor().newInstance() as Generator<*>
-    val snapshot = generator.scaffold().buildSnapshot(InMemorySnapshotFactory(), generatorClass, generator.configure())
+    val snapshot = generator.scaffold()
+      .buildSnapshot(InMemorySnapshotFactory(), generatorClass, generator.configure())
     val realizations = Realizer().realize(destination.toFile(), snapshot)
     return RunSuccessful(realizations)
   }
