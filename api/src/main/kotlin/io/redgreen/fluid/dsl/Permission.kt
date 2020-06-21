@@ -25,9 +25,9 @@ package io.redgreen.fluid.dsl
  * ╚═════════════╧══════╧═══════╧═════════╝
  */
 object Permission {
-  private const val R = 4
-  private const val W = 2
-  private const val X = 1
+  internal const val R = 4
+  internal const val W = 2
+  internal const val X = 1
 
   /**
    * Read/Write POSIX permission. The implementation does not handle this permission explicitly. This value is
