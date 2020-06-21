@@ -1,7 +1,7 @@
 package io.redgreen.fluid.cli
 
 import io.redgreen.fluid.cli.internal.FluidCommand
-import io.redgreen.fluid.cli.internal.FluidCommand.Companion.EXIT_CODE_SUCCESS
+import io.redgreen.fluid.cli.internal.FluidCommand.EXIT_CODE_SUCCESS
 import io.redgreen.fluid.cli.internal.GeneratorsCommand
 import io.redgreen.fluid.cli.internal.InstallCommand
 import io.redgreen.fluid.cli.internal.RunCommand
@@ -16,14 +16,14 @@ import kotlin.system.exitProcess
 fun main(args: Array<String>) {
   val registry = getRegistry()
 
-  val fluidCommand = FluidCommand()
+  val fluidCommand = FluidCommand
   val commandLine = CommandLine(fluidCommand)
     .addSubcommand(InstallCommand(registry))
     .addSubcommand(RunCommand(registry))
     .addSubcommand(GeneratorsCommand(registry))
 
-  val parseResult = commandLine
-    .parseArgs(*args)
+  @Suppress("SpreadOperator")
+  val parseResult = commandLine.parseArgs(*args)
 
   exitProcess(handleSubcommand(commandLine, parseResult))
 }

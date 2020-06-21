@@ -1,7 +1,7 @@
 package io.redgreen.fluid.cli.internal
 
 import com.github.tomaslanger.chalk.Chalk
-import io.redgreen.fluid.cli.internal.FluidCommand.Companion.EXIT_CODE_SUCCESS
+import io.redgreen.fluid.cli.internal.FluidCommand.EXIT_CODE_SUCCESS
 import io.redgreen.fluid.cli.internal.view.userMessage
 import io.redgreen.fluid.cli.ui.Printer
 import io.redgreen.fluid.engine.domain.InstallGeneratorUseCase

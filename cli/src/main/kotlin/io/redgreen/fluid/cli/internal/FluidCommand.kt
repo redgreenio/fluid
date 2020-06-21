@@ -8,8 +8,6 @@ import picocli.CommandLine.Command
   helpCommand = true,
   versionProvider = FluidVersionProvider::class
 )
-class FluidCommand {
-  companion object {
-    internal const val EXIT_CODE_SUCCESS = 0
-  }
+object FluidCommand {
+  internal const val EXIT_CODE_SUCCESS = 0
 }
