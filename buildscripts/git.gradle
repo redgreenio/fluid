@@ -1,0 +1,21 @@
+task installGitHooks() {
+  doLast {
+    def isGitRepository = file('.git').exists() && file('.git').isDirectory()
+    if (!isGitRepository) {
+      throw new GradleException("Project is not a Git repository. You must run 'git init' before running './gradlew $name' again.")
+    } else {
+      def hookDestination = ".git/hooks/pre-push"
+      def hookExists = file(hookDestination).exists()
+
+      if (hookExists) {
+        println 'A pre-push hook is already installed. Nothing to do :)'
+      } else {
+        println 'Installing hooks…'
+        exec {
+          commandLine 'ln', '-s', "${project.projectDir}/git-hooks/pre-push", hookDestination
+        }
+        println 'Hooks installed successfully.'
+      }
+    }
+  }
+}

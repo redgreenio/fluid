@@ -13,5 +13,5 @@ unstash() {
 
 trap unstash EXIT
 
-# run the tests + checks with the gradle wrapper
-./gradlew clean check
+# run the unit tests, animal sniffer checks and detekt checks
+./gradlew check detektTest

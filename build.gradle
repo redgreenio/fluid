@@ -20,6 +20,8 @@ buildscript {
   }
 }
 
+apply from: "${rootProject.projectDir}/buildscripts/git.gradle"
+
 subprojects {
   apply from: "${rootProject.projectDir}/buildscripts/dependencies.gradle"
 
@@ -87,13 +89,5 @@ subprojects {
       html.enabled = true
       xml.enabled = true
     }
-
-task installGitHooks(type: Exec) {
-  def prePushDestination = '.git/hooks/pre-push'
-  if (!file(prePushDestination).exists()) {
-    commandLine 'ln', '-s', "${project.projectDir}/git-hooks/pre-push", prePushDestination
-    commandLine 'echo', 'Git pre-push hook installed!'
-  } else {
-    commandLine 'echo', 'Git pre-push hook already exists.'
   }
 }
