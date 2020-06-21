@@ -26,7 +26,7 @@ private fun answer(
 
   return when {
     userInputFailedValidation -> ValidationFailure(input, (validationResult as Failure).message)
-    questionHasDefaultAndUserInputIsBlank -> DefaultText(question.default!!)
+    questionHasDefaultAndUserInputIsBlank -> @Suppress("UnsafeCallOnNullableType") DefaultText(question.default!!)
     else -> UserText(input.trim())
   }
 }

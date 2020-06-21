@@ -9,8 +9,10 @@ import org.jline.utils.AttributedStyle.DEFAULT
 import org.jline.utils.AttributedStyle.GREEN
 import org.jline.utils.Colors
 
-private const val questionMark = "? "
-private const val colon = ": "
+private const val QUESTION_MARK = "? "
+private const val COLON = ": "
+
+@Suppress("MagicNumber")
 private val defaultValueTextColor = Colors.roundRgbColor(128, 128, 128, 255)
 private val terminal: Terminal = TerminalBuilder.builder().jansi(true).build()
 
@@ -29,7 +31,7 @@ private fun buildAnsiText(
   question: TextQuestion
 ): String {
   return buildPrompt(question.text)
-    .apply { addDefaultValueToPromptIfPresent(question) }
+    .apply { addDefaultValueToPrompt(question) }
     .toAnsi()
 }
 
@@ -38,18 +40,19 @@ private fun buildPrompt(
 ): AttributedStringBuilder {
   return AttributedStringBuilder()
     .style(DEFAULT.foreground(GREEN))
-    .append(questionMark)
+    .append(QUESTION_MARK)
     .style(DEFAULT)
     .append(text)
 }
 
-private fun AttributedStringBuilder.addDefaultValueToPromptIfPresent(
+private fun AttributedStringBuilder.addDefaultValueToPrompt(
   question: TextQuestion
 ) {
-  if (question.default?.isBlank() == false) {
+  val hasDefaultValue = question.default?.isBlank() == false
+  if (hasDefaultValue) {
     style(DEFAULT.foreground(defaultValueTextColor))
     append(" (${question.default}) ")
   } else {
-    append(colon)
+    append(COLON)
   }
 }
