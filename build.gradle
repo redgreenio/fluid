@@ -16,6 +16,7 @@ buildscript {
     classpath 'com.github.ben-manes:gradle-versions-plugin:0.28.0'
     classpath 'com.github.jengelman.gradle.plugins:shadow:5.2.0'
     classpath 'com.vanniktech:gradle-maven-publish-plugin:0.9.0'
+    classpath 'io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.9.1'
   }
 }
 
@@ -26,6 +27,7 @@ subprojects {
   apply plugin: 'ru.vyarus.animalsniffer'
   apply plugin: 'com.github.ben-manes.versions'
   apply plugin: 'jacoco'
+  apply plugin: 'io.gitlab.arturbosch.detekt'
 
   repositories {
     mavenCentral()
@@ -50,6 +52,9 @@ subprojects {
     testImplementation artefacts.junit.api
     testRuntimeOnly artefacts.junit.runtime
     testImplementation artefacts.truth
+
+    detekt artefacts.detekt.cli
+    detektPlugins artefacts.detekt.plugins
   }
 
   test {
@@ -67,7 +72,21 @@ subprojects {
       jvmTarget = versions.jvm
     }
   }
-}
+
+  tasks.detekt.jvmTarget = '1.8'
+
+  detekt {
+    failFast = false
+    buildUponDefaultConfig = false
+
+    config = files("$rootDir/config/detekt/detekt.yml")
+    // Uncomment the following line to suppress issues before introducing detekt
+    /* baseline = file("$projectDir/config/detekt/baseline.xml") */
+
+    reports {
+      html.enabled = true
+      xml.enabled = true
+    }
 
 task installGitHooks(type: Exec) {
   def prePushDestination = '.git/hooks/pre-push'

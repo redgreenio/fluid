@@ -25,6 +25,12 @@ buildscript {
     'chalk'      : 'com.github.tomas-langer:chalk:1.0.2',
     'invitrode'  : 'com.maximeroussy.invitrode:invitrode:2.0.1',
 
+    // Code Quality
+    detekt       : [
+      'cli'    : 'io.gitlab.arturbosch.detekt:detekt-cli:1.9.1',
+      'plugins': 'io.gitlab.arturbosch.detekt:detekt-formatting:1.9.1'
+    ],
+
     // Unit tests
     junit        : [
       api    : 'org.junit.jupiter:junit-jupiter-api:5.6.0',
