@@ -20,6 +20,7 @@ import io.redgreen.fluid.template.TemplateEngine
 import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.FileNotFoundException
+import java.io.IOException
 import java.io.InputStream
 import java.nio.file.FileSystem
 import java.nio.file.FileVisitOption
@@ -91,7 +92,7 @@ class InMemorySnapshot private constructor(
   override fun inputStream(path: String): Optional<InputStream> { // TODO Add tests for invalid paths, directories
     val inputStream = try {
       snapshotRoot.resolve(path).toUri().toURL().openStream()
-    } catch (exception: Exception) {
+    } catch (exception: IOException) {
       exception.printStackTrace()
       null
     }
