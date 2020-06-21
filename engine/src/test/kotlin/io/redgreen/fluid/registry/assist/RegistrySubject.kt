@@ -35,7 +35,7 @@ class RegistrySubject(
     val artifactPath = actual.artifactPath(artifactName)
     if (!Files.exists(artifactPath)) {
       failWithoutActual(
-        simpleFact("expected: a file '$artifactName' at '${artifactPath}'"),
+        simpleFact("expected: a file '$artifactName' at '$artifactPath'"),
         simpleFact("but was : not found")
       )
     }

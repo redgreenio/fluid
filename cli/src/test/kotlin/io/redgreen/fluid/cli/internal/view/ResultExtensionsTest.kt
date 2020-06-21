@@ -23,7 +23,7 @@ internal class ResultExtensionsTest {
     // then
     val message = """
         Digest: sha256:$sha256
-        Installed generator: '${generatorId}'
+        Installed generator: '$generatorId'
       """.trimIndent()
     assertThat(userMessage)
       .isEqualTo(message)
@@ -146,7 +146,7 @@ internal class ResultExtensionsTest {
     // then
     val message = """
         Digest: sha256:$sha256
-        Generator overwritten: '${generatorId}'
+        Generator overwritten: '$generatorId'
       """.trimIndent()
     assertThat(userMessage)
       .isEqualTo(message)
