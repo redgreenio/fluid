@@ -35,6 +35,7 @@ class GeneratorSubject(
     entry: FileSystemEntry,
     vararg entries: FileSystemEntry
   ) {
+    @Suppress("SpreadOperator")
     assertThat(snapshot)
       .hasExactly(entry, *entries)
   }
