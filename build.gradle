@@ -63,6 +63,14 @@ subprojects {
     useJUnitPlatform()
   }
 
+  jacocoTestReport {
+    dependsOn test
+    reports {
+      xml.enabled true
+      html.enabled true
+    }
+  }
+
   tasks.withType(JavaCompile).configureEach { task ->
     task.options.encoding = 'UTF-8'
     task.sourceCompatibility = JavaVersion.VERSION_1_8
